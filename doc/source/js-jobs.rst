@@ -8,3 +8,4 @@ Javascript Jobs
 .. zuul:autojob:: nodejs-run-test-browser
 .. zuul:autojob:: nodejs-run-lint
 .. zuul:autojob:: nodejs-run-docs
+.. zuul:autojob:: publish-javascript-to-netlify
