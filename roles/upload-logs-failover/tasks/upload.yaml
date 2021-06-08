@@ -1,0 +1,35 @@
+- name: Upload if not succeeded yet
+  when: not upload_succeeded
+  block:
+    # NOTE: ideally, we could set these vars in the below 'include_role' like
+    #         include_role:
+    #           ...
+    #         vars: "{{ zj_upload_item.args }}"
+    #       but this does not work because of a known bug in Ansible, cf.
+    #       https://github.com/ansible/ansible/blob/stable-2.9/test/integration/targets/include_import/role/test_include_role.yml#L96
+    - name: "Unpack vars for {{ zj_upload_item.target }} upload"
+      set_fact: { "{{ zj_args.key }}": "{{ zj_args.value }}" }
+      loop: "{{ zj_upload_item.args | dict2items }}"
+      loop_control:
+        loop_var: zj_args
+      # The facts set here usually contain credentials
+      no_log: true
+      # ansible lint complains about "var-naming Task uses 'set_fact' to define
+      # variables that violates variable naming standards"
+      tags:
+        - skip_ansible_lint
+
+    - name: "Upload logs to {{ zj_upload_item.target }}"
+      include_role:
+        name: "upload-logs-{{ zj_upload_item.target }}"
+    # we expect any necessary role vars to be passed via the current
+    # target.args here
+
+    - name: Mark upload successful
+      set_fact:
+        upload_succeeded: true
+
+  rescue:
+    - name: Mark upload failed
+      set_fact:
+        upload_succeeded: false
