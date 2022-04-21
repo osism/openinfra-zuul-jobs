@@ -1,0 +1,59 @@
+- name: Set image variables
+  set_fact:
+    _arch_docker_images:
+      - context: test-playbooks/container/docker
+        repository: "testrepo"
+        # This is what the Zuul repo uses to tag its releases:
+        tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+        arch: ['linux/amd64', 'linux/arm64']
+    _normal_docker_images:
+      - context: test-playbooks/container/docker
+        repository: "testrepo"
+        # This is what the Zuul repo uses to tag its releases:
+        tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+    container_images:
+      - context: test-playbooks/container/docker
+        registry: 127.0.0.1:5200
+        repository: 127.0.0.1:5200/testrepo
+        # This is what the Zuul repo uses to tag its releases:
+        tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+
+- name: Save zuul variables
+  set_fact:
+    old_zuul: "{{ zuul }}"
+
+- name: Set simulated zuul variables
+  set_fact:
+    new_zuul:
+      pipeline: "{{ old_zuul.pipeline }}"
+      change_url: "{{ old_zuul.change_url }}"
+      executor: "{{ old_zuul.executor }}"
+      newrev: c12f3fe1defe8b61d59061363c9c04fb520dae18
+      project: "{{ old_zuul.project }}"
+      ref: refs/tags/3.19.0
+      tag: 3.19.0
+
+- name: "Build a container image"
+  include_role:
+    name: "build-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
+  vars:
+    zuul: "{{ new_zuul }}"
+    docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
+
+- name: "Upload container image"
+  include_role:
+    name: "upload-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
+  vars:
+    zuul: "{{ new_zuul }}"
+    docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
+
+- name: "Upload container image"
+  when: "upload_container_image_promote or upload_docker_image_promote"
+  include_role:
+    name: "upload-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
+  vars:
+    zuul: "{{ new_zuul }}"
+    docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
+
+- name: "Show local container images for debugging"
+  command: "{{ container_command }} image ls"

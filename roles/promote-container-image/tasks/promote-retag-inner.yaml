@@ -1,0 +1,19 @@
+- name: Set promote_tag_prefix
+  set_fact:
+    promote_tag_prefix: "{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}"
+
+- name: Create the final image tag
+  command: >-
+    skopeo copy --all docker://{{ zj_image.repository }}:{{ promote_tag_prefix }}_{{ zj_image_tag }} docker://{{ zj_image.repository }}:{{ zj_image_tag }}
+  register: result
+  until: result.rc == 0
+  retries: 3
+  delay: 30
+
+- name: Delete the current change tag
+  command: >-
+    skopeo delete docker://{{ zj_image.repository }}:{{ promote_tag_prefix }}_{{ zj_image_tag }}
+  register: result
+  until: result.rc == 0
+  retries: 3
+  delay: 30

@@ -18,6 +18,10 @@
       include_role:
         name: "ensure-{{ container_command }}"
 
+    - name: Install skopeo
+      include_role:
+        name: "ensure-skopeo"
+
     - name: Enable insecure registries
       block:
         - name: Create podman configration directory

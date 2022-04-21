@@ -1,0 +1,5 @@
+- name: Retag image
+  loop: "{{ zj_image.tags | default(['latest']) }}"
+  loop_control:
+    loop_var: zj_image_tag
+  include_tasks: promote-retag-inner.yaml
