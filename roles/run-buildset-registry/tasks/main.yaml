@@ -49,7 +49,7 @@
     --publish="1{{ buildset_registry_port }}:5000"
     --volume="{{ buildset_registry_root }}/tls:/tls"
     --volume="{{ buildset_registry_root }}/conf:/conf"
-    docker.io/zuul/zuul-registry:latest zuul-registry -d
+    {{ buildset_registry_image }} zuul-registry -d
 
 # Start a socat tunnel to the buildset registry to work around
 # https://github.com/containers/libpod/issues/4311
