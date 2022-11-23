@@ -1,17 +1,13 @@
-- name: Install chromium-brower
-  apt:
-    name: chromium-browser
-  become: true
-
-- name: Install firefox
-  apt:
-    name: firefox
-  become: true
-
-- name: Install xvfb
-  apt:
-    name: xvfb
-  become: true
+- name: Install distro specific packages
+  include_tasks: "{{ zj_distro_pkgs }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_facts.distribution }}.yaml"
+        - "{{ ansible_facts.os_family }}.yaml"
+  loop: "{{ query('first_found', params, errors='ignore') }}"
+  loop_control:
+    loop_var: zj_distro_pkgs
 
 - name: Run Xvfb
   shell: "/usr/bin/Xvfb :99 -screen 0 '1280x1024x24' -ac +extension GLX +render -noreset 2>&1 > /dev/null &"
