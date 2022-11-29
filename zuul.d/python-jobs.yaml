@@ -436,3 +436,5 @@
       `.markdownlint.json` that is configured according to
       https://github.com/DavidAnson/markdownlint#optionsconfig
       to control rule specifics.
+    vars:
+      node_version: 18
