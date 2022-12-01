@@ -1,0 +1,7 @@
+- name: Install browsers and xvfb
+  apt:
+    name:
+      - chromium
+      - firefox-esr
+      - xvfb
+  become: true
