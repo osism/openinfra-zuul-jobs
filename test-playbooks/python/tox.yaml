@@ -34,7 +34,7 @@
             name: tox
           vars:
             zuul_work_dir: "{{ zuul.project.src_dir }}/test-playbooks/python/"
-            tox_extra_args: "{{ default_tempfile.path }}"
+            tox_extra_args: "-- {{ default_tempfile.path }}"
             tox_install_siblings: false
             tox_envlist: ''
 
@@ -62,7 +62,7 @@
           vars:
             zuul_work_dir: "{{ zuul.project.src_dir }}/test-playbooks/python/"
             tox_install_siblings: false
-            tox_extra_args: "{{ ALL_tempfile.path }}"
+            tox_extra_args: "-- {{ ALL_tempfile.path }}"
             tox_envlist: 'ALL'
       always:
         - name: Make sure magic lines are present
