@@ -1,0 +1,56 @@
+---
+- name: Install fips-mode-setup
+  become: true
+  package:
+    name: crypto-policies-scripts
+    state: present
+
+- name: Enable FIPS mode
+  become: true
+  command: fips-mode-setup --enable
+
+- name: Check if GRUB_CMDLINE_LINUX_DEFAULT exists in /etc/default/grub
+  become: true
+  shell: |
+    set -o pipefail
+    grep "GRUB_CMDLINE_LINUX_DEFAULT=" /etc/default/grub
+  register: test_grep
+  failed_when: false
+
+- name: Add GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub
+  become: true
+  lineinfile:
+    path: /etc/default/grub
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="fips=1"'
+  when: test_grep.rc != 0
+
+- name: Replace GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub
+  become: true
+  lineinfile:
+    path: /etc/default/grub
+    regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="(.*)"'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="\1 fips=1"'
+    backrefs: true
+  when: test_grep.rc == 0
+
+- name: Rebuild grub.cfg file
+  become: true
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+
+- name: Reboot server for FIPS mode
+  become: true
+  reboot:
+    reboot_timeout: 1800
+
+- name: Run post-boot tasks
+  include_role:
+    name: post-reboot-tasks
+
+- name: Ensure FIPS mode is enabled
+  become: true
+  command: fips-mode-setup --check
+  register: _result
+
+- name: Assert FIPS is enabled
+  assert:
+    that: _result.stdout == "FIPS mode is enabled."
