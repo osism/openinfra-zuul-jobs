@@ -25,7 +25,9 @@
       command: '{{ ensure_pip_virtualenv_command }} {{ tox_venv_path }}'
 
     - name: Install tox to local venv
-      command: '{{ tox_venv_path }}/bin/pip install tox'
+      # We pin tox to version <4 as v4 is not currently compatible with
+      # zuul's tox siblings processing.
+      command: '{{ tox_venv_path }}/bin/pip install tox<4'
 
     - name: Export installed tox_executable path
       set_fact:

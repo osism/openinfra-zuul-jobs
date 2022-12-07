@@ -5,7 +5,8 @@
 - project:
     check:
       jobs:
-        - zuul-tox-docs
+        - zuul-tox-docs:
+            voting: false
         - tox-py27
         - tox-py38:
             nodeset: ubuntu-focal
@@ -17,7 +18,8 @@
             nodeset: ubuntu-jammy
     gate:
       jobs:
-        - zuul-tox-docs
+        - zuul-tox-docs:
+            voting: false
         - tox-py27
         - tox-py38:
             nodeset: ubuntu-focal
