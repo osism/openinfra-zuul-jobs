@@ -350,6 +350,7 @@
     description: Test the tox role's sibling functionality
     files:
       - roles/tox/.*
+      - roles/ensure-tox/.*
       - tox.ini
       - test-playbooks/python/tox.yaml
       - test-playbooks/python/tox.ini

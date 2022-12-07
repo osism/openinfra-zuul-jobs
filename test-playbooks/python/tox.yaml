@@ -76,12 +76,22 @@
           register: ALL_status
           failed_when: ALL_status is changed
 
+    - name: Move test-playbooks/python/tox.ini to test-playbooks/python/foo.ini
+      # Tox 4 appears to have trouble when there is a tox.ini in the current
+      # dir and you run it with -c pointing at another file. Work around this
+      # to test the use of -c by moving the tox.ini to another location
+      # and -c'ing against that in the next task.
+      command: mv tox.ini foo.ini
+      args:
+        chdir: "{{ zuul.project.src_dir }}/test-playbooks/python/"
+
     - name: Run tox against a specific config file
       include_role:
         name: tox
       vars:
+        zuul_work_dir: "{{ zuul.project.src_dir }}/test-playbooks/python/"
         # Make sure the tox_config_file option works
-        tox_config_file: test-playbooks/python
+        tox_config_file: foo.ini
         tox_envlist: 'foo'
         # Make sure we test with verbose output even if the default changes
         tox_extra_args: '-vv'

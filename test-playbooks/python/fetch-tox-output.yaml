@@ -56,14 +56,14 @@
   post_tasks:
     - name: Check for artifact on the test instance
       stat:
-        path: "{{ ansible_user_dir }}/zuul-output/logs/tox/venv/venv-0.log"
+        path: "{{ ansible_user_dir }}/zuul-output/logs/tox/venv/1-install_package.log"
       register: _test_artifact
       failed_when: not _test_artifact.stat.exists
       when: zuul_use_fetch_output
 
     - name: Check for artifact on the executor
       stat:
-        path: "{{ zuul.executor.log_root }}/tox/venv/venv-0.log"
+        path: "{{ zuul.executor.log_root }}/tox/venv/1-install_package.log"
       delegate_to: localhost
       register: _executor_artifact
       failed_when: not _executor_artifact.stat.exists
