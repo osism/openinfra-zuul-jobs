@@ -272,6 +272,11 @@ def get_envlist(tox_config):
     # This is overly LBYL to deal with differences in older Python 2.7
     # ConfigParser which would necessitate a fairly large number of exceptions
     # if we wanted to do a simple try/except with the get() instead
+    # Note this is tox<4 specific. tox>=4 is handled by the else block
+    # as tox>=4 does not provide tox.env (it is tox.env_list) and more
+    # importantly it does not provide args to check how we were called.
+    # But it does emit the appropriate testenv blocks depending on what -e
+    # value is used.
     if (
             'tox' in tox_config.sections() and 'env' in
             tox_config.options('tox') and "'-e" not in
@@ -363,8 +368,19 @@ def main():
 
     changed = False
     for testenv in envlist:
-        envdir = tox_config.get("testenv:{}".format(testenv), 'envdir')
-        envlogdir = tox_config.get("testenv:{}".format(testenv), 'envlogdir')
+        # Under tox<4 these names are envdir and envlogdir. Under tox>=4
+        # they are env_dir and env_log_dir.
+        envname = "testenv:{}".format(testenv)
+        if tox_config.has_option(envname, 'envdir') and \
+                tox_config.has_option(envname, 'envlogdir'):
+            envdir = tox_config.get(envname, 'envdir')
+            envlogdir = tox_config.get(envname, 'envlogdir')
+        elif tox_config.has_option(envname, 'env_dir') and \
+                tox_config.has_option(envname, 'env_log_dir'):
+            envdir = tox_config.get(envname, 'env_dir')
+            envlogdir = tox_config.get(envname, 'env_log_dir')
+        else:
+            raise Exception("Unknown tox env directories")
         try:
             # Write a log file into the .tox dir so that it'll get picked up
             # Name it with testenv as a prefix so that fetch-tox-output

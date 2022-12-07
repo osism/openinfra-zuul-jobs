@@ -27,7 +27,7 @@
     - name: Install tox to local venv
       # We pin tox to version <4 as v4 is not currently compatible with
       # zuul's tox siblings processing.
-      command: '{{ tox_venv_path }}/bin/pip install tox<4'
+      command: '{{ tox_venv_path }}/bin/pip install tox{{ ensure_tox_version }}'
 
     - name: Export installed tox_executable path
       set_fact:
