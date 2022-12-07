@@ -64,7 +64,7 @@
 
 - name: Copy tox logs  # noqa risky-file-permissions
   copy:
-    dest: "{{ zuul_output_dir }}/logs/tox/"
+    dest: "{{ zuul_output_dir }}/logs/tox/{{ zj_testenv }}/"
     src: "{{ zuul_work_dir }}/.tox/{{ zj_testenv }}/log/"
     remote_src: true
   loop: "{{ envlist }}"
@@ -77,7 +77,7 @@
 
 - name: Collect tox logs
   synchronize:
-    dest: "{{ log_path }}"
+    dest: "{{ log_path }}/{{ zj_testenv }}"
     mode: pull
     src: "{{ zuul_work_dir }}/.tox/{{ zj_testenv }}/log/"
     verify_host: true
