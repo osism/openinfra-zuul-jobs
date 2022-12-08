@@ -29,12 +29,19 @@
         - name: Start pod
           command: kubectl apply -f test-pod.yaml
 
+        - name: Wait a bit
+          pause:
+            seconds: 30
+
+        - name: Describe pod
+          shell: sleep 5; kubectl describe pods test
+
         - name: Ensure pod is running
           shell: sleep 5; kubectl get pods
           register: _get_pods_output
           until: "'Running' in _get_pods_output.stdout"
           retries: 3
-          delay: 5
+          delay: 10
 
       always:
         - name: Collect container logs
@@ -47,6 +54,6 @@
 
         - name: Get minikube logs
           become: true
-          shell: "/tmp/minikube logs > {{ ansible_user_dir }}/zuul-output/logs/minikube.txt"
+          shell: "/tmp/minikube logs > {{ ansible_user_dir }}/zuul-output/logs/minikube.txt || true"
           environment:
             MINIKUBE_HOME: "{{ ansible_user_dir }}"

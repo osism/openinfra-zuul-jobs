@@ -1,3 +1,12 @@
+ensure_kubernetes_type: minikube
+ensure_kubernetes_microk8s_channel: 'latest/stable'
+# NOTE(ianw) : 2022-12-13
+#  - "storage" is deprecated and has become "hostpath-storage" in
+#     >1.24, but we still need to support 1.23.  If it really goes away
+#     we might need to switch on the channel name
+ensure_kubernetes_microk8s_addons:
+  - dns
+  - storage
 install_kubernetes_with_cluster: True
 minikube_version: latest
 minikube_dns_resolvers: []

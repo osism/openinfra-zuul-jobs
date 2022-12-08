@@ -393,6 +393,34 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-ensure-kubernetes-microk8s
+    description: |
+      Test the ensure-kubernetes role with microk8s
+
+      This job tests changes to the ensure-kubernetes roles.  It
+      is not meant to be used directly but rather run on changes to
+      roles in the zuul-jobs repo.
+    abstract: true
+    files:
+      - roles/ensure-docker/.*
+      - roles/ensure-kubernetes/.*
+      - roles/ensure-package-repositories/.*
+      - test-playbooks/ensure-kubernetes/.*
+    run: test-playbooks/ensure-kubernetes/microk8s.yaml
+    post-run: test-playbooks/ensure-kubernetes/post.yaml
+
+# NOTE(ianw) 2022-12-08 : only supported on jammy
+
+- job:
+    name: zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
+    description: Test the ensure-kubernetes role with docker on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-kubernetes-microk8s
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
     name: zuul-jobs-test-ensure-podman
     description: |
       Test the ensure-podman role
@@ -532,6 +560,7 @@
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-bionic
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
+        - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-skopeo-ubuntu-bionic
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
@@ -563,6 +592,7 @@
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-bionic
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
+        - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-skopeo-ubuntu-bionic
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy

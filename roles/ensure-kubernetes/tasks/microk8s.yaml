@@ -1,0 +1,58 @@
+- name: Check distro
+  assert:
+    that: ansible_distribution_release == 'jammy'
+    msg: 'This role only supported on Jammy'
+
+- name: Install snapd
+  become: yes
+  package:
+    name: snapd
+    state: present
+
+- name: Install microk8s snap
+  become: yes
+  command: 'snap install microk8s --classic --channel={{ ensure_kubernetes_microk8s_channel }}'
+
+- name: Install add-ons
+  become: yes
+  command: '/snap/bin/microk8s enable {{ ensure_kubernetes_microk8s_addons | join(" ") }}'
+
+- name: Install kubectl wrapper
+  become: yes
+  copy:
+    content: |
+      #!/bin/bash
+      /snap/bin/microk8s.kubectl "$@"
+    dest: /usr/local/bin/kubectl
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Allow zuul user kubectl access
+  become: yes
+  user:
+    name: 'zuul'
+    groups: 'microk8s'
+    append: yes
+
+- name: Create .kube directory
+  file:
+    path: "{{ ansible_user_dir }}/.kube"
+    state: directory
+    mode: 0755
+
+- name: Populate kube config
+  become: yes
+  shell: /snap/bin/microk8s config > {{ ansible_user_dir }}/.kube/config
+
+- name: Ensure we can read config
+  become: yes
+  file:
+    path: "{{ ansible_user_dir }}/.kube/config"
+    owner: zuul
+    group: zuul
+    state: touch
+    mode: 0644
+
+- name: Reset connection to pickup group
+  meta: reset_connection

@@ -1,0 +1,6 @@
+- hosts: all
+  name: Install kubernetes with minikube
+  roles:
+    - role: ensure-kubernetes
+      vars:
+        ensure_kubernetes_type: microk8s
