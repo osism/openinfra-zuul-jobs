@@ -1,0 +1,51 @@
+- hosts: all
+  roles:
+    - role: clear-firewall
+    - role: ensure-kubernetes
+      vars:
+        ensure_kubernetes_type: microk8s
+    - role: use-buildset-registry
+      buildset_registry_docker_user: root
+  tasks:
+    - name: Wait for cluster to come up
+      command: kubectl cluster-info
+      register: result
+      until: result.rc == 0
+      retries: 5
+      delay: 30
+
+    - name: Run a local test pod
+      command: kubectl run --image=quay.io/zuul/quay-testimage quaytest
+
+    - name: Pause
+      pause:
+        seconds: 60
+
+    - name: Describe pod
+      shell: kubectl describe pods quaytest
+
+    - name: Wait for the pod to be ready
+      command: kubectl wait --for=condition=Ready pod/quaytest --timeout=60s
+
+    - name: Check the output of the pod
+      shell: "kubectl logs pod/quaytest | grep 'Zuul container test'"
+      args:
+        warn: false
+
+    - name: Run a remote test pod
+      command: kubectl run --image=docker.io/debian:testing upstream-dockertest --command -- /bin/bash -c 'echo Upstream; sleep infinity'
+
+    - name: Pause
+      pause:
+        seconds: 60
+
+    - name: Describe pod
+      shell: kubectl describe pods upstream-dockertest
+
+    - name: Wait for the pod to be ready
+      command: kubectl wait --for=condition=Ready pod/upstream-dockertest --timeout=60s
+
+    - name: Check the output of the pod
+      shell: "kubectl logs pod/upstream-dockertest | grep 'Upstream'"
+      args:
+        warn: false

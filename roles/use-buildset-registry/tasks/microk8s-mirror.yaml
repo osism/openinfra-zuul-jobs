@@ -1,0 +1,28 @@
+- name: Make config dir
+  file:
+    path: /var/snap/microk8s/current/args/certs.d/{{ zj_uk8s_mirror[0] }}
+    state: directory
+    owner: 'root'
+    group: 'root'
+    mode: 0755
+
+# NOTE(ianw) : I'm not 100% if microk8s can globally reference this
+# because of it's snap bundling.  Copy it and reference directly
+- name: Copy buildset registry CA
+  copy:
+    src: '{{ ca_dir }}/{{ buildset_registry_alias }}.crt'
+    dest: '/var/snap/microk8s/current/args/certs.d/{{ zj_uk8s_mirror[0] }}/ca.crt'
+    remote_src: true
+
+- name: Write content
+  copy:
+    dest: '/var/snap/microk8s/current/args/certs.d/{{ zj_uk8s_mirror[0] }}/hosts.toml'
+    content: |
+      server = "{{ zj_uk8s_mirror[1] }}"
+      [host."{{ buildset_registry_alias }}:{{ buildset_registry.port }}/v2/{{ zj_uk8s_mirror [0]}}"]
+      capabilities = ["pull", "resolve"]
+      ca = "/var/snap/microk8s/current/args/certs.d/{{ zj_uk8s_mirror[0] }}/ca.crt"
+      override_path = true
+    owner: root
+    group: root
+    mode: 0644

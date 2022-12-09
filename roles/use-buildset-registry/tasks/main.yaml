@@ -144,9 +144,30 @@
     state: restarted
   become: true
 
+# microk8s (containerd) setup
+- name: Check for microk8s
+  stat:
+    path: '/var/snap/microk8s'
+  register: _microk8s
+- name: Setup microk8s mirrors
+  when: _microk8s.stat.exists
+  become: yes
+  block:
+    - name: Setup mirrors
+      include_tasks: microk8s-mirror.yaml
+      loop: '{{ buildset_registry_namespaces }}'
+      loop_control:
+        loop_var: zj_uk8s_mirror
+
+    # NOTE(ianw) 2022-12-13 : I don't think this is strictly necessary
+    # when updating mirror configs.  It also shouldn't hurt, so leave
+    # it for now.
+    - name: Restart microk8s
+      command: snap restart microk8s
+
 - name: Wait for kubernetes connection to come back
   command: timeout 10s kubectl get pods
-  when: kubelet_config.stat.exists or crio_path.stat.exists
+  when: kubelet_config.stat.exists or crio_path.stat.exists or _microk8s.stat.exists
   register: _api_ready
   until: _api_ready.rc == 0
   retries: 6
