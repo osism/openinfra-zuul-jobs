@@ -50,7 +50,7 @@ def ansible_main():
 
     if 'registry' not in data:
         data['registry'] = {}
-    for namespace in set(p['namespaces']):
+    for namespace in set([n[0] for n in p['namespaces']]):
         n_config = data['registry'].setdefault(namespace, {})
         mirrors = n_config.setdefault('mirrors', [])
         new_loc = get_location(namespace, location)

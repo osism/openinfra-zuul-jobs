@@ -48,7 +48,7 @@ def ansible_main():
         input_data = None
         data = {}
 
-    unseen = set(p['namespaces'])
+    unseen = set([n[0] for n in p['namespaces']])
     if 'registry' not in data:
         data['registry'] = []
     for reg in data['registry']:

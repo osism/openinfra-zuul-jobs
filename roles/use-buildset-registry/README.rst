@@ -37,11 +37,16 @@ Use this role on any host which should use the buildset registry.
    default, the user Ansible is running as.
 
 .. zuul:rolevar:: buildset_registry_namespaces
-   :default: ['docker.io', 'quay.io', 'gcr.io']
+   :default: [ ('docker.io', 'https://...'), ('quay.io', ...), ('gcr.io', ...)]
 
-   The namespaces that the buildset registry supports.  The buildset
-   registry will be consulted first for images in these namespaces.
-   Any others will be fetched only from their upstream sources.
+   The namespaces that the buildset registry supports.  Each entry
+   should be a tuple with the first elemnet being the registry host
+   (usually the internet domain name) and the second being the URL the
+   registry is hosted at.
+
+   The buildset registry will be consulted first for images in these
+   namespaces.  Any others will be fetched only from their upstream
+   sources.
 
    Add any local or third-party registries necessary here.
 
