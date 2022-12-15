@@ -1,4 +1,113 @@
 - job:
+    name: zuul-jobs-test-ensure-nox
+    description: Test the ensure-nox role
+    files:
+      - roles/ensure-nox/.*
+      - test-playbooks/ensure-nox.yaml
+    run: test-playbooks/ensure-nox.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-nox-centos-7
+    description: Test the ensure-nox role on centos-7
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-7
+          label: centos-7
+
+- job:
+    name: zuul-jobs-test-ensure-nox-centos-8-stream
+    description: Test the ensure-nox role on centos-8-stream
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-8-stream
+          label: centos-8-stream
+
+- job:
+    name: zuul-jobs-test-ensure-nox-centos-9-stream
+    description: Test the ensure-nox role on centos-9-stream
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-nox-debian-bullseye
+    description: Test the ensure-nox role on debian-bullseye
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-nox-debian-buster
+    description: Test the ensure-nox role on debian-buster
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-buster
+          label: debian-buster
+
+- job:
+    name: zuul-jobs-test-ensure-nox-fedora-36
+    description: Test the ensure-nox role on fedora-36
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: fedora-36
+          label: fedora-36
+
+- job:
+    name: zuul-jobs-test-ensure-nox-opensuse-15
+    description: Test the ensure-nox role on opensuse-15
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: opensuse-15
+          label: opensuse-15
+
+- job:
+    name: zuul-jobs-test-ensure-nox-ubuntu-bionic
+    description: Test the ensure-nox role on ubuntu-bionic
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-bionic
+          label: ubuntu-bionic
+
+- job:
+    name: zuul-jobs-test-ensure-nox-ubuntu-focal
+    description: Test the ensure-nox role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-nox-ubuntu-jammy
+    description: Test the ensure-nox role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
     name: zuul-jobs-test-ensure-pip
     description: Test the ensure-pip role
     files:
@@ -458,6 +567,16 @@
 - project:
     check:
       jobs: &id001
+        - zuul-jobs-test-ensure-nox-centos-7
+        - zuul-jobs-test-ensure-nox-centos-8-stream
+        - zuul-jobs-test-ensure-nox-centos-9-stream
+        - zuul-jobs-test-ensure-nox-debian-bullseye
+        - zuul-jobs-test-ensure-nox-debian-buster
+        - zuul-jobs-test-ensure-nox-fedora-36
+        - zuul-jobs-test-ensure-nox-opensuse-15
+        - zuul-jobs-test-ensure-nox-ubuntu-bionic
+        - zuul-jobs-test-ensure-nox-ubuntu-focal
+        - zuul-jobs-test-ensure-nox-ubuntu-jammy
         - zuul-jobs-test-ensure-pip-centos-7
         - zuul-jobs-test-ensure-pip-centos-8-stream
         - zuul-jobs-test-ensure-pip-centos-9-stream

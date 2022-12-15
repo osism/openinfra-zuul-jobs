@@ -1,0 +1,55 @@
+- hosts: all
+  name: Remove any pre-installed nox
+  tasks:
+    - name: Remove nox package with pip
+      shell: pip uninstall -y nox
+      args:
+        warn: false
+      become: true
+      failed_when: false
+    - name: Remove nox package with pip3
+      shell: pip3 uninstall -y nox
+      args:
+        warn: false
+      become: true
+      failed_when: false
+    - name: Verify nox is not installed
+      command: "nox --version"
+      register: result
+      failed_when: result.rc == 0
+
+- hosts: all
+  name: Test ensure-nox installs into user environment
+  tasks:
+    - name: Verify nox is not installed
+      command: "nox --version"
+      register: result
+      failed_when: result.rc == 0
+    - name: Run ensure-nox with nox not installed
+      include_role:
+        name: ensure-nox
+    - name: Verify nox_executable is set
+      assert:
+        that:
+          - nox_executable == "{{ ansible_user_dir }}/.local/nox/bin/nox"
+    - name: Verify nox is installed
+      command: "{{ nox_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+
+- hosts: all
+  name: Test ensure-nox when nox_executable is set to an already installed nox
+  tasks:
+    - name: Create a virtualenv
+      command: '{{ ensure_pip_virtualenv_command }} {{ ansible_user_dir }}/nox-venv'
+    - name: Install nox to local venv
+      command: '{{ ansible_user_dir }}/nox-venv/bin/pip install nox'
+    - name: Run ensure-nox pointing to an already installed nox
+      include_role:
+        name: ensure-nox
+      vars:
+        nox_executable: "{{ ansible_user_dir }}/nox-venv/bin/nox"
+    - name: Verify nox_executable is set to the virtualenv nox
+      assert:
+        that:
+          - nox_executable == '{{ ansible_user_dir }}/nox-venv/bin/nox'
