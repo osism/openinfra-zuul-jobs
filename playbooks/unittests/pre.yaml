@@ -5,7 +5,8 @@
         name: bindep
       vars:
         bindep_dir: "{{ zuul_work_dir }}"
-      when: tox_install_bindep | default(true)
+      # TODO don't make this runtime specific
+      when: (tox_install_bindep | default(true)) and (nox_install_bindep | default(true))
     - name: Run test-setup role
       include_role:
         name: test-setup

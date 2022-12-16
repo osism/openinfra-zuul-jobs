@@ -1,0 +1,10 @@
+---
+nox_environment:
+  # nox will fail with missing session with this flag set.
+  CI: "1"
+nox_executable: nox
+nox_extra_args: '-v'
+nox_install_siblings: true
+nox_inline_comments: true
+
+zuul_work_dir: "{{ zuul.project.src_dir }}"

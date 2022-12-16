@@ -1,0 +1,83 @@
+- name: Check to see if the constraints file exists
+  stat:
+    path: "{{ nox_constraints_file }}"
+    get_checksum: false
+    get_mime: false
+    get_md5: false
+  register: stat_results
+  when: nox_constraints_file is defined
+
+- name: Fail if constraints file is missing
+  when: nox_constraints_file is defined and not stat_results.stat.exists
+  fail:
+    msg: nox_constraints_file is defined but was not found
+
+- name: Record constraints file location
+  set_fact:
+    nox_constraints_env:
+      NOX_CONSTRAINTS_FILE: "{{ nox_constraints_file }}"
+  when: nox_constraints_file is defined
+
+- name: Install nox siblings
+  include_tasks: siblings.yaml
+  when: nox_install_siblings
+
+- name: Emit nox command
+  debug:
+    msg: >-
+      {{ nox_executable }}
+      {% if nox_config_file is defined and nox_config_file %}
+      -f {{ nox_config_file }}
+      {% endif %}
+      {% if nox_session is defined and nox_session %}
+      -s {{ nox_session }}
+      {% endif %}
+      {% if nox_keyword is defined and nox_keyword %}
+      -k {{ nox_keyword }}
+      {% endif %}
+      {% if nox_tag is defined and nox_tag %}
+      -t {{ nox_tag }}
+      {% endif %}
+      {% if nox_force_python is defined and nox_force_python %}
+      --force-python {{ nox_force_python }}
+      {% endif %}
+      {% if nox_install_siblings %}
+      --reuse-existing-virtualenvs --no-install
+      {% endif %}
+      {{ nox_extra_args }}
+
+- name: Run nox
+  block:
+    - name: Run nox
+      args:
+        chdir: "{{ zuul_work_dir }}"
+      environment: "{{ nox_environment | combine(nox_constraints_env | default({})) }}"
+      command: >-
+        {{ nox_executable }}
+        {% if nox_config_file is defined and nox_config_file %}
+        -f {{ nox_config_file }}
+        {% endif %}
+        {% if nox_session is defined and nox_session %}
+        -s {{ nox_session }}
+        {% endif %}
+        {% if nox_keyword is defined and nox_keyword %}
+        -k {{ nox_keyword }}
+        {% endif %}
+        {% if nox_tag is defined and nox_tag %}
+        -t {{ nox_tag }}
+        {% endif %}
+        {% if nox_force_python is defined and nox_force_python %}
+        --force-python {{ nox_force_python }}
+        {% endif %}
+        {% if nox_install_siblings %}
+        --reuse-existing-virtualenvs --no-install
+        {% endif %}
+        {{ nox_extra_args }}
+      register: nox_output
+
+  # Even though any test environment in nox failed we want to
+  # return file comments produced so always run this.
+  always:
+    - name: TODO
+      debug:
+        msg: TODO

@@ -336,6 +336,191 @@
       npm_command: build
 
 - job:
+    name: nox
+    parent: unittests
+    description: |
+      Base job containing setup and teardown for nox-based test jobs.
+
+      This performs basic host and general project setup tasks common
+      to all nox unit test jobs.
+
+      Responds to these variables:
+
+      .. zuul:jobvar:: nox_session
+
+         Use the specified nox sessions
+
+      .. zuul:jobvar:: nox_keyword
+
+         Use the specified nox keyword
+
+      .. zuul:jobvar:: nox_tag
+
+         Use the specified nox tag
+
+      .. zuul:jobvar:: nox_force_python
+
+         Force nox to run the selected sessions under this version of python.
+
+      .. zuul:jobvar:: nox_config_file
+
+         Override the default noxfile.py configuration path.
+
+      .. zuul:jobvar:: nox_environment
+         :type: dict
+
+         Environment variables to pass in to the nox run.
+         Nox behaves differently when CI=1 is set. Consider setting this
+         if you override the role defaults.
+
+      .. zuul:jobvar:: nox_extra_args
+
+         String containing extra arguments to append to the nox command line.
+
+      .. zuul:jobvar:: nox_constraints_file
+
+         Path to a pip constraints file. Will be provided to nox in the
+         NOX_CONSTRAINTS_FILE environment variable if it exists.
+
+      .. zuul:jobvar:: nox_install_siblings
+         :default: true
+
+         Override nox requirements that have corresponding zuul git repos
+         on the node by installing the git versions into the nox virtualenv.
+
+      .. zuul:jobvar:: nox_install_bindep
+         :default: true
+
+         Whether or not to run the binary dependencies detection and
+         installation with bindep.
+    run: playbooks/nox/run.yaml
+    pre-run: playbooks/nox/pre.yaml
+
+- job:
+    name: nox-py27
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 2.7.
+
+      Uses nox with the ``test`` keyword forcing python 2.7.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "2.7"
+      python_version: "2.7"
+
+- job:
+    name: nox-py36
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.6.
+
+      Uses nox with the ``test`` keyword forcing python 3.6.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.6"
+      python_version: "3.6"
+
+- job:
+    name: nox-py37
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.7.
+
+      Uses nox with the ``test`` keyword forcing python 3.7.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.7"
+      python_version: "3.7"
+
+- job:
+    name: nox-py38
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.8.
+
+      Uses nox with the ``test`` keyword forcing python 3.8.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.8"
+      python_version: "3.8"
+
+- job:
+    name: nox-py39
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.9.
+
+      Uses nox with the ``test`` keyword forcing python 3.9.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.9"
+      python_version: "3.9"
+
+- job:
+    name: nox-py310
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.10.
+
+      Uses nox with the ``test`` keyword forcing python 3.10.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.10"
+      python_version: "3.10"
+
+- job:
+    name: nox-py311
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.11.
+
+      Uses nox with the ``test`` keyword forcing python 3.11.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.11"
+      python_version: "3.11"
+
+- job:
+    name: nox-cover
+    parent: nox
+    description: |
+      Run code coverage tests.
+
+      Uses nox with the ``cover`` keyword.
+    post-run: playbooks/nox/cover-post.yaml
+    vars:
+      nox_keyword: cover
+
+- job:
+    name: nox-linters
+    parent: nox
+    description: |
+      Runs code linting tests.
+
+      Uses nox with the ``linters`` keyword.
+    vars:
+      nox_keyword: linters
+      test_setup_skip: true
+
+- job:
+    name: nox-docs
+    # This is not parented to nox since we do not need
+    # the roles from its parent unittests.
+    description: |
+      Run documentation unit tests.
+
+      Uses nox with the ``docs`` keyword.
+    vars:
+      nox_keyword: docs
+      bindep_profile: compile doc
+    run: playbooks/nox/run.yaml
+    pre-run:
+      - playbooks/nox/docs-pre.yaml
+      - playbooks/nox/pre.yaml
+    post-run:
+      - playbooks/nox/docs-post.yaml
+
+- job:
     name: build-python-release
     description: |
       Build a source tarball and a bdist wheel for uploading.

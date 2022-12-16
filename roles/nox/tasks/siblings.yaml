@@ -1,0 +1,56 @@
+# Install sibling with nox so we can replace them later
+- name: Run nox without tests
+  command: >-
+    {{ nox_executable }}
+    {% if nox_config_file is defined and nox_config_file %}
+    -f {{ nox_config_file }}
+    {% endif %}
+    {% if nox_session is defined and nox_session %}
+    -s {{ nox_session }}
+    {% endif %}
+    {% if nox_keyword is defined and nox_keyword %}
+    -k {{ nox_keyword }}
+    {% endif %}
+    {% if nox_tag is defined and nox_tag %}
+    -t {{ nox_tag }}
+    {% endif %}
+    {% if nox_force_python is defined and nox_force_python %}
+    --force-python {{ nox_force_python }}
+    {% endif %}
+    --install-only
+    {{ nox_extra_args }}
+  args:
+    chdir: "{{ zuul_work_dir }}"
+  environment: "{{ nox_environment | combine(nox_constraints_env | default({})) }}"
+
+- name: Get nox session list
+  command: >-
+    {{ nox_executable }}
+    {% if nox_config_file is defined and nox_config_file %}
+    -f {{ nox_config_file }}
+    {% endif %}
+    {% if nox_session is defined and nox_session %}
+    -s {{ nox_session }}
+    {% endif %}
+    {% if nox_keyword is defined and nox_keyword %}
+    -k {{ nox_keyword }}
+    {% endif %}
+    {% if nox_tag is defined and nox_tag %}
+    -t {{ nox_tag }}
+    {% endif %}
+    {% if nox_force_python is defined and nox_force_python %}
+    --force-python {{ nox_force_python }}
+    {% endif %}
+    --list
+  args:
+    chdir: "{{ zuul_work_dir }}"
+  environment: "{{ nox_environment | combine(nox_constraints_env | default({})) }}"
+  register: _nox_session_listing
+
+- name: Install any sibling python packages
+  nox_install_sibling_packages:
+    nox_sessions: "{{ _nox_session_listing.stdout }}"
+    nox_constraints_file: "{{ nox_constraints_file | default(omit) }}"
+    nox_package_name: "{{ nox_package_name | default(omit) }}"
+    project_dir: "{{ zuul_work_dir }}"
+    projects: "{{ zuul.projects.values() | selectattr('required') | list }}"

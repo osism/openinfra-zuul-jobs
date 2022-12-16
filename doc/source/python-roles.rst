@@ -21,4 +21,5 @@ Python Roles
 .. zuul:autorole:: find-constraints
 .. zuul:autorole:: sphinx
 .. zuul:autorole:: tox
+.. zuul:autorole:: nox
 .. zuul:autorole:: upload-pypi
