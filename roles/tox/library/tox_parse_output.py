@@ -119,6 +119,9 @@ def extract_file_comments(tox_output, workdir, tox_envlist=None):
         # For now, skip .tox directory, we can enhance later.
         if file_path.startswith('.tox'):
             continue
+        # This library is shared with the nox role.
+        if file_path.startswith('.nox'):
+            continue
 
         ret.setdefault(file_path, [])
         if tox_envlist:

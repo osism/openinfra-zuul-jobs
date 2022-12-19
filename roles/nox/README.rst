@@ -67,6 +67,12 @@ corresponding Zuul sibling projects and runs nox tests as follows:
    Path to a pip constraints file. Will be provided to nox via
    ``NOX_CONSTRAINTS_FILE``.
 
+.. zuul:rolevar:: nox_inline_comments
+   :default: true
+
+   Flag controlling whether to parse the output from the nox session
+   and return inline comments to Zuul. Defaults to True.
+
 .. zuul:rolevar:: nox_install_siblings
    :default: true
 
