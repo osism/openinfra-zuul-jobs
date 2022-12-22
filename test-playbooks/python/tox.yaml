@@ -76,12 +76,12 @@
           register: ALL_status
           failed_when: ALL_status is changed
 
-    - name: Run tox with tox_envlist = %s
+    - name: Run tox against a specific config file
       include_role:
         name: tox
       vars:
         # Make sure the tox_config_file option works
         tox_config_file: test-playbooks/python
-        tox_envlist: '%s'
+        tox_envlist: 'foo'
         # Make sure we test with verbose output even if the default changes
         tox_extra_args: '-vv'
