@@ -6,13 +6,12 @@ virtual environment for the current user.
 **Role Variables**
 
 .. zuul:rolevar:: ensure_tox_version
-   :default: '<4'
+   :default: ''
 
    Version specifier to select the version of tox. For example if your
    project is not compatible with tox v4 you can set this value to
-   `<4` to install the latest v3 release. We have started this value
-   at `<4` for maximum compatibility, but expect it to change to ''
-   in the future when tox v4 is better understood.
+   `<4` to install the latest v3 release. The default is '' which
+   installs latest.
 
 .. zuul:rolevar:: tox_prefer_python2
    :default: False
