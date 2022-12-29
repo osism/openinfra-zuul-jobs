@@ -15,6 +15,9 @@
         dest: "{{ zuul.project.src_dir }}/{{ item.dest }}"
       with_items:
         - content: |
+            [tox]
+            envlist = venv
+
             [testenv]
             sitepackages = True
             usedevelop = True

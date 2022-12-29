@@ -1,6 +1,6 @@
 # We're not using with_first_found because the files are remote, not local.
 # We want to use stestr if it exists or fallback to testr - and we want to
-# prefer files found in tox envs.
+# prefer files found in nox and tox envs.
 - name: Find stestr or testr executable
   script: "find-testr.sh {{ zuul_work_dir }}"
   register: testr_command

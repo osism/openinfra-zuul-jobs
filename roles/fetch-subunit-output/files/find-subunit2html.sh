@@ -36,6 +36,15 @@ if [[ -d .tox ]] ; then
     done
 fi
 
+# Add all the nox envs to the path so that type will work. Prefer nox
+# envs to tox and system path. If there is more than one nox env, it doesn't
+# matter which one we use, PATH will find the first command.
+if [[ -d .nox ]] ; then
+    for nox_bindir in $(find .nox -mindepth 2 -maxdepth 2 -name 'bin') ; do
+        PATH=$(pwd)/$nox_bindir:$PATH
+    done
+fi
+
 # NOTE(mordred): Fallback default to /usr/os-testr-env/bin/subunit2html
 # to provide a fallback case for OpenStack while we make sure this
 # logic works. Once we're satisfied that nobody is using

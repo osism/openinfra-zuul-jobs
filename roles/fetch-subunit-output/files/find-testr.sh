@@ -61,6 +61,15 @@ if [[ -d .tox ]] ; then
     done
 fi
 
+# Add all the nox envs to the path so that type will work. Prefer nox
+# envs to tox and system path. If there is more than one nox env, it doesn't
+# matter which one we use, PATH will find the first command.
+if [[ -d .nox ]] ; then
+    for nox_bindir in $(find .nox -mindepth 2 -maxdepth 2 -name 'bin') ; do
+        PATH=$(pwd)/$nox_bindir:$PATH
+    done
+fi
+
 for command in $commands; do
     # Use -P instead of -p because we always want a path here even if
     # there is an alias or builtin. We also filter blank lines as we
@@ -72,4 +81,5 @@ for command in $commands; do
         break
     fi
 done
+
 exit $rc
