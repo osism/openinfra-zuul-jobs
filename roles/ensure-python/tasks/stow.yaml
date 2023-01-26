@@ -5,9 +5,14 @@
     file_type: directory
   register: stow_envs
 
+- name: Fail if no stow environments have been found
+  assert:
+    that: stow_envs.matched > 0
+    fail_msg: "Did not find any stow environments in {{ python_stow_dir }}"
+
 - name: Activate stow
   command: "stow -d {{ python_stow_dir }} -S {{ zj_stow_env | basename }}"
   loop: "{{ stow_envs.files | map(attribute='path') | list }}"
   loop_control:
     loop_var: zj_stow_env
-  when: python_version in item
+  when: python_version in zj_stow_env
