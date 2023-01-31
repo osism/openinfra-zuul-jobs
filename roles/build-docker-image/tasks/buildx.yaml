@@ -6,7 +6,7 @@
 # them for the buildset registry if one is present.
 - name: Set base docker build command
   vars:
-    tag_prefix: "change_{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}_"
+    tag_prefix: "{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}_"
   set_fact:
     docker_buildx_command: >-
       docker buildx build {{ zj_image.path | default('.') }} -f {{ zj_image.dockerfile | default(docker_dockerfile) }}
