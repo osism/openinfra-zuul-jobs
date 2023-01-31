@@ -1,3 +1,19 @@
+#
+# This is all no_log, so can fail somewhat mysteriously.  If you're
+# trying to debug this; some handy curl
+#
+# USERNAME=...
+# PASSWORD=...
+# IMAGE=zuul/example
+# TAG=change_12345_latest
+#
+# token=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${IMAGE}:pull,push" \
+#  --user ${USERNAME}:${PASSWORD} | jq -r .token)
+#
+# curl -iLH "Authorization: Bearer $token" -H "Accept: application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json" \
+#  https://registry.hub.docker.com/v2/${IMAGE}/manifests/${TAG}
+#
+
 - name: Set promote_tag_prefix
   set_fact:
     promote_tag_prefix: "{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}"
