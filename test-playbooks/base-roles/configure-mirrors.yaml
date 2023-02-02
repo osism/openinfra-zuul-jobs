@@ -48,6 +48,8 @@
           command: 'apt-get update'
           register: _apt_get_output
           become: yes
+          tags:
+            - skip_ansible_lint
 
         - name: Check for warnings in output
           fail:

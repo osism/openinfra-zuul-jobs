@@ -34,7 +34,7 @@
 
     # We tag this with the unix timestamp so that the upload always
     # has an increasing version number.
-    - name: Import sandbox project
+    - name: Import sandbox project  # noqa command-instead-of-module
       shell: |
         git clone https://opendev.org/opendev/sandbox
         pushd sandbox
@@ -42,6 +42,8 @@
         python3 setup.py bdist_wheel
       args:
         executable: '/bin/bash'
+      tags:
+        - skip_ansible_lint
 
     # This value is restricted to uploading the sandbox package to
     # test.pypi.org; it is not kept in plain text to avoid things that
