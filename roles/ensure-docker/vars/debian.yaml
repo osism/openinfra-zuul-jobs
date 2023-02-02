@@ -72,6 +72,7 @@ _docker_distro_packages:
   - docker.io
 
 _docker_upstream_distro_required_packages:
+  - apparmor
   - apt-transport-https
   - ca-certificates
   - curl
@@ -80,6 +81,7 @@ _docker_upstream_distro_required_packages:
 _docker_upstream_distro_packages:
   - docker-ce
   - docker-ce-cli
+  - docker-buildx-plugin
   - containerd.io
 
 _docker_upstream_distro_remove_packages:
