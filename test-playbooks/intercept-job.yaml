@@ -13,21 +13,26 @@
       async: 120
       poll: 0
       register: touched_file
-    - async_status:
+    - name: Set async status
+      async_status:
         jid: "{{ keygen.ansible_job_id }}"
       register: keygen_check
       until: keygen_check.finished == 1
       retries: 2
-    - include_role:
+    - name: Run intercept-job
+      include_role:
         name: intercept-job
-    - async_status:
+    - name: Set async status
+      async_status:
         jid: "{{ touched_file.ansible_job_id }}"
       register: touched_file_check
       until: touched_file_check.finished == 1
       retries: 3
-    - stat:
+    - name: Stat job stop
+      stat:
         path: "{{ zuul.project.src_dir }}/intercept_job.stop"
       register: stop_waiting
-    - assert:
+    - name: Look for failures
+      assert:
         that:
           - stop_waiting.stat.exists

@@ -28,7 +28,8 @@
       tempfile:
       register: default_tempfile
 
-    - block:
+    - name: Run tox
+      block:
         - name: Run tox with empty envlist
           include_role:
             name: tox
@@ -51,7 +52,8 @@
             state: absent
             path: "{{ default_tempfile.path }}"
 
-    - block:
+    - name: Check testenvs output
+      block:
         - name: Create tempfile to verify testenvs ran
           tempfile:
           register: ALL_tempfile

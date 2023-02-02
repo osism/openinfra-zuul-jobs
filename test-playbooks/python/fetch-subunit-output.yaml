@@ -1,7 +1,8 @@
 - hosts: all
   pre_tasks:
     # Run ensure-output-dirs now as it is not performed speculatively
-    - import_role:
+    - name: Run ensure-output-dirs
+      import_role:
         name: ensure-output-dirs
 
     - name: Create fake test directory
@@ -48,10 +49,12 @@
         - tox
 
   tasks:
-    - import_role:
+    - name: Run fetch-subunit-output
+      import_role:
         name: fetch-subunit-output
 
-    - import_role:
+    - name: Run fetch-output
+      import_role:
         name: fetch-output
       when: zuul_use_fetch_output
 

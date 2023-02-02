@@ -79,7 +79,8 @@
       with_items: "{{ groups['all'] }}"
 
     # ipv6_addresses is set by the multi-node-firewall role
-    - when: ipv6_addresses | length > 0
+    - name: check ipv6_addresses
+      when: ipv6_addresses | length > 0
       block:
         - name: switch and peer nodes should be in the ipv6 firewall
           become: yes

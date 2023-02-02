@@ -1,7 +1,8 @@
 - hosts: all
   pre_tasks:
     # Run ensure-output-dirs now as it is not performed speculatively
-    - import_role:
+    - name: Run ensure-output-dirs
+      import_role:
         name: ensure-output-dirs
 
     - name: Create fake sphinx output
@@ -12,10 +13,12 @@
         warn: false
 
   tasks:
-    - import_role:
+    - name: Run fetch-sphinx-output
+      import_role:
         name: fetch-sphinx-output
 
-    - import_role:
+    - name: Run fetch-output
+      import_role:
         name: fetch-output
       when: zuul_use_fetch_output
 

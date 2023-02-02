@@ -1,7 +1,8 @@
 - hosts: all
   pre_tasks:
     # Run ensure-output-dirs now as it is not performed speculatively
-    - import_role:
+    - name: Run ensure-output-dirs
+      import_role:
         name: ensure-output-dirs
 
     # This simulates the operation of something like "tox -e docs" in
@@ -33,13 +34,15 @@
     #  {{ ansible_user_dir }}/zuul-output/logs/ and extracted into
     #  zuul-output/logs/<docs|pdf> on the host.  They need to be brought back
     #  to the executor using fetch-output
-    - import_role:
+    - name: Run fetch-sphinx-tarball
+      import_role:
         name: fetch-sphinx-tarball
 
     # This copies files from the remote host;
     #  - zuul-output/logs is copied into the zuul.executor.log_root
     #  - zuul-output/<artifacts|docs> is copied into zuul.executor.work_root
-    - import_role:
+    - name: Run fetch-output
+      import_role:
         name: fetch-output
       when: zuul_use_fetch_output
 
