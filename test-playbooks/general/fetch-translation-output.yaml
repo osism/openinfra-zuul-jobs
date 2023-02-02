@@ -9,6 +9,8 @@
       shell: |
         mkdir -p src/{{ zuul.project.canonical_name }}/translation-source/
         echo Hello > src/{{ zuul.project.canonical_name }}/translation-source/test
+      tags:
+        - skip_ansible_lint
 
   tasks:
     - name: Run fetch-translation-output
