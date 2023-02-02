@@ -2,15 +2,11 @@
   name: Remove any pre-installed nox
   tasks:
     - name: Remove nox package with pip
-      shell: pip uninstall -y nox
-      args:
-        warn: false
+      command: pip uninstall -y nox
       become: true
       failed_when: false
     - name: Remove nox package with pip3
-      shell: pip3 uninstall -y nox
-      args:
-        warn: false
+      command: pip3 uninstall -y nox
       become: true
       failed_when: false
     - name: Verify nox is not installed

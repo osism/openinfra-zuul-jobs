@@ -30,9 +30,7 @@
         key: "{{ public_key_contents.stdout }}"
 
     - name: Get localhost ssh host public key
-      shell: ssh-keyscan -t rsa localhost
-      args:
-        warn: false
+      command: ssh-keyscan -t rsa localhost
       register: host_key
   tasks:
     - name: Get git commit hash for current patch of zuul-jobs
