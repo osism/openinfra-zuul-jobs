@@ -1,0 +1,2 @@
+ensure_skopeo_install_from_upstream: false
+ensure_skopeo_install_from_upstream_version: 'v1.9.3'

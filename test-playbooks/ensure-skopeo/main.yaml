@@ -5,6 +5,13 @@
 - hosts: all
   tasks:
 
+    - name: Additionally test from source on Ubuntu 22.04
+      when: ansible_distribution_release == 'jammy'
+      include_role:
+        name: ensure-skopeo
+      vars:
+        ensure_skopeo_install_from_upstream: true
+
     - name: Exercise skopeo
       command: /usr/bin/skopeo -v
       register: output
