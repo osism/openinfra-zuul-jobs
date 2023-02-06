@@ -47,6 +47,8 @@
         dest: "{{ test_repo_path }}"
         bare: yes
       register: test_repo_clone
+      tags:
+        - skip_ansible_lint
 
     - name: Assert that the git repositories have different commits for HEAD
       assert:
