@@ -1,7 +1,8 @@
 - hosts: all
   pre_tasks:
     # Run ensure-output-dirs now as it is not performed speculatively
-    - import_role:
+    - name: Run ensure-output-dirs
+      import_role:
         name: ensure-output-dirs
 
     - name: Simplify tox config
@@ -36,12 +37,14 @@
         - tox
 
   tasks:
-    - import_role:
+    - name: Run fetch-tox-output
+      import_role:
         name: fetch-tox-output
       vars:
         tox_envlist: "ALL"
 
-    - block:
+    - name: Fetch the output
+      block:
         - name: Undo the log_path fact set by fetch-javascript-output
           set_fact:
             log_path: "{{ zuul.executor.log_root }}/{{ inventory_hostname }}"
@@ -52,7 +55,8 @@
             log_path: "{{ zuul.executor.log_root }}"
           when: groups['all'] | length == 1
 
-        - import_role:
+        - name: Run fetch-output
+          import_role:
             name: fetch-output
       when: zuul_use_fetch_output
 

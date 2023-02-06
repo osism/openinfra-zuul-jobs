@@ -1,7 +1,8 @@
 - hosts: all
   tasks:
 
-    - include_role:
+    - name: Run ensure-rust
+      include_role:
         name: ensure-rust
 
     - name: Test cargo run

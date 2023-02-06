@@ -1,7 +1,8 @@
 - hosts: all
   pre_tasks:
     # Run ensure-output-dirs now as it is not performed speculatively
-    - import_role:
+    - name: Run ensure-output-dirs
+      import_role:
         name: ensure-output-dirs
 
     - name: Create fake translation
@@ -10,10 +11,12 @@
         echo Hello > src/{{ zuul.project.canonical_name }}/translation-source/test
 
   tasks:
-    - import_role:
+    - name: Run fetch-translation-output
+      import_role:
         name: fetch-translation-output
 
-    - import_role:
+    - name: Run fetch-output
+      import_role:
         name: fetch-output
       when: zuul_use_fetch_output
 

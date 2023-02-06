@@ -5,7 +5,8 @@
   roles:
     - multi-node-bridge
   post_tasks:
-    - become: yes
+    - name: Check openvswitch
+      become: yes
       block:
         - name: openvswitch should be installed
           package:

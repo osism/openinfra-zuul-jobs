@@ -7,11 +7,13 @@
       args:
         warn: false
   tasks:
-    - import_role:
+    - name: Run fetch-javascript-tarball
+      import_role:
         name: fetch-javascript-tarball
       vars:
         project_ver: master
-    - import_role:
+    - name: Run fetch-output
+      import_role:
         name: fetch-output
       when: zuul_use_fetch_output
   post_tasks:

@@ -41,7 +41,8 @@
         zuul: "{{ new_zuul }}"
         docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
 
-    - include_role:
+    - name: "Upload container image"
+      include_role:
         name: "upload-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
       vars:
         zuul: "{{ new_zuul }}"
