@@ -34,15 +34,17 @@
 
 - hosts: executor
   name: Set up a simulated executor
-  roles:
-    - name: ensure-package-repositories
-      repositories_list:
-        - repo: ppa:projectatomic/ppa
   tasks:
     - name: Install packages
       become: true
       package:
         name:
           - socat
-          - skopeo
         state: present
+
+    # NOTE(ianw) 2023-02-03 : we need a later version for buildx
+    - name: Install skopeo
+      include_role:
+        name: ensure-skopeo
+      vars:
+        ensure_skopeo_install_from_upstream: true

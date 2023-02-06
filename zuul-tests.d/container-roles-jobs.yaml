@@ -192,11 +192,11 @@
     nodeset:
       nodes:
         - name: intermediate-registry
-          label: ubuntu-bionic
+          label: ubuntu-jammy
         - name: executor
-          label: ubuntu-bionic
+          label: ubuntu-jammy
         - name: builder
-          label: ubuntu-bionic
+          label: ubuntu-jammy
 
 - job:
     name: zuul-jobs-test-registry-docker-multiarch
@@ -223,11 +223,11 @@
     nodeset:
       nodes:
         - name: intermediate-registry
-          label: ubuntu-bionic
+          label: ubuntu-jammy
         - name: executor
-          label: ubuntu-bionic
+          label: ubuntu-jammy
         - name: builder
-          label: ubuntu-bionic
+          label: ubuntu-jammy
 
 - job:
     name: zuul-jobs-test-registry-podman
