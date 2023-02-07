@@ -34,6 +34,9 @@
     tag_prefix: "{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}_"
   command: >-
     {{ container_command }} build {{ zj_image.path | default('.') }} {% if containerfile %}-f {{ containerfile }}{% endif %}
+    {% if container_command == 'podman' -%}
+      --cgroup-manager cgroupfs
+    {% endif -%}
     {% if zj_image.target | default(false) -%}
       --target {{ zj_image.target }}
     {% endif -%}
