@@ -1,0 +1,12 @@
+- name: Show the tag we are about to delete
+  debug:
+    var: zj_docker_tag
+
+- name: Make delete call
+  no_log: true
+  uri:
+    url: "https://hub.docker.com/v2/repositories/{{ zj_image.repository }}/tags/{{ zj_docker_tag.name }}/"
+    method: DELETE
+    status_code: [200, 204]
+    headers:
+      Authorization: "JWT {{ jwt_token.json.token }}"
