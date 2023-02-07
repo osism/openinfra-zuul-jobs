@@ -11,7 +11,7 @@
   when:
     - zj_docker_tag.name.startswith('change_') or zj_docker_tag.name.startswith(zuul.pipeline)
     # Was updated > 24 hours ago:
-    - "((ansible_date_time.iso8601 | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\1 \\2') | to_datetime) - (zj_docker_tag.last_updated | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\1 \\2') | to_datetime)).seconds > 86400"
+    - "((ansible_date_time.iso8601 | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime) - (zj_docker_tag.last_updated | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime)).seconds > 86400"
   uri:
     url: "https://hub.docker.com/v2/repositories/{{ zj_image.repository }}/tags/{{ zj_docker_tag.name }}/"
     method: DELETE
