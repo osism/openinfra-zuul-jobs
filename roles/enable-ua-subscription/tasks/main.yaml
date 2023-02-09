@@ -1,0 +1,12 @@
+- name: Install ua-tools
+  become: true
+  package:
+    name: ubuntu-advantage-tools
+    state: present
+
+- name: Attach subscription
+  command: pro attach --no-auto-enable "{{ ubuntu_ua_token.token }}"
+  become: true
+  no_log: true
+  when: >
+    (ansible_distribution == "Ubuntu")
