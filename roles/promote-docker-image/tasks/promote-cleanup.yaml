@@ -3,18 +3,24 @@
     url: "https://hub.docker.com/v2/repositories/{{ zj_image.repository }}/tags?page_size=1000"
     status_code: 200
   register: tags
-- name: Delete all change tags older than the cutoff
-  no_log: true
+
+- name: Create old tags list
+  set_fact:
+    _old_tags: []
+
+- name: Build list of old tags
   loop: "{{ tags.json.results }}"
   loop_control:
     loop_var: zj_docker_tag
+  set_fact:
+    _old_tags: '{{ _old_tags.append(zj_docker_tag) }}'
   when:
     - zj_docker_tag.name.startswith('change_') or zj_docker_tag.name.startswith(zuul.pipeline)
     # Was updated > 24 hours ago:
     - "((ansible_date_time.iso8601 | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime) - (zj_docker_tag.last_updated | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime)).seconds > 86400"
-  uri:
-    url: "https://hub.docker.com/v2/repositories/{{ zj_image.repository }}/tags/{{ zj_docker_tag.name }}/"
-    method: DELETE
-    status_code: [200, 204]
-    headers:
-      Authorization: "JWT {{ jwt_token.json.token }}"
+
+- name: Delete all change tags older than the cutoff
+  loop: "{{ _old_tags }}"
+  loop_control:
+    loop_var: zj_docker_tag
+  include_tasks: delete-tag.yaml
