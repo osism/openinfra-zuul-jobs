@@ -4,9 +4,14 @@
     name: ubuntu-advantage-tools
     state: present
 
-- name: Enable fips
+- name: Enable fips and fips-updates
   become: true
-  command: ua enable fips
+  shell: |
+    set -o pipefail
+    yes | ua enable fips
+    echo
+  args:
+    executable: '/bin/bash'
 
 - name: Verify fips is enabled
   become: true

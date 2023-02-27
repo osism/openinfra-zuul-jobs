@@ -17,5 +17,4 @@
 
 - name: Do tasks for Ubuntu
   include_tasks: ubuntu.yaml
-  when: >
-    (ansible_distribution == "Ubuntu")
+  when: ansible_distribution == 'Ubuntu'
