@@ -3,10 +3,10 @@
   package:
     name: ubuntu-advantage-tools
     state: present
+  when: ansible_distribution == 'Ubuntu'
 
 - name: Attach subscription
   command: pro attach --no-auto-enable "{{ ubuntu_ua_token.token }}"
   become: true
   no_log: true
-  when: >
-    (ansible_distribution == "Ubuntu")
+  when: ansible_distribution == 'Ubuntu'
