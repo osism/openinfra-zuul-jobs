@@ -348,7 +348,6 @@
     # parenting on tox-docs as we need builded docs first and also this is
     # the main use-case for this role
     parent: tox-docs
-    success-url: docs/
     files:
       - roles/fetch-sphinx-tarball/.*
       - roles/tox/library/.*
