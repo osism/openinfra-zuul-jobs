@@ -1,7 +1,0 @@
-- hosts: all
-  vars:
-    upload_container_image_promote: false
-    upload_docker_image_promote: false
-  tasks:
-    - name: Include build tasks
-      include_tasks: test-build-container-image-inner.yaml
