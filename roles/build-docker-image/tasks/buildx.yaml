@@ -5,8 +5,6 @@
 # they can be pulled back onto the host image cache), and also tags
 # them for the buildset registry if one is present.
 - name: Set base docker build command
-  vars:
-    tag_prefix: "{{ ('change_' + zuul.change) if (zuul.change is defined) else zuul.pipeline }}_"
   set_fact:
     docker_buildx_command: >-
       docker buildx build {{ zj_image.path | default('.') }} -f {{ zj_image.dockerfile | default(docker_dockerfile) }}
@@ -20,10 +18,6 @@
         --build-arg "ZUUL_SIBLINGS={{ zj_image.siblings | join(' ') }}"
       {% endif -%}
       {% for tag in zj_image.tags | default(['latest']) -%}
-        --tag {{ temp_registry.host }}:{{ temp_registry.port }}/{{ zj_image.repository }}:{{ tag_prefix }}{{ tag }}
-        {% if buildset_registry | default(false) -%}
-          --tag {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ zj_image.repository }}:{{ tag_prefix }}{{ tag }}
-        {% endif -%}
         --tag {{ temp_registry.host }}:{{ temp_registry.port }}/{{ zj_image.repository }}:{{ tag }}
         {% if buildset_registry | default(false) -%}
           --tag {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ zj_image.repository }}:{{ tag }}
