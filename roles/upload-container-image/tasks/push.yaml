@@ -1,22 +1,6 @@
-- name: Create tempfile for password
-  tempfile:
-    state: file
-  register: _password_tmp
-
-- name: Populate tempfile
-  copy:
-    content: "{{ container_registry_credentials[zj_image.registry].password }}"
-    dest: "{{ _password_tmp.path }}"
-    mode: 0600
-
 - name: Log in to registry
-  block:
-    - name: Log in to registry
-      shell: "cat {{ _password_tmp.path }} | {{ container_command }} login -u {{ container_registry_credentials[zj_image.registry].username }} --password-stdin {{ zj_image.registry }}"
-
-  always:
-    - name: Remove password from disk
-      command: "shred {{ _password_tmp.path }}"
+  command: "{{ container_command }} login -u {{ container_registry_credentials[zj_image.registry].username }} -p {{ container_registry_credentials[zj_image.registry].password }} {{ zj_image.registry }}"
+  no_log: true
 
 - name: Publish images
   block:
