@@ -34,9 +34,10 @@ They all accept the same input data, principally a list of
 dictionaries representing the images to build.  YAML anchors_ can be
 used to supply the same data to all three jobs.
 
-Use the :zuul:role:`ensure-skopeo` role as well as the
-:zuul:role:`ensure-docker`, or :zuul:role:`ensure-podman` roles before
-using the roles described here.
+The build and upload roles require a container runtime that should be
+installed before use; for example by using either the
+:zuul:role:`ensure-docker` or :zuul:role:`ensure-podman` roles.  The
+promote job assumes `skopeo` is available on the executor.
 
 **Role Variables**
 
