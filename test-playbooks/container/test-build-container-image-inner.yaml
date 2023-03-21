@@ -11,12 +11,29 @@
         repository: "testrepo"
         # This is what the Zuul repo uses to tag its releases:
         tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
-    container_images:
+    _arch_container_images:
       - context: test-playbooks/container/docker
         registry: 127.0.0.1:5200
         repository: 127.0.0.1:5200/testrepo
         # This is what the Zuul repo uses to tag its releases:
         tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+        arch: ['linux/amd64', 'linux/arm64']
+    _normal_container_images:
+      - context: test-playbooks/container/docker
+        registry: 127.0.0.1:5200
+        repository: 127.0.0.1:5200/testrepo
+        # This is what the Zuul repo uses to tag its releases:
+        tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+
+- name: Set docker_images variable
+  when: "container_command == 'docker'"
+  set_fact:
+    docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
+
+- name: Set container_images variable
+  when: "container_command != 'docker'"
+  set_fact:
+    container_images: "{{ multiarch | ternary(_arch_container_images, _normal_container_images) }}"
 
 - name: Save zuul variables
   set_fact:
@@ -38,14 +55,12 @@
     name: "build-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
   vars:
     zuul: "{{ new_zuul }}"
-    docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
 
 - name: "Upload container image"
   include_role:
     name: "upload-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
   vars:
     zuul: "{{ new_zuul }}"
-    docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
 
 - name: "Upload container image"
   when: "upload_container_image_promote or upload_docker_image_promote"
@@ -53,7 +68,6 @@
     name: "upload-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
   vars:
     zuul: "{{ new_zuul }}"
-    docker_images: "{{ multiarch | ternary(_arch_docker_images, _normal_docker_images) }}"
 
 - name: "Show local container images for debugging"
   command: "{{ container_command }} image ls"
