@@ -1,0 +1,31 @@
+# Jobs listed in container-jobs.rst.
+
+- job:
+    name: build-container-image
+    description: |
+      Build a container image.
+
+      .. include:: ../../playbooks/container-image/README.rst
+    pre-run: playbooks/container-image/pre.yaml
+    run: playbooks/container-image/run.yaml
+
+- job:
+    name: upload-container-image
+    parent: build-container-image
+    description: |
+      Build and upload a container image.
+
+      .. include:: ../../playbooks/container-image/README.rst
+      .. include:: ../../playbooks/container-image/credentials.rst
+    post-run: playbooks/container-image/upload.yaml
+
+- job:
+    name: promote-container-image
+    description: |
+      Retag a previously-uploaded container image.
+
+      .. include:: ../../playbooks/container-image/README.rst
+      .. include:: ../../playbooks/container-image/credentials.rst
+    run: playbooks/container-image/promote.yaml
+    nodeset:
+      nodes: []

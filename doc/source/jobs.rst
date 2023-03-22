@@ -8,6 +8,7 @@ Jobs
    python-jobs
    js-jobs
    docker-jobs
+   container-jobs
    go-jobs
    hashicorp-jobs
    haskell-jobs
