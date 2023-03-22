@@ -11,6 +11,7 @@ Container Roles
 .. zuul:autorole:: ensure-podman
 .. zuul:autorole:: ensure-skopeo
 .. zuul:autorole:: pause-buildset-registry
+.. zuul:autorole:: promote-container-image
 .. zuul:autorole:: promote-docker-image
 .. zuul:autorole:: pull-from-intermediate-registry
 .. zuul:autorole:: push-to-intermediate-registry

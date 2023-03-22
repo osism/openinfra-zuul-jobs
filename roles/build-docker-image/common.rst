@@ -3,7 +3,7 @@ together to build, upload, and promote docker images in a gating
 context:
 
 * :zuul:role:`build-docker-image`: Build the images.
-* :zuul:role:`upload-docker-image`: Stage the images on dockerhub.
+* :zuul:role:`upload-docker-image`: Upload the images to Dockeer Hub.
 * :zuul:role:`promote-docker-image`: Promote previously uploaded images.
 
 The :zuul:role:`build-docker-image` role is designed to be used in
@@ -12,10 +12,13 @@ used to verify that the build functions, or it can be followed by the
 use of subsequent roles to upload the images to Docker Hub.
 
 The :zuul:role:`upload-docker-image` role uploads the images to Docker
-Hub, but only with a single tag corresponding to the change ID.  This
-role is designed to be used in a job in a `gate` pipeline so that the
-build produced by the gate is staged and can later be promoted to
-production if the change is successful.
+Hub.  It can be used in one of two modes: by default it will upload
+with a single tag corresponding to the change ID.  In this mode, the
+role role is designed to be used in a job in a `gate` pipeline so that
+the build produced by the gate is staged and can later be promoted to
+production if the change is successful.  The other mode allows for use
+of this job in a `release` pipeline to directly upload a release build
+with the final set of tags.
 
 The :zuul:role:`promote-docker-image` role is designed to be used in a
 `promote` pipeline.  It requires no nodes and runs very quickly on the
