@@ -165,4 +165,10 @@ using the roles described here.
       added with each sibling project.  Note that projects here must
       be listed in ``required-projects``.
 
+.. zuul:rolevar:: container_build_extra_env
+   :type: dict
+
+   A dictionary of key value pairs to add to the container build environment.
+   This may be useful to enable buildkit with docker builds for example.
+
 .. _anchors: https://yaml.org/spec/1.2/spec.html#&%20anchor//
