@@ -12,7 +12,6 @@
       - centos-platforms
       - fedora-platforms
 
-
 - job:
     name: zuul-jobs-test-ensure-docker-centos-7
     description: Tests ensure-docker role on centos-7
@@ -104,94 +103,122 @@
           label: ubuntu-jammy
 
 - job:
-    name: zuul-jobs-test-build-container-image-release
+    name: zuul-jobs-test-build-docker-or-container-image-base
+    abstract: true
     description: |
-      Test building a container image in a release pipeline.
-
-      This job tests changes to the build-container-image role,
-      simulating its use within a tag-based release pipeline.  It is
-      not meant to be used directly but rather run on changes to roles
-      in the zuul-jobs repo.
+      A parent job for both docker and container image building jobs.
     files:
-      - roles/ensure-podman/.*
       - roles/ensure-package-repositories/.*
-      - roles/build-container-image/.*
-      - roles/upload-container-image/.*
       - test-playbooks/container/.*
-    pre-run: test-playbooks/container/test-build-container-image-pre.yaml
-    run: test-playbooks/container/test-build-container-image-release.yaml
-    vars:
-      container_command: podman
-      multiarch: false
     nodeset:
       nodes:
         - name: builder
           label: ubuntu-jammy
+    pre-run: test-playbooks/container/test-build-container-image-pre.yaml
+    run: test-playbooks/container/test-build-container-image.yaml
+
+
+# The following jobs are focused on the "container" roles:
 
 - job:
-    name: zuul-jobs-test-build-container-image-promote
+    name: zuul-jobs-test-build-container-image-base
+    parent: zuul-jobs-test-build-docker-or-container-image-base
+    abstract: true
     description: |
-      Test building a container image in gate and promote pipelines.
-
-      This job tests changes to the build-container-image role,
-      simulating its use within a tag-based release pipeline.  It is
-      not meant to be used directly but rather run on changes to roles
-      in the zuul-jobs repo.
+      A parent for container image building jobs.
     files:
-      - roles/ensure-podman/.*
-      - roles/ensure-skopeo/.*
-      - roles/ensure-package-repositories/.*
       - roles/build-container-image/.*
       - roles/upload-container-image/.*
-      - roles/promote-container-image/.*
-      - test-playbooks/container/.*
-    pre-run: test-playbooks/container/test-build-container-image-pre.yaml
-    run: test-playbooks/container/test-build-container-image-promote.yaml
     vars:
-      container_command: podman
+      promote: false
+      roleset: container
       multiarch: false
-    nodeset:
-      nodes:
-        - name: builder
-          label: ubuntu-jammy
 
 - job:
-    name: zuul-jobs-test-build-docker-image-release
+    name: zuul-jobs-test-build-container-image-docker-release
+    parent: zuul-jobs-test-build-container-image-base
     description: |
-      Test building a docker image in a release pipeline.
-
-      This job tests changes to the build-docker-image role,
-      simulating its use within a tag-based release pipeline.  It is
-      not meant to be used directly but rather run on changes to roles
-      in the zuul-jobs repo.
+      Test building a container image with docker in a release pipeline.
     files:
       - roles/ensure-docker/.*
-      - roles/ensure-package-repositories/.*
+    vars:
+      container_command: docker
+
+- job:
+    name: zuul-jobs-test-build-container-image-podman-release
+    parent: zuul-jobs-test-build-container-image-base
+    description: |
+      Test building a container image with podman in a release pipeline.
+    files:
+      - roles/ensure-podman/.*
+    vars:
+      container_command: podman
+
+- job:
+    name: zuul-jobs-test-build-container-image-promote-base
+    parent: zuul-jobs-test-build-container-image-base
+    abstract: true
+    description: |
+      Test building a container image in gate and promote pipelines.
+    files:
+      - roles/ensure-skopeo/.*
+      - roles/promote-container-image/.*
+    vars:
+      promote: true
+
+- job:
+    name: zuul-jobs-test-build-container-image-docker-promote
+    parent: zuul-jobs-test-build-container-image-promote-base
+    description: |
+      Test building a container image with docker in a promote pipeline.
+    files:
+      - roles/ensure-docker/.*
+    vars:
+      container_command: docker
+
+- job:
+    name: zuul-jobs-test-build-container-image-podman-promote
+    parent: zuul-jobs-test-build-container-image-promote-base
+    description: |
+      Test building a container image with podman in a promote pipeline.
+    files:
+      - roles/ensure-podman/.*
+    vars:
+      container_command: podman
+
+# The following jobs are focused on the "docker" roles:
+
+- job:
+    name: zuul-jobs-test-build-docker-image-base
+    parent: zuul-jobs-test-build-docker-or-container-image-base
+    abstract: true
+    description: |
+      A parent for docker image building jobs.
+    files:
+      - roles/ensure-docker/.*
       - roles/build-docker-image/.*
       - roles/upload-docker-image/.*
-      - test-playbooks/container/.*
-    pre-run: test-playbooks/container/test-build-container-image-pre.yaml
-    run: test-playbooks/container/test-build-container-image-release.yaml
     vars:
       container_command: docker
       multiarch: false
-    nodeset:
-      nodes:
-        - name: builder
-          label: ubuntu-jammy
+      promote: false
+      roleset: docker
 
 - job:
-    name: zuul-jobs-test-build-docker-image-release-multiarch
-    parent: zuul-jobs-test-build-docker-image-release
+    name: zuul-jobs-test-build-docker-image-release
+    parent: zuul-jobs-test-build-docker-image-base
     description: |
       Test building a docker image in a release pipeline.
 
-      This job tests changes to the build-docker-image role using buildx,
-      simulating its use within a tag-based release pipeline.  It is
-      not meant to be used directly but rather run on changes to roles
-      in the zuul-jobs repo.
+- job:
+    name: zuul-jobs-test-build-docker-image-release-multiarch
+    parent: zuul-jobs-test-build-docker-image-base
+    description: |
+      Test building a docker image in a release pipeline.
     vars:
       multiarch: true
+
+# End container building job tests
 
 - job:
     name: zuul-jobs-test-registry-docker
@@ -597,8 +624,10 @@
         - zuul-jobs-test-ensure-docker-ubuntu-bionic
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
-        - zuul-jobs-test-build-container-image-release
-        - zuul-jobs-test-build-container-image-promote
+        - zuul-jobs-test-build-container-image-docker-release
+        - zuul-jobs-test-build-container-image-podman-release
+        - zuul-jobs-test-build-container-image-docker-promote
+        - zuul-jobs-test-build-container-image-podman-promote
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
         - zuul-jobs-test-registry-docker
@@ -631,8 +660,10 @@
         - zuul-jobs-test-ensure-docker-ubuntu-bionic
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
-        - zuul-jobs-test-build-container-image-release
-        - zuul-jobs-test-build-container-image-promote
+        - zuul-jobs-test-build-container-image-docker-release
+        - zuul-jobs-test-build-container-image-podman-release
+        - zuul-jobs-test-build-container-image-docker-promote
+        - zuul-jobs-test-build-container-image-podman-promote
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
         - zuul-jobs-test-registry-docker
