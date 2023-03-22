@@ -107,9 +107,6 @@
     abstract: true
     description: |
       A parent job for both docker and container image building jobs.
-    files:
-      - roles/ensure-package-repositories/.*
-      - test-playbooks/container/.*
     nodeset:
       nodes:
         - name: builder
@@ -127,8 +124,14 @@
     description: |
       A parent for container image building jobs.
     files:
+      - test-playbooks/container/.*
+      - roles/ensure-package-repositories/.*
       - roles/build-container-image/.*
       - roles/upload-container-image/.*
+      - roles/promote-container-image/.*
+      - roles/ensure-docker/.*
+      - roles/ensure-podman/.*
+      - roles/ensure-skopeo/.*
     vars:
       promote: false
       roleset: container
@@ -139,8 +142,6 @@
     parent: zuul-jobs-test-build-container-image-base
     description: |
       Test building a container image with docker in a release pipeline.
-    files:
-      - roles/ensure-docker/.*
     vars:
       container_command: docker
 
@@ -149,8 +150,6 @@
     parent: zuul-jobs-test-build-container-image-base
     description: |
       Test building a container image with podman in a release pipeline.
-    files:
-      - roles/ensure-podman/.*
     vars:
       container_command: podman
 
@@ -160,9 +159,6 @@
     abstract: true
     description: |
       Test building a container image in gate and promote pipelines.
-    files:
-      - roles/ensure-skopeo/.*
-      - roles/promote-container-image/.*
     vars:
       promote: true
 
@@ -171,8 +167,6 @@
     parent: zuul-jobs-test-build-container-image-promote-base
     description: |
       Test building a container image with docker in a promote pipeline.
-    files:
-      - roles/ensure-docker/.*
     vars:
       container_command: docker
 
@@ -181,8 +175,6 @@
     parent: zuul-jobs-test-build-container-image-promote-base
     description: |
       Test building a container image with podman in a promote pipeline.
-    files:
-      - roles/ensure-podman/.*
     vars:
       container_command: podman
 
@@ -195,9 +187,11 @@
     description: |
       A parent for docker image building jobs.
     files:
-      - roles/ensure-docker/.*
+      - test-playbooks/container/.*
+      - roles/ensure-package-repositories/.*
       - roles/build-docker-image/.*
       - roles/upload-docker-image/.*
+      - roles/ensure-docker/.*
     vars:
       container_command: docker
       multiarch: false
