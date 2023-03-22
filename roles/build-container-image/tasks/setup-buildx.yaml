@@ -1,0 +1,82 @@
+- name: Update qemu-static container settings
+  command: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+
+- name: Create builder
+  command: "docker buildx create --name mybuilder --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %}"
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+
+- name: Use builder
+  command: docker buildx use mybuilder
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+
+- name: Bootstrap builder
+  command: docker buildx inspect --bootstrap
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+
+- name: Make tempfile for registry TLS certificate
+  tempfile:
+    state: file
+  register: buildkit_cert_tmp
+
+- name: Write buildset registry TLS certificate
+  become: true
+  copy:
+    content: "{{ buildset_registry.cert }}"
+    dest: "{{ buildkit_cert_tmp.path }}"
+    mode: preserve
+  when: buildset_registry is defined and buildset_registry.cert
+
+- name: Copy buildset registry TLS cert into worker container
+  command: "docker cp {{ buildkit_cert_tmp.path }} buildx_buildkit_mybuilder0:/usr/local/share/ca-certificates"
+  when: buildset_registry is defined and buildset_registry.cert
+
+- name: Update CA certs in worker container
+  command: docker exec buildx_buildkit_mybuilder0 update-ca-certificates
+  when: buildset_registry is defined and buildset_registry.cert
+
+- name: Remove TLS cert tempfile
+  file:
+    state: absent
+    path: '{{ buildkit_cert_tmp.path }}'
+  when: buildset_registry is defined and buildset_registry.cert
+
+- name: Make tempfile for /etc/hosts
+  tempfile:
+    state: file
+  register: etc_hosts_tmp
+
+- name: Copy /etc/hosts for editing
+  command: 'docker cp buildx_buildkit_mybuilder0:/etc/hosts {{ etc_hosts_tmp.path }}'
+
+# Docker buildx has its own /etc/hosts in the builder image.
+- name: Configure /etc/hosts for buildset_registry to workaround docker not understanding ipv6 addresses
+  become: yes
+  lineinfile:
+    path: '{{ etc_hosts_tmp.path }}'
+    state: present
+    regex: "^{{ buildset_registry.host }}\tzuul-jobs.buildset-registry$"
+    line: "{{ buildset_registry.host }}\tzuul-jobs.buildset-registry"
+    insertafter: EOF
+  when: buildset_registry is defined and buildset_registry.host | ipaddr
+
+- name: Unmount the /etc/hosts mount
+  command: docker exec buildx_buildkit_mybuilder0 umount /etc/hosts
+
+# NOTE(mordred) This is done in two steps. Even though we've unmounted /etc/hosts
+# in the previous step, when we try to copy the file back directly, we get:
+#   unlinkat /etc/hosts: device or resource busy
+- name: Copy modified hosts file back in
+  command: 'docker cp {{ etc_hosts_tmp.path }} buildx_buildkit_mybuilder0:/etc/new-hosts'
+
+- name: Copy modified hosts file into place
+  command: docker exec buildx_buildkit_mybuilder0 cp /etc/new-hosts /etc/hosts
+
+- name: Remove tempfile for /etc/hosts
+  file:
+    state: absent
+    path: '{{ etc_hosts_tmp.path }}'

@@ -1,0 +1,96 @@
+- name: Validate zj_image.repository is full "url"
+  when:
+    - "'/' not in zj_image.repository"
+  fail:
+    msg: "{{ zj_image.repository }} must be a full container image url including registry location"
+
+- name: Parse out repo path from full "url"
+  set_fact:
+    _repopath: "{{ (zj_image.repository | split('/', 1)).1 }}"
+
+- name: Set up siblings
+  include_tasks: siblings.yaml
+
+# The command below always tags the images for the temp_registry (so
+# they can be pulled back onto the host image cache), and also tags
+# them for the buildset registry if one is present.
+- name: Set base docker build command
+  set_fact:
+    docker_buildx_command: >-
+      docker buildx build {{ zj_image.path | default('.') }}
+      {% if containerfile %}-f {{ containerfile }}{% endif %}
+      {% if zj_image.target | default(false) -%}
+        --target {{ zj_image.target }}
+      {% endif -%}
+      {% for build_arg in zj_image.build_args | default([]) -%}
+        --build-arg {{ build_arg }}
+      {% endfor -%}
+      {% if zj_image.siblings | default(false) -%}
+        --build-arg "ZUUL_SIBLINGS={{ zj_image.siblings | join(' ') }}"
+      {% endif -%}
+      {% for tag in zj_image.tags | default(['latest']) -%}
+        --tag {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ tag }}
+        {% if buildset_registry | default(false) -%}
+          --tag {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ _repopath }}:{{ tag }}
+        {% endif -%}
+      {% endfor -%}
+      {% for label in zj_image.labels | default([]) -%}
+        --label "{{ label }}"
+      {% endfor %}
+      {% if zuul.change | default(false) -%}
+        --label "org.zuul-ci.change={{ zuul.change }}"
+      {% endif -%}
+      --label "org.zuul-ci.change_url={{ zuul.change_url }}"
+
+- name: Build images for all arches
+  command: "{{ docker_buildx_command }} --platform={{ zj_image.arch | join(',') }}"
+  args:
+    chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+
+- name: Push arch-specific layers one at a time
+  command: "{{ docker_buildx_command }} --platform={{ zj_arch }} --push"
+  args:
+    chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+  loop: '{{ zj_image.arch }}'
+  loop_control:
+    loop_var: zj_arch
+
+- name: Push final image manifest
+  command: "{{ docker_buildx_command }} --platform={{ zj_image.arch | join(',') }} --push"
+  args:
+    chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
+  environment:
+    DOCKER_CLI_EXPERIMENTAL: enabled
+
+- name: Pull images from temporary registry
+  command: >-
+    docker pull {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ zj_image_tag }}
+  loop: "{{ zj_image.tags | default(['latest']) }}"
+  loop_control:
+    loop_var: zj_image_tag
+
+- name: Locally tag for changes so push works later
+  command: >-
+    docker tag
+    {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ zj_image_tag }}
+    {{ zj_image.repository }}:change_{{ zuul.change }}_{{ zj_image_tag }}
+  loop: "{{ zj_image.tags | default(['latest']) }}"
+  loop_control:
+    loop_var: zj_image_tag
+  when: zuul.change | default(false)
+
+- name: Locally tag for changes so push works later
+  command: >-
+    docker tag
+    {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ zj_image_tag }}
+    {{ zj_image.repository }}:{{ zj_image_tag }}
+  loop: "{{ zj_image.tags | default(['latest']) }}"
+  loop_control:
+    loop_var: zj_image_tag
+
+- name: Cleanup sibling source directory
+  include_tasks: clean-siblings.yaml
