@@ -1,2 +1,3 @@
 zuul_work_dir: "{{ zuul.project.src_dir }}"
 container_command: podman
+container_build_extra_env: {}

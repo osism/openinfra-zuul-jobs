@@ -52,6 +52,7 @@
     {% endfor -%}
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
+  environment: "{{ container_build_extra_env }}"
 
 - name: Cleanup sibling source directory
   file:
