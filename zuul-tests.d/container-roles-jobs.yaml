@@ -146,6 +146,15 @@
       container_command: docker
 
 - job:
+    name: zuul-jobs-test-build-container-image-docker-release-multiarch
+    parent: zuul-jobs-test-build-container-image-base
+    description: |
+      Test building a multi-arch container image with docker in a release pipeline.
+    vars:
+      container_command: docker
+      multiarch: true
+
+- job:
     name: zuul-jobs-test-build-container-image-podman-release
     parent: zuul-jobs-test-build-container-image-base
     description: |
@@ -169,6 +178,15 @@
       Test building a container image with docker in a promote pipeline.
     vars:
       container_command: docker
+
+- job:
+    name: zuul-jobs-test-build-container-image-docker-promote-multiarch
+    parent: zuul-jobs-test-build-container-image-promote-base
+    description: |
+      Test building a multi-arch container image with docker in a promote pipeline.
+    vars:
+      container_command: docker
+      multiarch: true
 
 - job:
     name: zuul-jobs-test-build-container-image-podman-promote
@@ -619,8 +637,10 @@
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
         - zuul-jobs-test-build-container-image-docker-release
+        - zuul-jobs-test-build-container-image-docker-release-multiarch
         - zuul-jobs-test-build-container-image-podman-release
         - zuul-jobs-test-build-container-image-docker-promote
+        - zuul-jobs-test-build-container-image-docker-promote-multiarch
         - zuul-jobs-test-build-container-image-podman-promote
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
@@ -655,8 +675,10 @@
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
         - zuul-jobs-test-build-container-image-docker-release
+        - zuul-jobs-test-build-container-image-docker-release-multiarch
         - zuul-jobs-test-build-container-image-podman-release
         - zuul-jobs-test-build-container-image-docker-promote
+        - zuul-jobs-test-build-container-image-docker-promote-multiarch
         - zuul-jobs-test-build-container-image-podman-promote
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
