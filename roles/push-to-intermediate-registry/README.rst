@@ -1,7 +1,8 @@
 Push artifacts to the intermediate registry
 
 This role will push any images built by
-:zuul:role:`build-docker-image` into an intermediate registry.
+:zuul:role:`build-docker-image` or :zuul:role:`build-container-image`
+into an intermediate registry.
 
 Run this in a trusted post-playbook at the end of a job after the
 image build.
@@ -60,6 +61,21 @@ registry operating for the use of Zuul, and it requires "skopeo" and
       The password used to access the registry via HTTP basic auth.
 
 .. zuul:rolevar:: docker_images
+   :type: list
+
+   A list of images built.  Each item in the list should have:
+
+   .. zuul:rolevar:: repository
+
+      The name of the target repository for the image.
+
+   .. zuul:rolevar:: tags
+      :type: list
+      :default: ['latest']
+
+      A list of tags to be added to the image.
+
+.. zuul:rolevar:: container_images
    :type: list
 
    A list of images built.  Each item in the list should have:

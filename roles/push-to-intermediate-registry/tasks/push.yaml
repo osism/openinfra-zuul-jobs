@@ -88,7 +88,7 @@
   block:
     - name: Push image to intermediate registry
       include_tasks: push-image.yaml
-      loop: "{{ docker_images }}"
+      loop: "{{ docker_images if docker_images is defined else container_images }}"
       loop_control:
         loop_var: zj_image
   always:
