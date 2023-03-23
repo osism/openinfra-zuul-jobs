@@ -46,15 +46,11 @@
   command: "{{ docker_buildx_command }} --platform={{ zj_image.arch | join(',') }}"
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
 
 - name: Push arch-specific layers one at a time
   command: "{{ docker_buildx_command }} --platform={{ zj_arch }} --push"
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
   loop: '{{ zj_image.arch }}'
   loop_control:
     loop_var: zj_arch
@@ -63,8 +59,6 @@
   command: "{{ docker_buildx_command }} --platform={{ zj_image.arch | join(',') }} --push"
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
 
 - name: Pull images from temporary registry
   command: >-

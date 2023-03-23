@@ -1,22 +1,14 @@
 - name: Update qemu-static container settings
   command: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
 
 - name: Create builder
   command: "docker buildx create --name mybuilder --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %}"
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
 
 - name: Use builder
   command: docker buildx use mybuilder
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
 
 - name: Bootstrap builder
   command: docker buildx inspect --bootstrap
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
 
 - name: Make tempfile for registry TLS certificate
   tempfile:
