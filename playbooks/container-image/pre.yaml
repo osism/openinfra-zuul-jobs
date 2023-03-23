@@ -1,10 +1,10 @@
 - hosts: all
   tasks:
     - name: Ensure docker is installed
-      when: "container_command == 'docker'"
+      when: "container_command | default('podman') == 'docker'"
       include_role:
         name: ensure-docker
     - name: Ensure podman is installed
-      when: "container_command != 'docker'"
+      when: "container_command | default('podman') != 'docker'"
       include_role:
         name: ensure-podman
