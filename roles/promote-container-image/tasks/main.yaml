@@ -10,6 +10,7 @@
 
 - name: Verify repository permission
   when: |
+    container_registry_credentials[zj_image.registry].repository is defined and
     not zj_image.repository | regex_search(container_registry_credentials[zj_image.registry].repository)
   loop: "{{ container_images }}"
   loop_control:
