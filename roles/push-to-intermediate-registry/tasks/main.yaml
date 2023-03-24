@@ -1,5 +1,5 @@
 - name: Push images to intermediate registry
   when:
-    - docker_images is defined
+    - (docker_images is defined) or (container_images is defined)
     - zuul_success | default(true) | bool
   include_tasks: push.yaml
