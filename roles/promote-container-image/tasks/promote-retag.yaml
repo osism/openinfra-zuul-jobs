@@ -16,4 +16,4 @@
       include_tasks: promote-retag-inner.yaml
   always:
     - name: Log out of registry
-      command: skopeo logout
+      command: "skopeo logout {{ zj_image.registry }}"
