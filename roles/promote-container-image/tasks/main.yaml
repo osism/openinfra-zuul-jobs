@@ -18,15 +18,6 @@
   fail:
     msg: "{{ zj_image.repository }} not permitted by {{ container_registry_credentials[zj_image.registry].repository }}"
 
-- name: Log in to registry
-  no_log: true
-  command: >-
-    skopeo login {{ zj_image.registry }} -u {{ container_registry_credentials[zj_image.registry].username }} -p {{ container_registry_credentials[zj_image.registry].password }}
-  register: result
-  until: result.rc == 0
-  retries: 3
-  delay: 30
-
 - name: Promote image
   loop: "{{ container_images }}"
   loop_control:
