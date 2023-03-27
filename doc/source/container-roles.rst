@@ -15,6 +15,7 @@ Container Roles
 .. zuul:autorole:: promote-docker-image
 .. zuul:autorole:: pull-from-intermediate-registry
 .. zuul:autorole:: push-to-intermediate-registry
+.. zuul:autorole:: remove-registry-tag
 .. zuul:autorole:: run-buildset-registry
 .. zuul:autorole:: upload-container-image
 .. zuul:autorole:: upload-docker-image
