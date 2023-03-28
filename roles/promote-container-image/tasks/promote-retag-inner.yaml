@@ -10,29 +10,10 @@
   retries: 3
   delay: 30
 
-# NOTE(ianw) 2023-03-27 : It is actually quite difficult to delete a
-# tag in a generic way...
-#
-# The OCI distribution spec does has specified for a while that you
-# should be able to delete a tag with the registry API using DELETE
-# /v2/<name>/manifests/tag [1] but this is basically not implemented
-# on any registry.  So that's out.
-#
-# "skopeo delete" dereferences the tag to a digest and deletes that.
-# This is not what we want, as it deletes *all* tags pointing to it.
-# This is probably not what people want (see many github issues!) but
-# now it's like that, it's difficult to change.  The man page now
-# gives all sorts of caveats [2].
-#
-# So that leaves deleting tags via individual API's specified by each
-# provider.  This is what promote-docker-image currently does (via the
-# hub API at hub.docker.com).  quay.io also allows this via API, but
-# implements getting an API token differently to hub.docker.com.
-# artifactory also allows it via it's API.
-#
-# [1] https://github.com/opencontainers/distribution-spec/blob/v1.0/spec.md#deleting-tags
-# [2] https://github.com/containers/skopeo/blob/main/docs/skopeo-delete.1.md
-
-- name: Delete the current change tag
-  debug:
-    msg: 'We currently do not delete old tags'
+- name: Delete the temporary change tag we just renamed
+  include_role:
+    name: remove-registry-tag
+  vars:
+    remove_registry_tag_repository: '{{ zj_image.repository }}'
+    remove_registry_tag_tag: '{{ promote_tag_prefix }}_{{ zj_image_tag }}'
+  no_log: true

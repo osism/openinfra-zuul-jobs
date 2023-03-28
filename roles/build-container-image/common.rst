@@ -100,7 +100,10 @@ Once this role completes, the temporary upload tags are no longer
 required.  The role removes the change-id tags from the repository in
 the registry, and removes any similar change-ids tags.  This keeps the
 repository tidy in the case that gated changes fail to merge after
-uploading their staged images.
+uploading their staged images.  Remvoing these tags is a registry
+specific operation.  You should double check the ``api_token``
+requirements for your registry described below.  For more details see
+:zuul:role:`remove-registry-tag`.
 
 In ``intermediate-registry`` mode, this role queries Zuul to find the
 build performed by the build role in the ``gate``.  It then copies
@@ -178,6 +181,22 @@ using the roles described here.
          repositories within an organization based on their own names::
 
            repository: "^myorgname/{{ zuul.project.short_name }}.*"
+
+      .. zuul:rolevar:: api_token
+
+         Optional; When using the promote roles, the registry API is
+         used to remove temporary tags.  if your registry requires a
+         token to talk to the registry API, add it here.  This is
+         registry dependent; some allow API access via the
+         username/password, but others require issuing a separate
+         token.  For more details see
+         :zuul:role:`remove-registry-tag`.  Some examples:
+
+         * **docker** : API is access via username/password, does not
+           require token.
+         * **quay.io** : A token must be generated from an
+           "application" that a user has allowed to operate on its
+           behalf.  See `<https://docs.quay.io/api/>`__.
 
 .. zuul:rolevar:: container_images
    :type: list

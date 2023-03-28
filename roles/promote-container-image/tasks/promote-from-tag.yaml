@@ -23,10 +23,3 @@
   loop_control:
     loop_var: zj_image
   include_tasks: promote-retag.yaml
-
-# The docker roles prune obsolete tags here, but that relies on a
-# timestamp to make sure we're not deleting in-progress tags (that the
-# gate pipeline may be uploading at the same time we're promoting).
-# That timestamp is not available with skopeo list-tags, so some other
-# mechanism will need to be devised to clean them up.  In the
-# meantime, we hope that the cleanup in promote-retag succeeds.
