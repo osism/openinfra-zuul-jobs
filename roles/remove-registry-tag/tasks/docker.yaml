@@ -36,8 +36,7 @@
         _to_delete: '{{ _to_delete|default([]) + [zj_docker_tag] }}'
       when:
         - zj_docker_tag.name is regex(remove_registry_tag_regex)
-        # Was updated > 24 hours ago:
-        - "((ansible_date_time.iso8601 | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime) - (zj_docker_tag.last_updated | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime)).seconds > remove_registry_tag_age"
+        - (now() - (zj_docker_tag.last_updated | to_datetime('%Y-%m-%dT%H:%M:%S.%fZ')).seconds > remove_registry_tag_age
 
 - name: List tags to remove
   debug:
