@@ -6,28 +6,125 @@ context:
   * :zuul:job:`upload-container-image`: Build and stage the images in a registry.
   * :zuul:job:`promote-container-image`: Promote previously uploaded images.
 
-The :zuul:job:`build-container-image` job is designed to be used in
-a `check` pipeline and simply builds the images to verify that
-the build functions.
-
-The :zuul:job:`upload-container-image` job builds and uploads the
-images to a registry, but only with a single tag corresponding to the
-change ID.  This job is designed in a `gate` pipeline so that the
-build produced by the gate is staged and can later be promoted to
-production if the change is successful.
-
-The :zuul:job:`promote-container-image` job is designed to be
-used in a `promote` pipeline.  It requires no nodes and runs very
-quickly on the Zuul executor.  It simply re-tags a previously uploaded
-image for a change with whatever tags are supplied by
-:zuul:jobvar:`build-container-image.container_images.tags`.
-It also removes the change ID tag from the repository in the registry.
-If any changes fail to merge, this cleanup will not run and those tags
-will need to be deleted manually.
-
+The jobs can work in multiple modes depending on your requirements.
 They all accept the same input data, principally a list of
 dictionaries representing the images to build.  YAML anchors_ can be
 used to supply the same data to all three jobs.
+
+*Promotion via tags*
+
+The :zuul:job:`build-container-image` job runs in the `check` pipeline
+to validate the change.
+
+The :zuul:job:`upload-container-image` job runs in the `gate` pipeline
+and builds and uploads the images to a remote registry, but only with
+a single temporary tag corresponding to the change ID.  This is a
+*speculative* upload; the change is not "live" (the main tag is not
+updated) and other gate jobs may fail and the change may not merge,
+effectively invalidating the upload.
+
+The :zuul:job:`promote-container-image` job runs in a post-merge
+`promote` pipeline.  It requires no nodes and runs very quickly on the
+Zuul executor.  It simply re-tags a previously uploaded image for a
+change with whatever tags are supplied by
+:zuul:jobvar:`build-container-image.container_images.tags` after the
+code has merged.  It also cleans up and removes the change ID tag from
+the repository in the registry.  If any changes fail to merge, this
+cleanup will not run and those tags will need to be deleted manually.
+
+This advantage of this method is that it minimises the window in which
+the published image differs from the merged code.  There are some
+caveats to be aware of. `gate` failures may mean that unused layers
+and tags are present in the remote repository, which need to be
+cleaned up.  Removing registry tags is not a generic option; you will
+need to check the promote role documentation to ensure you are passing
+the right registry details so tags can be cleaned up.
+
+In the `tag` and `release` pipelines there is no need for a
+speculative upload (the tagged/released change is committed code and
+has already passed gate tests).  In this case,
+:zuul:job:`upload-container-image` job is run with the flag
+``upload_container_image_promote: false`` to directly build and push
+with the final tags.
+
+Summary:
+
+* :zuul:job:`build-container-image` in `check`
+* :zuul:job:`upload-container-image` in `gate`
+* :zuul:job:`promote-container-image` in `promote` with
+  ``promote_container_method: tag``
+* :zuul:job:`upload-container-image` with
+  ``upload_container_image_promote: false`` in `tag` and `release`
+
+*Promotion via intermediate registry*
+
+Note that as of 2023-03, this path is not fully implemented.  It is
+documented here for compeleteness.
+
+The :zuul:job:`build-container-image` runs in the `check` pipeline,
+but also in the `gate` pipeline.  Usually in both cases the job builds
+and uploads the images to an intermediate registry; but at least the
+`gate` pipeline job must..
+
+The :zuul:job:`promote-container-image` job is designed to be used in
+a post-merge `promote` pipeline.  It requires no nodes and run on the
+Zuul executor.  It inspects the artifacts of the gate job to find the
+correct tags to pull from the intermediate registry.  It then uploads
+this image from the intermediate registry to the remote registry with
+the final tags supplied by
+:zuul:jobvar:`build-container-image.container_images.tags`.
+
+In the `tag` and `release` pipelines the
+:zuul:job:`upload-container-image` job is run with the flag
+``upload_container_image_promote: false`` to directly build and push
+with the final tags.
+
+The advantages of this method is that no partial or unused images will
+ever be present in the final repository.  Copying from the
+intermediate registry effectively caches the expensive build process.
+This means that although the window that the production tags are
+out-of-sync with the merged code is larger than when using speculative
+uploads, it is smaller than having to rebuild *and* upload the image.
+Copying is a generic operation, so it should work with any registry.
+The layer upload has more exposure to transient errors than the
+``tag`` promotion step, so needs to be monitored more carefully.  You
+also must manage an external intermediate registry to hold the image
+between upload and promote steps in this model.
+
+Summary:
+
+* :zuul:job:`build-container-image` in `check`
+* :zuul:job:`build-container-image` in `gate`.  This must push to an
+  intermediate registry.
+* :zuul:job:`promote-container-image` in `promote` with
+  ``promote_container_method: intermediate-registry``
+* :zuul:job:`upload-container-image` with
+  ``upload_container_image_promote: false`` in `tag` and `release`
+
+*Publish via full release*
+
+The :zuul:job:`build-container-image` job runs in the `check` pipeline
+to validate the change.
+
+The :zuul:job:`build-container-image` job also runs in the `gate`
+pipeline to validate the change before merge.
+
+Once the change has merged, :zuul:job:`upload-container-image` job is
+run with the flag ``upload_container_image_promote: false`` to
+directly build and push with the final tags.  This is also run in the
+`tag` and `release` piplines in the same way.
+
+The advantage of this mode is that it requires no external
+dependencies or management of speculative uploads.  The disadvantage
+is that it has the longest window where published image is out-of-sync
+with merged-code, as the post-merge release process must re-build the
+entire container and upload it.
+
+* :zuul:job:`build-container-image` in `check`
+* :zuul:job:`build-container-image` in `gate`
+* :zuul:job:`upload-container-image` with
+  ``upload_container_image_promote: false`` after code merge, and
+  `tag` and `release` pipelines.
 
 **Job Variables**
 
