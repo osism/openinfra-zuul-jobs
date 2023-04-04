@@ -1,0 +1,27 @@
+- name: Ensure repository is specified
+  assert:
+    that: remove_registry_tag_repository is defined
+
+- name: Validate remove_registry_tag_repository is full "url"
+  when:
+    - "'/' not in remove_registry_tag_repository"
+  fail:
+    msg: "{{ remove_registry_tag_repository }} must be a full container image url including registry location"
+
+- name: Parse out repo path from full "url"
+  set_fact:
+    _registry: "{{ (remove_registry_tag_repository | split('/', 1)).0 }}"
+    _repopath: "{{ (remove_registry_tag_repository | split('/', 1)).1 }}"
+
+- name: Autoprobe for quay.io
+  when: remove_registry_tag_api_type is not defined and "quay.io" in _registry
+  set_fact:
+    remove_registry_tag_api_type: "quay"
+
+- name: Autoprobe for docker
+  when: remove_registry_tag_api_type is not defined and "docker.io" in _registry
+  set_fact:
+    remove_registry_tag_api_type: "docker"
+
+- name: Remove tags
+  include_tasks: '{{ remove_registry_tag_api_type }}.yaml'

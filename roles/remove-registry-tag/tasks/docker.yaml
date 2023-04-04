@@ -1,0 +1,69 @@
+- name: Ensure registry token is set
+  assert:
+    that: >
+        (container_registry_credentials[_registry].username is defined) and
+        (container_registry_credentials[_registry].password is defined)
+
+- name: Set API base
+  when: remove_registry_tag_api_url is not defined
+  set_fact:
+    remove_registry_tag_api_url: 'https://hub.docker.com/v2'
+
+- name: Delete single tag
+  when: remove_registry_tag_tag is defined
+  set_fact:
+    _to_delete:
+      - '{{ remove_registry_tag_tag }}'
+
+- name: Iterate old tags
+  when: remove_registry_tag_tag is not defined
+  block:
+    - name: Setup vars
+      set_fact:
+        _to_delete: []
+
+    - name: Get project tags
+      uri:
+        url: '{{ remove_registry_tag_api_url }}/repositories/{{ _repopath }}/tags?page_size=1000'
+        status_code: 200
+      register: _tags
+
+    - name: Build list of old tags
+      loop: "{{ _tags.json.results }}"
+      loop_control:
+        loop_var: zj_docker_tag
+      set_fact:
+        _to_delete: '{{ _to_delete|default([]) + [zj_docker_tag] }}'
+      when:
+        - zj_docker_tag.name is regex(remove_registry_tag_regex)
+        # Was updated > 24 hours ago:
+        - "((ansible_date_time.iso8601 | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime) - (zj_docker_tag.last_updated | regex_replace('^(....-..-..)T(..:..:..).*Z', '\\\\1 \\\\2') | to_datetime)).seconds > remove_registry_tag_age"
+
+- name: List tags to remove
+  debug:
+    var: _to_delete
+
+- name: Get dockerhub JWT token
+  no_log: true
+  uri:
+    url: "{{ remove_registry_tag_api_url }}/users/login/"
+    body_format: json
+    body:
+      username: "{{ container_registry_credentials[_registry].username }}"
+      password: "{{ container_registry_credentials[_registry].password }}"
+  register: jwt_token
+  delay: 5
+  retries: 3
+  until: jwt_token and jwt_token.status==200
+
+- name: Delete tag
+  no_log: true
+  uri:
+    url: '{{ remove_registry_tag_api_url }}/repositories/{{ _repopath }}/tags/{{ zj_docker_tag }}'
+    method: DELETE
+    status_code: [200, 204]
+    headers:
+      'Authorization': 'JWT {{ jwt_token.json.token }}'
+  loop: '{{ _to_delete }}'
+  loop_control:
+    loop_var: zj_docker_tag
