@@ -17,3 +17,12 @@
   always:
     - name: Log out of registry
       command: "skopeo logout {{ zj_image.registry }}"
+
+# If a gate job failed, we might have uploaded and leaked tags.  This
+# cleans up anything around for more than 24 hours
+- name: Cleanup leaked images
+  include_role:
+    name: remove-registry-tag
+  vars:
+    remove_registry_tag_repository: '{{ zj_image.repository }}'
+  no_log: true
