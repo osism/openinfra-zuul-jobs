@@ -22,9 +22,9 @@ use of subsequent roles to upload the images to a registry.
 The :zuul:role:`upload-container-image` role uploads the images to a
 registry.  It can be used in one of two modes:
 
-1. The default mode is as part of a two-step `promote` pipeline.  This
-   mode is designed to minimize the time the published registry tag is
-   out of sync with the changes Zuul has merged to the underlying code
+1. Using tags as part of a two-step `promote` pipeline.  This mode is
+   designed to minimize the time the published registry tag is out of
+   sync with the changes Zuul has merged to the underlying code
    repository.
 
    In this mode, the role is intended to run in the `gate` pipeline.
@@ -45,13 +45,23 @@ registry.  It can be used in one of two modes:
    to by ``<tag>`` will now reflect the underlying code closing the
    out-of-sync window.
 
-2. The other mode allows for use of this job in a `release` pipeline
-   to directly upload a release build with the final set of tags.
+2. The second mode allows for use of this job in `release` and `tag`
+   pipelines to directly upload a release build with the final set of
+   tags.
 
-   In this mode, the completion of the `gate` jobs will have merged
-   the code changes, and the role will now have to build and upload
-   the resulting image to the remote repository.  Once uploaded, the
-   tags will be updated.
+   In this mode, ``upload_container_image_promote: false`` should be
+   set.  The role will build and upload the resulting image to the
+   remote repository with the final tags.
+
+   This should be used with `tag` and `release` pipelines, where
+   committed code has been tagged for publishing.  The tagged commit
+   is "known good" thanks to gating, so the build and upload process
+   is expected to work unconditionally.
+
+   This can be used in a post-commit pipeline, with the caveat that it
+   has a much longer window where published code is out of sync with
+   the published image, as the image must be completely rebuilt and
+   uploaded after code merge in the `gate` job.
 
    The alternative `promote` method can be thought of as a
    "speculative" upload.  There is a possibility the `gate` job
@@ -77,9 +87,11 @@ registry.  It can be used in one of two modes:
 *Promoting*
 
 As discussed above, the :zuul:role:`promote-container-image` role is
-designed to be used in a `promote` pipeline.  It re-tags a previously
-uploaded image by copying the temporary change-id based tags made
-during upload to the final production tags supplied by
+designed to be used in a `promote` pipeline.
+
+In ``tag`` mode, it re-tags a previously uploaded image by copying the
+temporary change-id based tags made during upload to the final
+production tags supplied by
 :zuul:rolevar:`build-container-image.container_images.tags`.  It is
 intended to run very quickly and with no dependencies, so it can run
 directly on the Zuul executor.
@@ -89,6 +101,11 @@ required.  The role removes the change-id tags from the repository in
 the registry, and removes any similar change-ids tags.  This keeps the
 repository tidy in the case that gated changes fail to merge after
 uploading their staged images.
+
+In ``intermediate-registry`` mode, this role queries Zuul to find the
+build performed by the build role in the ``gate``.  It then copies
+this image from the intermediate-registry to the final location in the
+remote registry.
 
 *Dependencies*
 
