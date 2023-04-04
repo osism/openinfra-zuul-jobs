@@ -1,4 +1,5 @@
 - name: Ensure registry token is set
+  no_log: true
   assert:
     that: >
         (container_registry_credentials[_registry].username is defined) and
