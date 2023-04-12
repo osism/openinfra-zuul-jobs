@@ -23,14 +23,22 @@
     - name: Set up user credentials for the intermediate registry
       include_role:
         name: intermediate-registry-user-config
-    - name: "Build a container image for the previous build"
+    - name: "Build a container image for the previous build with docker roles"
+      when: container_command == 'docker'
       include_role:
-        name: "build-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
+        name: "build-docker-image"
       vars:
         docker_images:
           - context: test-playbooks/registry/docker
             repository: "{{ previous_build_repository }}"
-        container_images: "{{ docker_images }}"
+    - name: "Build a container image for the previous build with container-image roles"
+      when: container_command != 'docker'
+      include_role:
+        name: "build-container-image"
+      vars:
+        container_images:
+          - context: test-playbooks/registry/docker
+            repository: "{{ previous_build_repository }}"
     - name: Tag the previous build
       command: "{{ container_command }} tag {{ previous_build_repository }}:latest localhost:5000/{{ previous_build_repository }}:{{ previous_build_uuid }}_latest"
     - name: Push the previous build to the intermediate registry
