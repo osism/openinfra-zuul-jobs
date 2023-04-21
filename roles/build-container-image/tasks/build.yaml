@@ -1,3 +1,7 @@
+- name: Set container filename arg
+  set_fact:
+    containerfile: "{{ zj_image.container_filename | default(container_filename) | default('') }}"
+
 - name: Set up siblings
   include_tasks: siblings.yaml
 

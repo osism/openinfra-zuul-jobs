@@ -38,10 +38,6 @@
     buildset_registry_alias: "{{ buildset_registry.host }}"
   when: buildset_registry is defined and not ( buildset_registry.host | ipaddr )
 
-- name: Set container filename arg
-  set_fact:
-    containerfile: "{{ zj_image.container_filename | default(container_filename) | default('') }}"
-
 - name: Determine if we are building multiarch or not
   set_fact:
     _multiarch: "{{ container_images | selectattr('arch', 'defined') | list }}"
