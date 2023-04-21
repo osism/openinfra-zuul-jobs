@@ -13,15 +13,15 @@
         tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
     _multiarch_container_images:
       - context: test-playbooks/container/docker
-        registry: 127.0.0.1:5200
-        repository: 127.0.0.1:5200/testrepo
+        registry: localhost
+        repository: localhost/testrepo
         # This is what the Zuul repo uses to tag its releases:
         tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
         arch: ['linux/amd64', 'linux/arm64']
     _normal_container_images:
       - context: test-playbooks/container/docker
-        registry: 127.0.0.1:5200
-        repository: 127.0.0.1:5200/testrepo
+        registry: localhost
+        repository: localhost/testrepo
         # This is what the Zuul repo uses to tag its releases:
         tags: "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
   tasks:

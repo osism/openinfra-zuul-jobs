@@ -4,10 +4,6 @@
   fail:
     msg: "{{ zj_image.repository }} must be a full container image url including registry location"
 
-- name: Parse out repo path from full "url"
-  set_fact:
-    _repopath: "{{ (zj_image.repository | split('/', 1)).1 }}"
-
 - name: Set container filename arg
   set_fact:
     containerfile: "{{ zj_image.container_filename | default(container_filename) | default('') }}"
@@ -33,9 +29,9 @@
         --build-arg "ZUUL_SIBLINGS={{ zj_image.siblings | join(' ') }}"
       {% endif -%}
       {% for tag in zj_image.tags | default(['latest']) -%}
-        --tag {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ tag }}
+        --tag {{ temp_registry.host }}:{{ temp_registry.port }}/{{ zj_image.repository }}:{{ tag }}
         {% if buildset_registry | default(false) -%}
-          --tag {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ _repopath }}:{{ tag }}
+          --tag {{ buildset_registry_alias }}:{{ buildset_registry.port }}/{{ zj_image.repository }}:{{ tag }}
         {% endif -%}
       {% endfor -%}
       {% for label in zj_image.labels | default([]) -%}
@@ -53,7 +49,7 @@
 
 - name: Pull images from temporary registry
   command: >-
-    docker pull {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ zj_image_tag }}
+    docker pull {{ temp_registry.host }}:{{ temp_registry.port }}/{{ zj_image.repository }}:{{ zj_image_tag }}
   loop: "{{ zj_image.tags | default(['latest']) }}"
   loop_control:
     loop_var: zj_image_tag
@@ -61,7 +57,7 @@
 - name: Locally tag for changes so push works later
   command: >-
     docker tag
-    {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ zj_image_tag }}
+    {{ temp_registry.host }}:{{ temp_registry.port }}/{{ zj_image.repository }}:{{ zj_image_tag }}
     {{ zj_image.repository }}:change_{{ zuul.change }}_{{ zj_image_tag }}
   loop: "{{ zj_image.tags | default(['latest']) }}"
   loop_control:
@@ -71,7 +67,7 @@
 - name: Locally tag for changes so push works later
   command: >-
     docker tag
-    {{ temp_registry.host }}:{{ temp_registry.port }}/{{ _repopath }}:{{ zj_image_tag }}
+    {{ temp_registry.host }}:{{ temp_registry.port }}/{{ zj_image.repository }}:{{ zj_image_tag }}
     {{ zj_image.repository }}:{{ zj_image_tag }}
   loop: "{{ zj_image.tags | default(['latest']) }}"
   loop_control:
