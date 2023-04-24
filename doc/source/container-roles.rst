@@ -10,6 +10,7 @@ Container Roles
 .. zuul:autorole:: ensure-openshift
 .. zuul:autorole:: ensure-podman
 .. zuul:autorole:: ensure-skopeo
+.. zuul:autorole:: ensure-quay-repo
 .. zuul:autorole:: pause-buildset-registry
 .. zuul:autorole:: promote-container-image
 .. zuul:autorole:: promote-docker-image
