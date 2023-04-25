@@ -19,6 +19,19 @@ When invoking this role you should set no_log: true on the
    ``container_registry_credentials`` variable used by the other container
    roles. Specify an ``api_token`` which is issued from an application
    assigned to an organisation.  See `<https://docs.quay.io/api/>`__
+   This application API token needs create permissions. If the registry
+   name is quay.io we know that the registry type is ``quay``. If you are
+   running a private Quay installation you can manually set
+   ``type`` to ``quay`` to force this behavior.
+
+   This role will only take action on image repos that map to
+   container registries for which both an ``api_token`` is set and
+   ``type`` can be determined to be ``quay``.
+
+   You may also set ``api_url`` on the registry credentials if the
+   API is not hosted at the root of the registry name. Most installations
+   should be able to ignore this and use the default of
+   ``https://{{ $name }}``.
 
    Example:
 
@@ -26,7 +39,9 @@ When invoking this role you should set no_log: true on the
 
       container_registry_credentials:
         quay.io:
+          type: 'quay'
           api_token: 'abcd1234'
+          api_url: 'https://quay.io'
 
 .. zuul:rolevar:: container_images
    :type: list
@@ -36,10 +51,8 @@ When invoking this role you should set no_log: true on the
    is in the same format as the ``container_images`` variable used by other
    container roles. Specify a ``registry`` (this should match up with your
    credentials to locate the api token), ``namespace``, ``repo_shortname``,
-   ``repo_description``, ``visibility``, and ``api_url`` attributes.
-
-   By default visibility will be ``public`` and ``api_url`` will be
-   ``https://{{ registry }}``.
+   ``repo_description``, and ``visibility`` attributes. By default
+   visibility will be ``public``.
 
    Example:
 

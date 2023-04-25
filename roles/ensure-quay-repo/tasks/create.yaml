@@ -1,49 +1,54 @@
-- name: Set quay_root_url
-  set_fact:
-    quay_root_url: "https://{{ zj_image.registry }}"
-  when: zj_image.api_url is not defined
+- name: Only run when necessary items are present
+  block:
+    - name: Set quay_root_url
+      set_fact:
+        quay_root_url: "https://{{ zj_image.registry }}"
+      when: container_registry_credentials[zj_image.registry].api_url is not defined
 
-- name: Alias api_url
-  set_fact:
-    quay_root_url: "{{ zj_image.api_url }}"
-  when: zj_image.api_url is defined
+    - name: Alias api_url
+      set_fact:
+        quay_root_url: "{{ container_registry_credentials[zj_image.registry].api_url }}"
+      when: container_registry_credentials[zj_image.registry].api_url is defined
 
-- name: Set quay_repo_visibility
-  set_fact:
-    quay_repo_visibility: "public"
-  when: zj_image.visibility is not defined
+    - name: Set quay_repo_visibility
+      set_fact:
+        quay_repo_visibility: "public"
+      when: zj_image.visibility is not defined
 
-- name: Alias visibility
-  set_fact:
-    quay_repo_visibility: "{{ zj_image.visibility }}"
-  when: zj_image.visibility is defined
+    - name: Alias visibility
+      set_fact:
+        quay_repo_visibility: "{{ zj_image.visibility }}"
+      when: zj_image.visibility is defined
 
-- name: Create the repo in quay
-  no_log: true
-  uri:
-    url: "{{ quay_root_url }}/api/v1/repository"
-    method: POST
-    body_format: json
-    body:
-      namespace: "{{ zj_image.namespace }}"
-      repository: "{{ zj_image.repo_shortname}}"
-      description: "{{ zj_image.repo_description }}"
-      visibility: "{{ quay_repo_visibility }}"
-    headers:
-      Content-Type: application/json
-      Authorization: "Bearer {{ container_registry_credentials[zj_image.registry].api_token }}"
-    status_code:
-      - 201
-      # 400 is returned when the repo already exists.
-      # We double check this below.
-      - 400
-  register: quay_repo_create
-  delay: 5
-  retries: 3
+    - name: Create the repo in quay
+      no_log: true
+      uri:
+        url: "{{ quay_root_url }}/api/v1/repository"
+        method: POST
+        body_format: json
+        body:
+          namespace: "{{ zj_image.namespace }}"
+          repository: "{{ zj_image.repo_shortname}}"
+          description: "{{ zj_image.repo_description }}"
+          visibility: "{{ quay_repo_visibility }}"
+        headers:
+          Content-Type: application/json
+          Authorization: "Bearer {{ container_registry_credentials[zj_image.registry].api_token }}"
+        status_code:
+          - 201
+          # 400 is returned when the repo already exists.
+          # We double check this below.
+          - 400
+      register: quay_repo_create
+      delay: 5
+      retries: 3
 
-- name: Fail if repo doesn't exist and we got a 400 status code
+    - name: Fail if repo doesn't exist and we got a 400 status code
+      when:
+        - quay_repo_create.status == 400
+        - "'error_message' not in quay_repo_create.json or ('error_message' in quay_repo_create.json and quay_repo_create.json.error_message != 'Repository already exists')"
+      fail:
+        msg: "Could not create {{ quay_root_url }}/{{ zj_image.namespace }}/{{ zj_image.repo_shortname }}"
   when:
-    - quay_repo_create.status == 400
-    - "'error_message' not in quay_repo_create.json or ('error_message' in quay_repo_create.json and quay_repo_create.json.error_message != 'Repository already exists')"
-  fail:
-    msg: "Could not create {{ quay_root_url }}/{{ zj_image.namespace }}/{{ zj_image.repo_shortname }}"
+    - zj_image.registry == 'quay.io' or (container_registry_credentials[zj_image.registry].type is defined and container_registry_credentials[zj_image.registry].type == 'quay')
+    - container_registry_credentials[zj_image.registry].api_token is defined
