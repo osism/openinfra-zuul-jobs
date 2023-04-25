@@ -39,14 +39,19 @@ communicate to using arguments below.
      `<https://docs.quay.io/api/>`__
    * **docker.io** : Username and password
 
+   You can specify the registry type explicitly via the ``type``
+   attribute, but it will be inferred for quay.io and docker.io.
+
    Example:
 
    .. code-block:: yaml
 
       container_registry_credentials:
         quay.io:
+          type: 'quay'
           api_token: 'abcd1234'
         docker.io:
+          type: 'docker'
           username: 'username'
           password: 'password'
 
@@ -73,16 +78,6 @@ communicate to using arguments below.
    Optional.  The age, in seconds, a tag that matches
    :zuul:rolevar:`remove-registry-tag.remove_registry_tag_regex`
    last-modified timestamp must exceed to be removed.
-
-.. zuul:rolevar:: remove_registry_tag_api_type
-   :type: string
-
-   Optional.  By default the role will guess the API type from the
-   repository name.  However, if you need to override this choice
-   specify one of:
-
-   * quay
-   * docker
 
 .. zuul:rolevar:: remove_registry_tag_api_url
    :type: string
