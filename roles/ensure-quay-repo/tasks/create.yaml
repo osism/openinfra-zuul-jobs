@@ -52,3 +52,6 @@
   when:
     - zj_image.registry == 'quay.io' or (container_registry_credentials[zj_image.registry].type is defined and container_registry_credentials[zj_image.registry].type == 'quay')
     - container_registry_credentials[zj_image.registry].api_token is defined
+    - zj_image.namespace is defined
+    - zj_image.repo_shortname is defined
+    - zj_image.repo_description is defined
