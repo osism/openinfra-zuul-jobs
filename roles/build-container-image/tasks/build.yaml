@@ -26,6 +26,13 @@
       --tag {{ zj_image.repository }}:{{ tag_prefix }}{{ tag }}
       --tag {{ zj_image.repository }}:{{ tag }}
     {% endfor -%}
+    {% for label in zj_image.labels | default([]) -%}
+      --label "{{ label }}"
+    {% endfor %}
+    {% if zuul.change | default(false) -%}
+      --label "org.zuul-ci.change={{ zuul.change }}"
+    {% endif -%}
+    --label "org.zuul-ci.change_url={{ zuul.change_url }}"
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
   environment: "{{ container_build_extra_env }}"
