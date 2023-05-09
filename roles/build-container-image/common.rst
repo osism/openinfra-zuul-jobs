@@ -45,6 +45,10 @@ registry.  It can be used in one of two modes:
    to by ``<tag>`` will now reflect the underlying code closing the
    out-of-sync window.
 
+   When running in this mode uploads are only made if
+   ``promote_container_image_method`` is unset or set to ``tag``.
+   Otherwise we skip upload to the registry.
+
 2. The second mode allows for use of this job in `release` and `tag`
    pipelines to directly upload a release build with the final set of
    tags.
@@ -265,5 +269,13 @@ promote job assumes `skopeo` is available on the executor.
 
    A dictionary of key value pairs to add to the container build environment.
    This may be useful to enable buildkit with docker builds for example.
+
+.. zuul:rolevar:: promote_container_image_method
+   :default: tag
+
+   A string value indicating whether or not we upload images to the upstream
+   registry pre merge then promote that upload via a retag (``tag``) or we
+   upload to a downstream registry and later fetch and promote that to the
+   upstream registry post merge (``intermediate-registry``).
 
 .. _anchors: https://yaml.org/spec/1.2/spec.html#&%20anchor//

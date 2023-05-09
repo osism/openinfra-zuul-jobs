@@ -58,13 +58,13 @@ Summary:
 
 *Promotion via intermediate registry*
 
-Note that as of 2023-03, this path is not fully implemented.  It is
-documented here for compeleteness.
+The :zuul:job:`build-container-image` runs in the `check` pipeline.
+It will build images then upload them to an intermediate registry.
 
-The :zuul:job:`build-container-image` runs in the `check` pipeline,
-but also in the `gate` pipeline.  Usually in both cases the job builds
-and uploads the images to an intermediate registry; but at least the
-`gate` pipeline job must..
+The :zuul:job:`upload-container-image` job  runs in the `gate`. With
+this promotion method it will build and upload images to an intermediate
+registry. No images will be pushed to the upstream registry until
+promotion occurs.
 
 The :zuul:job:`promote-container-image` job is designed to be used in
 a post-merge `promote` pipeline.  It requires no nodes and run on the
@@ -94,7 +94,7 @@ between upload and promote steps in this model.
 Summary:
 
 * :zuul:job:`build-container-image` in `check`
-* :zuul:job:`build-container-image` in `gate`.  This must push to an
+* :zuul:job:`upload-container-image` in `gate`.  This must push to an
   intermediate registry.
 * :zuul:job:`promote-container-image` in `promote` with
   ``promote_container_method: intermediate-registry``
