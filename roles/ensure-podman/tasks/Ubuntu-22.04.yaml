@@ -6,5 +6,7 @@
       - slirp4netns
       - fuse-overlayfs
       - containernetworking-plugins
+      # This enables container network dns resolution:
+      - golang-github-containernetworking-plugin-dnsname
     state: present
   become: yes
