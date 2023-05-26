@@ -7,4 +7,4 @@
 
 - name: Set up docker mirrors
   include_tasks: mirror.yaml
-  when: mirror_fqdn is defined
+  when: mirror_fqdn is defined or docker_mirror is defined
