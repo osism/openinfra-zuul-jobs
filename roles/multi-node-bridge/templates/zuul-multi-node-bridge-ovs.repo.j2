@@ -20,11 +20,11 @@ baseurl=http://mirror.centos.org/centos/8-stream/cloud/$basearch/openstack-train
 {% endif %}
 gpgcheck=0
 enabled=1
-# TODO: Replace testing repo once C9 released repos as available. Currently Centos9 stream release
-# repos are not available so need to use testing repo available at buildlogs.centos.org.
+# For C9S we need to consume RDO packages from testing repo as it was never released to official
+# mirrors. For OpenvSwitch however we must use release official repo.
 {% elif ansible_distribution_major_version|int == 9 %}
 [RDO-CentOS9-stream-deps]
-name=CentOS OpenStack Xena Repository
+name=CentOS OpenStack Wallaby Repository
 {% if zuul_site_mirror_fqdn is defined %}
 baseurl=http://{{ zuul_site_mirror_fqdn }}:8080/buildlogs.centos/9-stream/cloud/x86_64/openstack-wallaby/
 {% else %}
@@ -35,9 +35,9 @@ enabled=1
 [RDO-CentOS9-stream-nfv]
 name=CentOS9 Stream NFV Repository
 {% if zuul_site_mirror_fqdn is defined %}
-baseurl=http://{{ zuul_site_mirror_fqdn }}:8080/buildlogs.centos/9-stream/nfv/x86_64/openvswitch-2/
+baseurl=http://{{ zuul_site_mirror_fqdn }}/centos-stream/SIGs/9-stream/nfv/x86_64/openvswitch-2/
 {% else %}
-baseurl=https://buildlogs.centos.org/centos/9-stream/nfv/x86_64/openvswitch-2/
+baseurl=https://mirror.stream.centos.org/SIGs/9-stream/nfv/x86_64/openvswitch-2/
 {% endif %}
 gpgcheck=0
 enabled=1
