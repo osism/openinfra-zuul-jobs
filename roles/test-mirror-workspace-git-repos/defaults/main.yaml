@@ -1,1 +1,2 @@
 mirror_workspace_quiet: false
+zuul_workspace_root: "{{ ansible_user_dir }}"
