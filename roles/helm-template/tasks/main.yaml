@@ -4,14 +4,14 @@
     chdir: "{{ zuul_work_dir }}"
 
 - name: Print templated charts
-  command: "helm template -n zuul {{ helm_chart }}"
+  command: "helm template zuul {{ helm_chart }}"
   args:
     chdir: "{{ zuul_work_dir }}"
 
 - name: Deploy templated charts
   shell: |
     set -o pipefail
-    helm template {% if helm_values_file is defined %}--values {{ helm_values_file }} {% endif %}-n {{ helm_release_name }} {{ helm_chart }} | kubectl apply -f-
+    helm template {% if helm_values_file is defined %}--values {{ helm_values_file }} {% endif %}{{ helm_release_name }} {{ helm_chart }} | kubectl apply -f-
   args:
     executable: /bin/bash
     chdir: "{{ zuul_work_dir }}"
