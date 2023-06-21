@@ -1,7 +1,7 @@
 - name: Install podman
   package:
     name:
-      - podman
+      - 'podman=3.4.4+ds1-1ubuntu1'
       - uidmap
       - slirp4netns
       - fuse-overlayfs
