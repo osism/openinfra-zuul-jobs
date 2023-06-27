@@ -15,3 +15,8 @@ The cached repos need to be placed using the canonical name under the
    :default: /opt/git
 
    The root of the cached repos.
+
+.. zuul:rolevar:: zuul_workspace_root
+   :default: "{{ ansible_user_dir }}"
+
+   The root of the workspace in which the repos are mirrored.

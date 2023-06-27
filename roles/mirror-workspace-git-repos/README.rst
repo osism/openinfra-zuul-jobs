@@ -12,3 +12,8 @@ some or all of the git repos.
 
    If `true` git operations will be silenced and won't print every
    changed reference.
+
+.. zuul:rolevar:: zuul_workspace_root
+   :default: "{{ ansible_user_dir }}"
+
+   The root of the workspace.
