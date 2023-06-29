@@ -7,16 +7,16 @@
     if [ -d "{{ cached_repos_root }}/{{ zj_project.canonical_name }}" ] ; then
         # We do a bare clone here first so that we skip creating a working
         # copy that will be overwritten later anyway.
-        git clone --bare {{ cached_repos_root }}/{{ zj_project.canonical_name }} {{ ansible_user_dir }}/{{ zj_project.src_dir }}/.git
+        git clone --bare {{ cached_repos_root }}/{{ zj_project.canonical_name }} {{ zuul_workspace_root }}/{{ zj_project.src_dir }}/.git
     else
-        git init {{ ansible_user_dir }}/{{ zj_project.src_dir }}
+        git init {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
     fi
-    cd {{ ansible_user_dir }}/{{ zj_project.src_dir }}
+    cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
     git config --local --bool core.bare false
     git remote -v | grep origin && git remote rm origin || true
     git remote add origin file:///dev/null
   args:
-    creates: "{{ ansible_user_dir }}/{{ zj_project.src_dir }}"
+    creates: "{{ zuul_workspace_root }}/{{ zj_project.src_dir }}"
   with_items: "{{ zuul.projects.values() | list }}"
   loop_control:
     loop_var: zj_project
