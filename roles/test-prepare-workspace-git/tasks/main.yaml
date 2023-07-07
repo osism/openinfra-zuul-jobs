@@ -1,3 +1,20 @@
+- name: Filter zuul projects if sync-only-required-projects flag is set
+  set_fact:
+    _zuul_projects: >
+      {{ _zuul_projects | default({}) |
+            combine({ zj_project.key : zj_project.value }) }}
+  with_dict: "{{ zuul.projects }}"
+  loop_control:
+    loop_var: zj_project
+  when:
+    - prepare_workspace_sync_required_projects_only
+    - zj_project.value.canonical_name == zuul.project.canonical_name or zj_project.value.required
+
+- name: Don't filter zuul projects if flag is false
+  set_fact:
+    _zuul_projects: "{{ zuul.projects }}"
+  when: not prepare_workspace_sync_required_projects_only
+
 # Do all the steps in a single shell script. This reduces the number of times
 # ansible must loop over the list of projects which reduces the amount of
 # task startup time we incur.
@@ -17,7 +34,7 @@
     git remote add origin file:///dev/null
   args:
     creates: "{{ zuul_workspace_root }}/{{ zj_project.src_dir }}"
-  with_items: "{{ zuul.projects.values() | list }}"
+  with_items: "{{ _zuul_projects.values() }}"
   loop_control:
     loop_var: zj_project
   # We're using git in a shell script because it is faster and the module
@@ -31,7 +48,7 @@
     value: ignore
     scope: local
     repo: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
-  with_dict: "{{ zuul.projects }}"
+  with_dict: "{{ _zuul_projects }}"
   loop_control:
     loop_var: zj_project
 
@@ -46,7 +63,7 @@
     chdir: "{{ zuul.executor.work_root }}/{{ zj_project.value.src_dir }}"
   environment:
     GIT_ALLOW_PROTOCOL: ext:ssh
-  with_dict: "{{ zuul.projects }}"
+  with_dict: "{{ _zuul_projects }}"
   loop_control:
     loop_var: zj_project
   delegate_to: localhost
@@ -80,7 +97,7 @@
     git log --pretty=oneline  -1
   args:
     chdir: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
-  with_dict: "{{ zuul.projects }}"
+  with_dict: "{{ _zuul_projects }}"
   loop_control:
     loop_var: zj_project
   # ANSIBLE0006: Skip linting since it triggers on the "git" command,

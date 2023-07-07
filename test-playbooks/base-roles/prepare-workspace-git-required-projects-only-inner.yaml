@@ -1,0 +1,6 @@
+- name: Test the prepare-workspace-git role
+  hosts: all
+  roles:
+    - role: prepare-workspace-git
+      vars:
+        prepare_workspace_sync_required_projects_only: true

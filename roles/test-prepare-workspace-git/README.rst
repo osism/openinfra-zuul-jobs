@@ -16,6 +16,13 @@ The cached repos need to be placed using the canonical name under the
 
    The root of the cached repos.
 
+.. zuul:rolevar:: prepare_workspace_sync_required_projects_only
+   :type: bool
+   :default: False
+
+   A flag which if set to true, filters the to be synchronized project
+   list to only use projects which are required by the job.
+
 .. zuul:rolevar:: mirror_workspace_quiet
    :default: false
 
