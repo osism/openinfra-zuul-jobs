@@ -5,3 +5,5 @@ sphinxcontrib-seqdiag
 sphinx_rtd_theme
 # NOTE(ianw) 2022-10-17 : until we can figure out circular reference errors
 sphinx<=5.2.3
+# NOTE(lk) sphinxcontrib-blockdiag uses pillow and is not compatible with 10.0.0
+Pillow<10.0
