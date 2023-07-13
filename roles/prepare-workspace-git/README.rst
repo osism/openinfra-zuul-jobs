@@ -16,6 +16,12 @@ The cached repos need to be placed using the canonical name under the
 
    The root of the cached repos.
 
+.. zuul:rolevar:: mirror_workspace_quiet
+   :default: false
+
+   If `true` git operations will be silenced and won't print every
+   changed reference.
+
 .. zuul:rolevar:: zuul_workspace_root
    :default: "{{ ansible_user_dir }}"
 

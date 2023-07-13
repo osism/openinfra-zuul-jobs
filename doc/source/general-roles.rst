@@ -28,7 +28,6 @@ General Purpose Roles
 .. zuul:autorole:: intercept-job
 .. zuul:autorole:: log-inventory
 .. zuul:autorole:: markdownlint
-.. zuul:autorole:: mirror-workspace-git-repos
 .. zuul:autorole:: multi-node-bridge
 .. zuul:autorole:: multi-node-firewall
 .. zuul:autorole:: multi-node-hosts-file
