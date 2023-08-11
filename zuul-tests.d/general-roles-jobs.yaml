@@ -163,6 +163,16 @@
           label: centos-9-stream
 
 - job:
+    name: zuul-jobs-test-base-roles-debian-bookworm
+    description: Tests roles in the 'base' job on debian-bookworm
+    parent: zuul-jobs-test-base-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-base-roles-debian-bullseye
     description: Tests roles in the 'base' job on debian-bullseye
     parent: zuul-jobs-test-base-roles
@@ -264,6 +274,16 @@
       nodes:
         - name: centos-9-stream
           label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-bindep-debian-bookworm
+    description: Test the bindep role on debian-bookworm
+    parent: zuul-jobs-test-bindep
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
 
 - job:
     name: zuul-jobs-test-bindep-debian-bullseye
@@ -381,6 +401,16 @@
         - /home/zuul/src/opendev.org/zuul/zuul-jobs/roles/validate-zone-db/files/test_zones
 
 - job:
+    name: zuul-jobs-test-validate-zone-db-debian-bookworm
+    description: Test the validate-zone-db role on debian-bookworm
+    parent: zuul-jobs-test-validate-zone-db
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-validate-zone-db-debian-bullseye
     description: Test the validate-zone-db role on debian-bullseye
     parent: zuul-jobs-test-validate-zone-db
@@ -470,6 +500,16 @@
       nodes:
         - name: centos-9-stream
           label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-dstat-graph-debian-bookworm
+    description: Test the dstat-graph roles on debian-bookworm
+    parent: zuul-jobs-test-dstat-graph
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
 
 - job:
     name: zuul-jobs-test-dstat-graph-debian-bullseye
@@ -598,6 +638,25 @@
           label: centos-9-stream
         - name: secondary
           label: centos-9-stream
+      groups:
+        - name: switch
+          nodes:
+            - primary
+        - name: peers
+          nodes:
+            - secondary
+
+- job:
+    name: zuul-jobs-test-multinode-roles-debian-bookworm
+    description: Tests multinode setup roles on debian-bookworm
+    parent: zuul-jobs-test-multinode-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: primary
+          label: debian-bookworm
+        - name: secondary
+          label: debian-bookworm
       groups:
         - name: switch
           nodes:
@@ -824,6 +883,7 @@
         - zuul-jobs-test-base-roles-centos-7
         - zuul-jobs-test-base-roles-centos-8-stream
         - zuul-jobs-test-base-roles-centos-9-stream
+        - zuul-jobs-test-base-roles-debian-bookworm
         - zuul-jobs-test-base-roles-debian-bullseye
         - zuul-jobs-test-base-roles-debian-buster
         - zuul-jobs-test-base-roles-opensuse-15
@@ -833,6 +893,7 @@
         - zuul-jobs-test-bindep-centos-7
         - zuul-jobs-test-bindep-centos-8-stream
         - zuul-jobs-test-bindep-centos-9-stream
+        - zuul-jobs-test-bindep-debian-bookworm
         - zuul-jobs-test-bindep-debian-bullseye
         - zuul-jobs-test-bindep-debian-buster
         - zuul-jobs-test-bindep-opensuse-15
@@ -843,6 +904,7 @@
         - zuul-jobs-test-enable-fips
         - zuul-jobs-test-ensure-bazelisk
         - zuul-jobs-test-netconsole
+        - zuul-jobs-test-validate-zone-db-debian-bookworm
         - zuul-jobs-test-validate-zone-db-debian-bullseye
         - zuul-jobs-test-validate-zone-db-debian-buster
         - zuul-jobs-test-validate-zone-db-ubuntu-bionic
@@ -851,6 +913,7 @@
         - zuul-jobs-test-dstat-graph-centos-7
         - zuul-jobs-test-dstat-graph-centos-8-stream
         - zuul-jobs-test-dstat-graph-centos-9-stream
+        - zuul-jobs-test-dstat-graph-debian-bookworm
         - zuul-jobs-test-dstat-graph-debian-bullseye
         - zuul-jobs-test-dstat-graph-debian-buster
         - zuul-jobs-test-dstat-graph-opensuse-15
@@ -860,6 +923,7 @@
         - zuul-jobs-test-multinode-roles-centos-7
         - zuul-jobs-test-multinode-roles-centos-8-stream
         - zuul-jobs-test-multinode-roles-centos-9-stream
+        - zuul-jobs-test-multinode-roles-debian-bookworm
         - zuul-jobs-test-multinode-roles-debian-bullseye
         - zuul-jobs-test-multinode-roles-debian-buster
         - zuul-jobs-test-multinode-roles-opensuse-15

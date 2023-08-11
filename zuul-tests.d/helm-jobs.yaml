@@ -48,6 +48,16 @@
           label: centos-9-stream
 
 - job:
+    name: zuul-jobs-test-helm-lint-debian-bookworm
+    description: Test the helm-lint job on debian-bookworm
+    parent: zuul-jobs-test-helm-lint
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-helm-lint-debian-bullseye
     description: Test the helm-lint job on debian-bullseye
     parent: zuul-jobs-test-helm-lint
@@ -113,6 +123,7 @@
         - zuul-jobs-test-helm-lint-centos-7
         - zuul-jobs-test-helm-lint-centos-8-stream
         - zuul-jobs-test-helm-lint-centos-9-stream
+        - zuul-jobs-test-helm-lint-debian-bookworm
         - zuul-jobs-test-helm-lint-debian-bullseye
         - zuul-jobs-test-helm-lint-debian-buster
         - zuul-jobs-test-helm-lint-opensuse-15

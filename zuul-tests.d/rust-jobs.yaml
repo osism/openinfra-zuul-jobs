@@ -45,6 +45,16 @@
           label: centos-9-stream
 
 - job:
+    name: zuul-jobs-test-rust-debian-bookworm
+    description: Test the rust roles on debian-bookworm
+    parent: zuul-jobs-test-rust
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-rust-debian-bullseye
     description: Test the rust roles on debian-bullseye
     parent: zuul-jobs-test-rust
@@ -110,6 +120,7 @@
         - zuul-jobs-test-rust-centos-7
         - zuul-jobs-test-rust-centos-8-stream
         - zuul-jobs-test-rust-centos-9-stream
+        - zuul-jobs-test-rust-debian-bookworm
         - zuul-jobs-test-rust-debian-bullseye
         - zuul-jobs-test-rust-debian-buster
         - zuul-jobs-test-rust-opensuse-15

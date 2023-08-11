@@ -48,6 +48,16 @@
           label: centos-9-stream
 
 - job:
+    name: zuul-jobs-test-packer-debian-bookworm
+    description: Test packer job on debian-bookworm
+    parent: zuul-jobs-test-packer
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-packer-debian-bullseye
     description: Test packer job on debian-bullseye
     parent: zuul-jobs-test-packer
@@ -113,6 +123,7 @@
         - zuul-jobs-test-packer-centos-7
         - zuul-jobs-test-packer-centos-8-stream
         - zuul-jobs-test-packer-centos-9-stream
+        - zuul-jobs-test-packer-debian-bookworm
         - zuul-jobs-test-packer-debian-bullseye
         - zuul-jobs-test-packer-debian-buster
         - zuul-jobs-test-packer-opensuse-15

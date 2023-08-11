@@ -50,6 +50,16 @@
           label: centos-9-stream
 
 - job:
+    name: zuul-jobs-test-terraform-debian-bookworm
+    description: Test terraform job on debian-bookworm
+    parent: zuul-jobs-test-terraform
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-terraform-debian-bullseye
     description: Test terraform job on debian-bullseye
     parent: zuul-jobs-test-terraform
@@ -162,6 +172,16 @@
           label: centos-9-stream
 
 - job:
+    name: zuul-jobs-test-terraform-role-debian-bookworm
+    description: Test terraform roles on debian-bookworm
+    parent: zuul-jobs-test-terraform-role
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-terraform-role-debian-bullseye
     description: Test terraform roles on debian-bullseye
     parent: zuul-jobs-test-terraform-role
@@ -227,6 +247,7 @@
         - zuul-jobs-test-terraform-centos-7
         - zuul-jobs-test-terraform-centos-8-stream
         - zuul-jobs-test-terraform-centos-9-stream
+        - zuul-jobs-test-terraform-debian-bookworm
         - zuul-jobs-test-terraform-debian-bullseye
         - zuul-jobs-test-terraform-debian-buster
         - zuul-jobs-test-terraform-opensuse-15
@@ -236,6 +257,7 @@
         - zuul-jobs-test-terraform-role-centos-7
         - zuul-jobs-test-terraform-role-centos-8-stream
         - zuul-jobs-test-terraform-role-centos-9-stream
+        - zuul-jobs-test-terraform-role-debian-bookworm
         - zuul-jobs-test-terraform-role-debian-bullseye
         - zuul-jobs-test-terraform-role-debian-buster
         - zuul-jobs-test-terraform-role-opensuse-15

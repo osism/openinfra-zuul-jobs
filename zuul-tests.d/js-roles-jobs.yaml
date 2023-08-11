@@ -54,6 +54,16 @@
 #  Please re-run to generate new job lists
 
 - job:
+    name: zuul-jobs-test-nodejs-test-dependencies-debian-bookworm
+    description: Test the installation of nodejs test dependencies on debian-bookworm
+    parent: zuul-jobs-test-nodejs-test-dependencies
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-nodejs-test-dependencies-debian-bullseye
     description: Test the installation of nodejs test dependencies on debian-bullseye
     parent: zuul-jobs-test-nodejs-test-dependencies
@@ -110,6 +120,7 @@
         - zuul-jobs-test-ensure-yarn
         - zuul-jobs-test-fetch-javascript-tarball
         - zuul-jobs-test-fetch-javascript-tarball-synchronize
+        - zuul-jobs-test-nodejs-test-dependencies-debian-bookworm
         - zuul-jobs-test-nodejs-test-dependencies-debian-bullseye
         - zuul-jobs-test-nodejs-test-dependencies-debian-buster
         - zuul-jobs-test-nodejs-test-dependencies-ubuntu-bionic

@@ -43,6 +43,16 @@
           label: centos-9-stream
 
 - job:
+    name: zuul-jobs-test-ensure-docker-debian-bookworm
+    description: Tests ensure-docker role on debian-bookworm
+    parent: zuul-jobs-test-ensure-docker
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
     name: zuul-jobs-test-ensure-docker-debian-bullseye
     description: Tests ensure-docker role on debian-bullseye
     parent: zuul-jobs-test-ensure-docker
@@ -620,6 +630,7 @@
         - zuul-jobs-test-ensure-docker-centos-7
         - zuul-jobs-test-ensure-docker-centos-8-stream
         - zuul-jobs-test-ensure-docker-centos-9-stream
+        - zuul-jobs-test-ensure-docker-debian-bookworm
         - zuul-jobs-test-ensure-docker-debian-bullseye
         - zuul-jobs-test-ensure-docker-debian-buster
         - zuul-jobs-test-ensure-docker-ubuntu-bionic
@@ -657,6 +668,7 @@
         - zuul-jobs-test-ensure-docker-centos-7
         - zuul-jobs-test-ensure-docker-centos-8-stream
         - zuul-jobs-test-ensure-docker-centos-9-stream
+        - zuul-jobs-test-ensure-docker-debian-bookworm
         - zuul-jobs-test-ensure-docker-debian-bullseye
         - zuul-jobs-test-ensure-docker-debian-buster
         - zuul-jobs-test-ensure-docker-ubuntu-bionic

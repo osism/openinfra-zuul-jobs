@@ -37,6 +37,7 @@ CENTOS_PLATFORMS = [
 DEBIAN_PLATFORMS = [
     'debian-buster',
     'debian-bullseye',
+    'debian-bookworm',
 ]
 UBUNTU_PLATFORMS = [
     'ubuntu-bionic',
