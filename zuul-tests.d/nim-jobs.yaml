@@ -2,7 +2,10 @@
     name: zuul-jobs-test-nimble
     parent: nimble
     description: Test the nimble job
-    tags: all-platforms
+    # This job does not work.  Abstract is set to true so that the
+    # autogenerator doesn't run it.  If you fix this job, remove this
+    # line.
+    abstract: true
     files:
       - playbooks/nimble
       - roles/ensure-nimble
@@ -13,130 +16,10 @@
       nimble_siblings:
         - '{{ zuul.project.src_dir }}/test-playbooks/nimble/sibling'
 
-- job:
-    name: zuul-jobs-test-nimble-centos-7-nv
-    voting: false
-    description: Test the nimble job on centos-7
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
-    name: zuul-jobs-test-nimble-centos-8-stream
-    description: Test the nimble job on centos-8-stream
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
-    name: zuul-jobs-test-nimble-centos-9-stream
-    description: Test the nimble job on centos-9-stream
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-9-stream
-          label: centos-9-stream
-
-- job:
-    name: zuul-jobs-test-nimble-debian-bullseye
-    description: Test the nimble job on debian-bullseye
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-bullseye
-          label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-nimble-debian-buster
-    description: Test the nimble job on debian-buster
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
-    name: zuul-jobs-test-nimble-fedora-36
-    description: Test the nimble job on fedora-36
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
-
-- job:
-    name: zuul-jobs-test-nimble-opensuse-15-nv
-    voting: false
-    description: Test the nimble job on opensuse-15
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
-
-- job:
-    name: zuul-jobs-test-nimble-ubuntu-bionic
-    description: Test the nimble job on ubuntu-bionic
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
-
-- job:
-    name: zuul-jobs-test-nimble-ubuntu-focal
-    description: Test the nimble job on ubuntu-focal
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-focal
-          label: ubuntu-focal
-
-- job:
-    name: zuul-jobs-test-nimble-ubuntu-jammy
-    description: Test the nimble job on ubuntu-jammy
-    parent: zuul-jobs-test-nimble
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-jammy
-          label: ubuntu-jammy
-
 - project:
     check:
-      jobs:
-        - zuul-jobs-test-nimble-centos-7-nv
-        - zuul-jobs-test-nimble-centos-8-stream
-        - zuul-jobs-test-nimble-centos-9-stream
-        - zuul-jobs-test-nimble-debian-bullseye
-        - zuul-jobs-test-nimble-debian-buster
-        - zuul-jobs-test-nimble-fedora-36
-        - zuul-jobs-test-nimble-opensuse-15-nv
-        - zuul-jobs-test-nimble-ubuntu-bionic
-        - zuul-jobs-test-nimble-ubuntu-focal
-        - zuul-jobs-test-nimble-ubuntu-jammy
+      jobs: &id001 []
     gate:
-      jobs: &id001
-        - zuul-jobs-test-nimble-centos-8-stream
-        - zuul-jobs-test-nimble-centos-9-stream
-        - zuul-jobs-test-nimble-debian-bullseye
-        - zuul-jobs-test-nimble-debian-buster
-        - zuul-jobs-test-nimble-fedora-36
-        - zuul-jobs-test-nimble-ubuntu-bionic
-        - zuul-jobs-test-nimble-ubuntu-focal
-        - zuul-jobs-test-nimble-ubuntu-jammy
+      jobs: *id001
     periodic-weekly:
       jobs: *id001
