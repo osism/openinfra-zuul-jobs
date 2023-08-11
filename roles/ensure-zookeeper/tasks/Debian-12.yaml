@@ -1,0 +1,35 @@
+# Due to https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1030129
+# install certs before the JDK.
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1023748 has more details
+# including the request that the fix be backported to stable. TODO: once the
+# backport has been made we can stop installing from testing
+- name: Block to collect java cert package install steps
+  block:
+    - name: Enable testing repo
+      apt_repository:
+        repo: deb http://deb.debian.org/debian testing main
+        state: present
+        update_cache: yes
+        filename: debian-testing
+      become: true
+
+    - name: Install Java certs
+      apt:
+        name: ca-certificates-java
+        default_release: testing
+        state: present
+      become: true
+
+    - name: Disable testing repo
+      apt_repository:
+        repo: deb http://deb.debian.org/debian testing main
+        state: absent
+        update_cache: yes
+        filename: debian-testing
+      become: true
+
+- name: Install JDK
+  apt:
+    name: default-jdk-headless
+    state: present
+  become: true

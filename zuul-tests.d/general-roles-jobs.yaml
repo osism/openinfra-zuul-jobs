@@ -827,10 +827,67 @@
       - roles/ensure-zookeeper/.*
       - test-playbooks/ensure-zookeeper.yaml
     run: test-playbooks/ensure-zookeeper.yaml
+    tags: debuntu-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-debian-bookworm
+    description: Test the ensure-zookeeper roles on debian-bookworm
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
     nodeset:
       nodes:
-        - name: fedora-36
-          label: fedora-36
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-debian-bullseye
+    description: Test the ensure-zookeeper roles on debian-bullseye
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-debian-buster
+    description: Test the ensure-zookeeper roles on debian-buster
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-buster
+          label: debian-buster
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-ubuntu-bionic
+    description: Test the ensure-zookeeper roles on ubuntu-bionic
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-bionic
+          label: ubuntu-bionic
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-ubuntu-focal
+    description: Test the ensure-zookeeper roles on ubuntu-focal
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
+    description: Test the ensure-zookeeper roles on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
 
 - job:
     name: zuul-jobs-test-update-json-file
@@ -934,7 +991,12 @@
         - zuul-jobs-test-upload-artifactory
         - zuul-jobs-test-upload-git-mirror
         - zuul-jobs-test-shake-build
-        - zuul-jobs-test-ensure-zookeeper
+        - zuul-jobs-test-ensure-zookeeper-debian-bookworm
+        - zuul-jobs-test-ensure-zookeeper-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-debian-buster
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-bionic
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-focal
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
         - zuul-jobs-test-update-json-file
         - zuul-jobs-test-stage-output
         - zuul-jobs-test-fetch-translation-output
