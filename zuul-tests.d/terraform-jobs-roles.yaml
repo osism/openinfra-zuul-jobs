@@ -70,16 +70,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-terraform-fedora-36
-    description: Test terraform job on fedora-36
-    parent: zuul-jobs-test-terraform
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
-
-- job:
     name: zuul-jobs-test-terraform-opensuse-15
     description: Test terraform job on opensuse-15
     parent: zuul-jobs-test-terraform
@@ -192,16 +182,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-terraform-role-fedora-36
-    description: Test terraform roles on fedora-36
-    parent: zuul-jobs-test-terraform-role
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
-
-- job:
     name: zuul-jobs-test-terraform-role-opensuse-15
     description: Test terraform roles on opensuse-15
     parent: zuul-jobs-test-terraform-role
@@ -249,7 +229,6 @@
         - zuul-jobs-test-terraform-centos-9-stream
         - zuul-jobs-test-terraform-debian-bullseye
         - zuul-jobs-test-terraform-debian-buster
-        - zuul-jobs-test-terraform-fedora-36
         - zuul-jobs-test-terraform-opensuse-15
         - zuul-jobs-test-terraform-ubuntu-bionic
         - zuul-jobs-test-terraform-ubuntu-focal
@@ -259,7 +238,6 @@
         - zuul-jobs-test-terraform-role-centos-9-stream
         - zuul-jobs-test-terraform-role-debian-bullseye
         - zuul-jobs-test-terraform-role-debian-buster
-        - zuul-jobs-test-terraform-role-fedora-36
         - zuul-jobs-test-terraform-role-opensuse-15
         - zuul-jobs-test-terraform-role-ubuntu-bionic
         - zuul-jobs-test-terraform-role-ubuntu-focal

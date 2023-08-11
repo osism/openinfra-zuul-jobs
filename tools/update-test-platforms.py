@@ -44,7 +44,6 @@ UBUNTU_PLATFORMS = [
     'ubuntu-jammy',
 ]
 FEDORA_PLATFORMS = [
-    'fedora-36'
 ]
 OTHER_PLATFORMS = [
     # 'gentoo-17-0-systemd',

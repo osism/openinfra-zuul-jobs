@@ -68,16 +68,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-helm-lint-fedora-36
-    description: Test the helm-lint job on fedora-36
-    parent: zuul-jobs-test-helm-lint
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
-
-- job:
     name: zuul-jobs-test-helm-lint-opensuse-15
     description: Test the helm-lint job on opensuse-15
     parent: zuul-jobs-test-helm-lint
@@ -125,7 +115,6 @@
         - zuul-jobs-test-helm-lint-centos-9-stream
         - zuul-jobs-test-helm-lint-debian-bullseye
         - zuul-jobs-test-helm-lint-debian-buster
-        - zuul-jobs-test-helm-lint-fedora-36
         - zuul-jobs-test-helm-lint-opensuse-15
         - zuul-jobs-test-helm-lint-ubuntu-bionic
         - zuul-jobs-test-helm-lint-ubuntu-focal

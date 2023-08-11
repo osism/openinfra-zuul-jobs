@@ -65,16 +65,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-rust-fedora-36
-    description: Test the rust roles on fedora-36
-    parent: zuul-jobs-test-rust
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
-
-- job:
     name: zuul-jobs-test-rust-opensuse-15
     description: Test the rust roles on opensuse-15
     parent: zuul-jobs-test-rust
@@ -122,7 +112,6 @@
         - zuul-jobs-test-rust-centos-9-stream
         - zuul-jobs-test-rust-debian-bullseye
         - zuul-jobs-test-rust-debian-buster
-        - zuul-jobs-test-rust-fedora-36
         - zuul-jobs-test-rust-opensuse-15
         - zuul-jobs-test-rust-ubuntu-bionic
         - zuul-jobs-test-rust-ubuntu-focal

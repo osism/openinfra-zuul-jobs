@@ -68,16 +68,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-packer-fedora-36
-    description: Test packer job on fedora-36
-    parent: zuul-jobs-test-packer
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
-
-- job:
     name: zuul-jobs-test-packer-opensuse-15
     description: Test packer job on opensuse-15
     parent: zuul-jobs-test-packer
@@ -125,7 +115,6 @@
         - zuul-jobs-test-packer-centos-9-stream
         - zuul-jobs-test-packer-debian-bullseye
         - zuul-jobs-test-packer-debian-buster
-        - zuul-jobs-test-packer-fedora-36
         - zuul-jobs-test-packer-opensuse-15
         - zuul-jobs-test-packer-ubuntu-bionic
         - zuul-jobs-test-packer-ubuntu-focal

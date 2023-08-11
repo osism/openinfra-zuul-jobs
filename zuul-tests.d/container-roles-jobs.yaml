@@ -63,16 +63,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-ensure-docker-fedora-36
-    description: Tests ensure-docker role on fedora-36
-    parent: zuul-jobs-test-ensure-docker
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
-
-- job:
     name: zuul-jobs-test-ensure-docker-ubuntu-bionic
     description: Tests ensure-docker role on ubuntu-bionic
     parent: zuul-jobs-test-ensure-docker
@@ -632,7 +622,6 @@
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bullseye
         - zuul-jobs-test-ensure-docker-debian-buster
-        - zuul-jobs-test-ensure-docker-fedora-36
         - zuul-jobs-test-ensure-docker-ubuntu-bionic
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
@@ -670,7 +659,6 @@
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bullseye
         - zuul-jobs-test-ensure-docker-debian-buster
-        - zuul-jobs-test-ensure-docker-fedora-36
         - zuul-jobs-test-ensure-docker-ubuntu-bionic
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
