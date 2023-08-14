@@ -487,6 +487,7 @@
     post-run: test-playbooks/ensure-kubernetes/post.yaml
 
 # NOTE(ianw) 2022-12-08 : only supported on jammy
+# NOTE(corvus) 2023-08-14 : also supported on bookworm
 
 - job:
     name: zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
@@ -496,6 +497,15 @@
       nodes:
         - name: ubuntu-jammy
           label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
+    description: Test the ensure-kubernetes role with docker on debian-bookworm
+    parent: zuul-jobs-test-ensure-kubernetes-microk8s
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
 
 - job:
     name: zuul-jobs-test-ensure-podman
@@ -622,6 +632,7 @@
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
+        - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-ubuntu-bionic
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
