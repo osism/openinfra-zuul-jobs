@@ -403,6 +403,7 @@
       Run unit tests for a Python project under cPython version 2.7.
 
       Uses nox with the ``test`` keyword forcing python 2.7.
+    pre-run: playbooks/nox/pre27.yaml
     vars:
       nox_keyword: tests
       nox_force_python: "2.7"
