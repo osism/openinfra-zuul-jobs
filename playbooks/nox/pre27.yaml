@@ -1,6 +1,0 @@
-- hosts: all
-  tasks:
-    - name: Downgrade virtualenv for python2.7 support
-      # Assume pip is installed in the same relative path as nox
-      # and use that to downgrade virtualenv to a version python2.7 supports.
-      command: "{{ nox_executable | dirname }}/pip install -U virtualenv<20.22.0"

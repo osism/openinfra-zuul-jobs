@@ -18,7 +18,6 @@ Python Jobs
 .. zuul:autojob:: tox-bashate
 .. zuul:autojob:: tox-nodejs-npm
 .. zuul:autojob:: nox
-.. zuul:autojob:: nox-py27
 .. zuul:autojob:: nox-py36
 .. zuul:autojob:: nox-py37
 .. zuul:autojob:: nox-py38
