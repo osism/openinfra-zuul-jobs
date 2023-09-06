@@ -397,19 +397,6 @@
     pre-run: playbooks/nox/pre.yaml
 
 - job:
-    name: nox-py27
-    parent: nox
-    description: |
-      Run unit tests for a Python project under cPython version 2.7.
-
-      Uses nox with the ``test`` keyword forcing python 2.7.
-    pre-run: playbooks/nox/pre27.yaml
-    vars:
-      nox_keyword: tests
-      nox_force_python: "2.7"
-      python_version: "2.7"
-
-- job:
     name: nox-py36
     parent: nox
     description: |
