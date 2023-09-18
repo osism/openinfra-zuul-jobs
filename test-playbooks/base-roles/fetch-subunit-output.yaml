@@ -68,25 +68,21 @@
           - local_html_test_results is not changed
           - local_html_test_results is succeeded
 
-    # Disabled as we cannot run shell on localhost outside of a
-    # trusted context.
     # only one subunit file; the failed result should be hidden
-    # - name: Check the content of the HTML file
-    #   delegate_to: localhost
-    #   shell: |
-    #     GLOBAL_RESULT=1
-    #     zgrep -q -E 'subunit_tests.test_working.WorkingTest.test_success$' \
-    #         {{ zuul.executor.log_root }}/testr_results.html
-    #     T1=$?
-    #     zgrep -q -E 'subunit_tests.test_failing.FailingTest.test_failure.*_StringException:' \
-    #         {{ zuul.executor.log_root }}/testr_results.html
-    #     T2=$?
-    #     if [ ${T1} -eq 0 ] && [ ${T2} -ne 0 ]; then
-    #         GLOBAL_RESULT=0
-    #     fi
-    #     exit $GLOBAL_RESULT
-    - name: nooping task because yamllint complains about the comment above
-      debug: {}
+    - name: Check the content of the HTML file
+      delegate_to: localhost
+      shell: |
+        GLOBAL_RESULT=1
+        zgrep -q -E 'subunit_tests.test_working.WorkingTest.test_success$' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T1=$?
+        zgrep -q -E 'subunit_tests.test_failing.FailingTest.test_failure.*_StringException:' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T2=$?
+        if [ ${T1} -eq 0 ] && [ ${T2} -ne 0 ]; then
+            GLOBAL_RESULT=0
+        fi
+        exit $GLOBAL_RESULT
 
 # The following test(s) require(s) the previous playbook
 - name: Run the fetch-subunit-output role with multiple subunits
@@ -117,21 +113,18 @@
           - local_subunit_file is succeeded
           - local_html_test_results is not changed
           - local_html_test_results is succeeded
-    # Disabled as we cannot run shell on localhost outside of a
-    # trusted context.
-    # - name: Check the content of the HTML file
-    #   delegate_to: localhost
-    #   shell: |
-    #     GLOBAL_RESULT=1
-    #     zgrep -q -E 'subunit_tests.test_working.WorkingTest.test_success$' \
-    #         {{ zuul.executor.log_root }}/testr_results.html
-    #     T1=$?
-    #     zgrep -q -E 'subunit_tests.test_failing.FailingTest.test_failure.*_StringException:' \
-    #         {{ zuul.executor.log_root }}/testr_results.html
-    #     T2=$?
-    #     if [ ${T1} -eq 0 ] && [ ${T2} -eq 0 ]; then
-    #         GLOBAL_RESULT=0
-    #     fi
-    #     exit $GLOBAL_RESULT
-    - name: nooping task because yamllint complains about the comment above
-      debug: {}
+
+    - name: Check the content of the HTML file
+      delegate_to: localhost
+      shell: |
+        GLOBAL_RESULT=1
+        zgrep -q -E 'subunit_tests.test_working.WorkingTest.test_success$' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T1=$?
+        zgrep -q -E 'subunit_tests.test_failing.FailingTest.test_failure.*_StringException:' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T2=$?
+        if [ ${T1} -eq 0 ] && [ ${T2} -eq 0 ]; then
+            GLOBAL_RESULT=0
+        fi
+        exit $GLOBAL_RESULT

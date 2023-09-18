@@ -6,8 +6,7 @@
 # Note: set-zuul-log-path-fact is tested by emit-job-header.yaml
 - import_playbook: emit-job-header.yaml
 - import_playbook: ensure-output-dirs.yaml
-# This runs local code so cannot be tested in this way.
-# - import_playbook: prepare-workspace-git.yaml
+- import_playbook: prepare-workspace-git.yaml
 - import_playbook: configure-mirrors.yaml
 - import_playbook: fetch-zuul-cloner.yaml
 - import_playbook: validate-host.yaml
