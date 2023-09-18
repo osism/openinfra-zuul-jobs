@@ -18,7 +18,7 @@
       pip:
         name:
           - stestr>=2.0.0,<2.6.0
-          - python-subunit
+          - python-subunit<=1.4.2
         virtualenv: "{{ zuul_work_dir }}/.tox/utests/"
         virtualenv_command: '{{ ensure_pip_virtualenv_command }}'
 
