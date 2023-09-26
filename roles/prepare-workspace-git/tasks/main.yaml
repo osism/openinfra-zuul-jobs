@@ -25,8 +25,65 @@
   tags:
     - skip_ansible_lint
 
-# TODO(tobiash): we might want to deprecate the role mirror-workspace-git-repos
-# and move it here.
-- name: Synchronize repos
-  import_role:
-    name: mirror-workspace-git-repos
+- name: Allow pushing to non-bare repo
+  git_config:
+    name: receive.denyCurrentBranch
+    value: ignore
+    scope: local
+    repo: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
+  with_dict: "{{ zuul.projects }}"
+  loop_control:
+    loop_var: zj_project
+
+- name: Synchronize src repos to workspace directory
+  command: |-
+    {% if ansible_connection == "kubectl" %}
+      git push {% if mirror_workspace_quiet %}--quiet{% endif %} --mirror "ext::kubectl --context {{ zuul.resources[inventory_hostname].context }} -n {{ zuul.resources[inventory_hostname].namespace }} exec -i {{ zuul.resources[inventory_hostname].pod }} -- %S {{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
+    {% else %}
+      git push {% if mirror_workspace_quiet %}--quiet{% endif %} --mirror git+ssh://{{ ansible_user }}@{{ ansible_host | ipwrap }}:{{ ansible_port }}/{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}
+    {% endif %}
+  args:
+    chdir: "{{ zuul.executor.work_root }}/{{ zj_project.value.src_dir }}"
+  environment:
+    GIT_ALLOW_PROTOCOL: ext:ssh
+  with_dict: "{{ zuul.projects }}"
+  loop_control:
+    loop_var: zj_project
+  delegate_to: localhost
+  # We occasionally see git pushes in the middle of this loop fail then
+  # subsequent pushes for other repos succeed. The entire loop ends up
+  # failing because one of the pushes failed. Mitigate this by retrying
+  # on failure.
+  register: git_push
+  until: git_push is success
+  retries: 3
+  # ANSIBLE0006: Skip linting since it triggers on the "git" command,
+  # but push is not supported by ansible git module.
+  tags:
+    - skip_ansible_lint
+
+# Do this as a multi-line shell so that we can do the loop once
+- name: Update remote repository state correctly
+  shell: |
+    set -eu
+
+    # Reset is needed because we pushed to a non-bare repo
+    git reset --hard
+    # Clean is needed because we pushed to a non-bare repo
+    git clean -xdf
+    # Undo the config setting we did above
+    git config --local --unset receive.denyCurrentBranch
+    # checkout the branch matching the branch set up by the executor
+    git checkout {% if mirror_workspace_quiet %}--quiet{% endif %} {{ zj_project.value.checkout }}
+    # put out a status line with the current HEAD
+    echo "{{ zj_project.value.canonical_name }} checked out to:"
+    git log --pretty=oneline  -1
+  args:
+    chdir: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
+  with_dict: "{{ zuul.projects }}"
+  loop_control:
+    loop_var: zj_project
+  # ANSIBLE0006: Skip linting since it triggers on the "git" command,
+  # but we prefer the shell above
+  tags:
+    - skip_ansible_lint
