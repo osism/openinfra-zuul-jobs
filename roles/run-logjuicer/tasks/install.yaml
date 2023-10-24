@@ -1,0 +1,15 @@
+---
+- name: Install LogJuicer
+  shell: |
+    set -o pipefail
+    mkdir -p ~/.local/bin
+    curl -L https://github.com/logjuicer/logjuicer/releases/download/{{ logjuicer_version }}/logjuicer-x86_64-linux.tar.bz2 | tar -C ~/.local/ -xjvf -
+  tags:
+    # skip using file module to create the directory to keep this role short
+    - skip_ansible_lint
+  args:
+    executable: '/bin/bash'
+
+- name: Set logjuicer_cmd fact
+  set_fact:
+    logjuicer_cmd: "{% if logjuicer_debug %}env LOGJUICER_LOG=debug {% endif %}{{ ansible_env.HOME }}/.local/bin/logjuicer"

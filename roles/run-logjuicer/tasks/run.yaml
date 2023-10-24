@@ -1,0 +1,44 @@
+---
+- name: Check for multi-node usages
+  when: ansible_play_hosts_all | length > 1
+  fail:
+    msg: "Run logjuicer from the executor after the fetch-output for multi-node jobs"
+
+- name: Setup multi-node fact
+  when: inventory_hostname == "localhost"
+  set_fact:
+    _logs_path: "{{ zuul.executor.log_root }}"
+
+- name: Setup single-node
+  when: inventory_hostname != "localhost"
+  block:
+    - name: Setup fact
+      set_fact:
+        _logs_path: "{{ ansible_user_dir }}/zuul-output/logs"
+
+    - name: Copy the console log and inventory for analysis on the test instance
+      copy:
+        src: "{{ zuul.executor.log_root }}/{{ zj_item }}"
+        dest: "{{ _logs_path }}/"
+      loop_control:
+        loop_var: zj_item
+      loop:
+        - "job-output.txt"
+        - "zuul-info"
+
+- name: Analyse the logs
+  command: >
+    timeout {{ logjuicer_max_run_time }}s {{ logjuicer_cmd }}
+      --report {{ _logs_path }}/logjuicer.{% if zuul_log_compress|default(false) %}gz{% else %}bin{% endif %}
+      zuul-build --api-url {{ zuul_web_url }} {{ _logs_path }}/
+  ignore_errors: true
+  register: _logjuicer_run
+
+- name: Register the output
+  when: _logjuicer_run.rc == 0
+  zuul_return:
+    data:
+      zuul:
+        artifacts:
+          - name: "LogJuicer Report"
+            url: "logjuicer.html"

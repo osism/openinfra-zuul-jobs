@@ -1,0 +1,7 @@
+---
+- name: Detect anomalies with logjuicer
+  block:
+    - name: Install logjuicer
+      include_tasks: install.yaml
+    - name: Run logjuicer
+      include_tasks: run.yaml
