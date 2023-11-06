@@ -56,6 +56,14 @@
   with_dict: "{{ zuul.projects }}"
   loop_control:
     loop_var: zj_project
+  # We occasionally see the this task fail for the first element in the
+  # zuul.projects list with a MODULE FAILURE and a return code of -13
+  # (SIGPIPE).  This may be caused by
+  # https://github.com/ansible/ansible/issues/81777
+  # Try to mitigate this issue by retrying on failure.
+  register: git_update
+  until: git_update is success
+  retries: 3
   # ANSIBLE0006: Skip linting since it triggers on the "git" command,
   # but we prefer the shell above
   tags:
