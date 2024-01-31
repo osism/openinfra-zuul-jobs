@@ -12,3 +12,4 @@ General Purpose Jobs
 .. zuul:autojob:: shake-build
 .. zuul:autojob:: upload-git-mirror
 .. zuul:autojob:: validate-zone-db
+.. zuul:autojob:: zuul-tenant-conf-check

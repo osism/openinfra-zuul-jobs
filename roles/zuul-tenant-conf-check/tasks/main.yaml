@@ -1,0 +1,53 @@
+- name: Create temporary directory
+  tempfile:
+    state: directory
+  register: zj_zuul_tenant_conf_check_tempdir
+
+- name: Copy zuul.conf to temporary directory
+  copy:
+    src: "{{ zuul_tenant_conf_check_zuul_conf_path }}"
+    dest: "{{ zj_zuul_tenant_conf_check_tempdir.path }}/zuul.conf"
+
+- name: Copy tenant config to temporary directory
+  copy:
+    src: "{{ zuul_tenant_conf_check_tenant_config_path }}"
+    dest: "{{ zj_zuul_tenant_conf_check_tempdir.path }}/main.yaml"
+
+- name: Update zuul.conf with tenant config path
+  ini_file:
+    path: "{{ zj_zuul_tenant_conf_check_tempdir.path }}/zuul.conf"
+    section: scheduler
+    option: tenant_config
+    value: "/work/main.yaml"
+    state: present
+
+- name: Identify container registry for authentication
+  when: zuul_tenant_conf_check_registry_credentials is defined
+  set_fact:
+    _registry: "{{ (zuul_tenant_conf_check_image | split('/', 1)).0 }}"
+    _repopath: "{{ (zuul_tenant_conf_check_image | split('/', 1)).1 }}"
+
+- name: Log into container registry
+  when: zuul_tenant_conf_check_registry_credentials is defined
+  command: >-
+    docker login
+    -u "{{ zuul_tenant_conf_check_registry_credentials[_registry].username }}"
+    -p "{{ zuul_tenant_conf_check_registry_credentials[_registry].password }}"
+    {{ _registry }}
+
+- name: Run tenant-conf-check
+  block:
+    - name: Run tenant-conf-check
+      command: >-
+        docker run --rm -t
+        -v "{{ zj_zuul_tenant_conf_check_tempdir.path }}:/work"
+        {{ zuul_tenant_conf_check_image }}
+        zuul-admin -c /work/zuul.conf tenant-conf-check
+  always:
+    - name: Remove temporary directory
+      file:
+        path: "{{ zj_zuul_tenant_conf_check_tempdir.path }}"
+        state: absent
+    - name: Log out of container registry
+      when: zuul_tenant_conf_check_registry_credentials is defined
+      command: docker logout
