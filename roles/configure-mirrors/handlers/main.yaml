@@ -10,8 +10,6 @@
 - name: Update yum/dnf cache
   become: yes
   command: "{{ zj_command }}"
-  args:
-    warn: false
   with_items:
     - "{{ ansible_pkg_mgr }} clean all"
     # verbose is needed in order to make it possible to debug potential failures

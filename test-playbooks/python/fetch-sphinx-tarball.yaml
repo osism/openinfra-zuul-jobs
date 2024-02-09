@@ -14,8 +14,6 @@
         mkdir -p {{ zuul.project.src_dir }}/doc/build/html
         echo "%PDF-1.2" > {{ zuul.project.src_dir }}/doc/build/pdf/doc-{{ zuul.project.short_name }}.pdf
         echo "<body>Hello</body>" > {{ zuul.project.src_dir }}/doc/build/html/index.html
-      args:
-        warn: false
 
   tasks:
     # This tars up the fake sphinx output we created above on the test

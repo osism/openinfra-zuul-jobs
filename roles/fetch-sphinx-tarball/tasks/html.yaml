@@ -6,8 +6,6 @@
 
 - name: Archive HTML
   command: "tar -f {{ html_archive.path }} -C {{ zuul_work_dir }}/{{ sphinx_build_dir }}/html --exclude=.doctrees -cz ."
-  args:
-    warn: false
 
 - name: Fetch HTML
   when: not zuul_use_fetch_output

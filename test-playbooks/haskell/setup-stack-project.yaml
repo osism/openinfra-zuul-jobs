@@ -5,5 +5,3 @@
 
     - name: Copy file over zuul-jobs
       command: rsync -a new-project/ "{{ zuul.project.src_dir }}/"
-      args:
-        warn: false

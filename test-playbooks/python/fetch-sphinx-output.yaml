@@ -9,8 +9,6 @@
       shell: |
         mkdir -p {{ zuul.project.src_dir }}/doc/build/html
         echo "<body>Hello</body>" > {{ zuul.project.src_dir }}/doc/build/html/index.html
-      args:
-        warn: false
 
   tasks:
     - name: Run fetch-sphinx-output

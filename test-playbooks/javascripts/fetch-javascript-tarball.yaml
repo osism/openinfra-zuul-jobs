@@ -4,8 +4,6 @@
       shell: |
         mkdir -p {{ zuul.project.src_dir }}
         tar czf {{ zuul.project.src_dir }}/dist.tgz /etc/os-release
-      args:
-        warn: false
   tasks:
     - name: Run fetch-javascript-tarball
       import_role:

@@ -73,8 +73,6 @@
 - name: Validate ability to talk with docker
   command: docker ps
   changed_when: false
-  args:
-    warn: no
 
 - name: Get version details
   command: docker version

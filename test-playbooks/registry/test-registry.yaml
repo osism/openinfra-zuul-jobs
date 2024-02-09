@@ -134,8 +134,6 @@
         mkdir -p src/openstack.org/project/fake-sibling &&
         touch  src/opendev.org/project/fake-sibling/file &&
         touch  src/openstack.org/project/fake-sibling/file
-      args:
-        warn: false
 
     - name: Build docker image
       include_role:

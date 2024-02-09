@@ -19,6 +19,7 @@
         name:
           - stestr
           - python-subunit
+          - 'voluptuous==0.13.1'
         virtualenv: "{{ zuul_work_dir }}/.tox/utests/"
         virtualenv_command: '{{ ensure_pip_virtualenv_command }}'
 

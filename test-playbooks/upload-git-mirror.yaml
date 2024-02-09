@@ -38,7 +38,6 @@
       changed_when: false
       args:
         chdir: "{{ ansible_user_dir }}/{{ zuul.project.src_dir }}"
-        warn: false
       register: current_commit
 
     - name: Clone upstream zuul-jobs as a bare repository
@@ -71,7 +70,6 @@
       changed_when: false
       args:
         chdir: "{{ test_repo_path }}"
-        warn: false
       register: after_mirror
 
     - name: Assert that the git repositories have the same commit for HEAD
