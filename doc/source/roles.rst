@@ -29,3 +29,4 @@ Roles
    rust-roles
    system-roles
    translation-roles
+   logjuicer-roles

@@ -1,0 +1,13 @@
+---
+- hosts: all
+  tasks:
+    - name: Generate random data
+      command: "echo {{ log_line }}"
+      vars:
+        log_line: "{{ ['eventa occured today', 'eventb happened previously', 'eventc presently failed'] | random }}"
+
+    - name: Run logjuicer
+      include_role:
+        name: run-logjuicer
+      vars:
+        zuul_web_url: https://zuul.opendev.org/

@@ -1,0 +1,9 @@
+---
+# Update from https://github.com/logjuicer/logjuicer/releases
+logjuicer_version: 0.9.6
+
+# Enable logjuicer debug logs
+logjuicer_debug: false
+
+# Maximum runtime in seconds
+logjuicer_max_run_time: 900

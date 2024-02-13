@@ -1,0 +1,8 @@
+---
+- name: Return LogJuicer report url
+  zuul_return:
+    data:
+      zuul:
+        artifacts:
+          - name: "LogJuicer Report"
+            url: "{{ logjuicer_web_url }}/report/new?target={{ zuul_web_url }}/build/{{ zuul.build }}"
