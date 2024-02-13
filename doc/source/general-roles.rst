@@ -59,3 +59,4 @@ General Purpose Roles
 .. zuul:autorole:: validate-zone-db
 .. zuul:autorole:: version-from-git
 .. zuul:autorole:: write-inventory
+.. zuul:autorole:: zuul-tenant-conf-check

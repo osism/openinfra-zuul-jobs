@@ -1,0 +1,1 @@
+zuul_tenant_conf_check_image: quay.io/zuul-ci/zuul-scheduler:latest
