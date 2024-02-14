@@ -48,6 +48,32 @@
   become: true
   register: _docker_status
 
+- name: Dir for docker systemd overrides
+  file:
+    path: /etc/systemd/system/docker.service.d/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+# Skopeo hardcoded protocol version 1.22 until ~February 2024.
+# Docker supports the MIN version override until Docker 26 releases.
+# https://github.com/docker/cli/blob/master/docs/deprecated.md#deprecate-legacy-api-versions
+- name: Override the docker daemon image protocol min version
+  copy:
+    dest: /etc/systemd/system/docker.service.d/image_protocol_env.conf
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Service]
+      Environment="DOCKER_MIN_API_VERSION=1.22"
+  become: true
+  notify:
+    - Reload systemd
+    - Restart docker
+
 - name: Restart docker
   when: >-
       (docker_userland_proxy is defined) or

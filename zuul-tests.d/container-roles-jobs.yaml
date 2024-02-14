@@ -352,6 +352,7 @@
       - roles/run-buildset-registry/.*
       - roles/use-buildset-registry/.*
       - test-playbooks/registry/.*
+      - zuul-tests.d/container-roles-jobs.yaml
     pre-run: test-playbooks/registry/buildset-registry-pre.yaml
     run: test-playbooks/registry/buildset-registry.yaml
     post-run: test-playbooks/registry/test-registry-post.yaml
