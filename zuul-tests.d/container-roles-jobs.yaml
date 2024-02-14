@@ -352,7 +352,6 @@
       - roles/run-buildset-registry/.*
       - roles/use-buildset-registry/.*
       - test-playbooks/registry/.*
-      - zuul-tests.d/container-roles-jobs.yaml
     pre-run: test-playbooks/registry/buildset-registry-pre.yaml
     run: test-playbooks/registry/buildset-registry.yaml
     post-run: test-playbooks/registry/test-registry-post.yaml
@@ -383,34 +382,6 @@
       - test-playbooks/registry/test-registry-post.yaml
     vars:
       container_command: podman
-
-- job:
-    name: zuul-jobs-test-registry-buildset-registry-openshift-docker
-    dependencies: zuul-jobs-test-registry-buildset-registry
-    description: |
-      Test a buildset registry with openshift and docker
-
-      It is not meant to be used directly but rather run on changes
-      to roles in the zuul-jobs repo.
-    files:
-      - roles/pull-from-intermediate-registry/.*
-      - roles/push-to-intermediate-registry/.*
-      - roles/ensure-docker/.*
-      - roles/ensure-openshift/.*
-      - roles/ensure-package-repositories/.*
-      - roles/build-docker-image/.*
-      - roles/run-buildset-registry/.*
-      - roles/use-buildset-registry/.*
-      - test-playbooks/registry/.*
-    run: test-playbooks/registry/buildset-registry-openshift-docker.yaml
-    post-run:
-      - test-playbooks/registry/test-registry-post.yaml
-    vars:
-      container_command: docker
-    nodeset:
-      nodes:
-        - name: controller
-          label: centos-7
 
 - job:
     name: zuul-jobs-test-registry-buildset-registry-k8s-microk8s
@@ -627,7 +598,6 @@
         - zuul-jobs-test-registry-podman
         - zuul-jobs-test-registry-buildset-registry
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
-        - zuul-jobs-test-registry-buildset-registry-openshift-docker
         - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
