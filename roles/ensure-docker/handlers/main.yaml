@@ -1,7 +1,9 @@
 ---
 - name: Reload systemd
   become: true
-  systemd_service:
+  # Ansible 6 requires "systemd" and not "systemd_service"
+  # TODO: change this to systemd_service >= 2 weeks after Zuul 10 is released
+  systemd:
     daemon_reload: true
 
 - name: Stop docker.socket to avoid any conflict
