@@ -78,16 +78,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-packer-opensuse-15
-    description: Test packer job on opensuse-15
-    parent: zuul-jobs-test-packer
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
-
-- job:
     name: zuul-jobs-test-packer-ubuntu-bionic
     description: Test packer job on ubuntu-bionic
     parent: zuul-jobs-test-packer
@@ -126,7 +116,6 @@
         - zuul-jobs-test-packer-debian-bookworm
         - zuul-jobs-test-packer-debian-bullseye
         - zuul-jobs-test-packer-debian-buster
-        - zuul-jobs-test-packer-opensuse-15
         - zuul-jobs-test-packer-ubuntu-bionic
         - zuul-jobs-test-packer-ubuntu-focal
         - zuul-jobs-test-packer-ubuntu-jammy

@@ -78,16 +78,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-helm-lint-opensuse-15
-    description: Test the helm-lint job on opensuse-15
-    parent: zuul-jobs-test-helm-lint
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
-
-- job:
     name: zuul-jobs-test-helm-lint-ubuntu-bionic
     description: Test the helm-lint job on ubuntu-bionic
     parent: zuul-jobs-test-helm-lint
@@ -126,7 +116,6 @@
         - zuul-jobs-test-helm-lint-debian-bookworm
         - zuul-jobs-test-helm-lint-debian-bullseye
         - zuul-jobs-test-helm-lint-debian-buster
-        - zuul-jobs-test-helm-lint-opensuse-15
         - zuul-jobs-test-helm-lint-ubuntu-bionic
         - zuul-jobs-test-helm-lint-ubuntu-focal
         - zuul-jobs-test-helm-lint-ubuntu-jammy

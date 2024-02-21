@@ -48,7 +48,6 @@ FEDORA_PLATFORMS = [
 ]
 OTHER_PLATFORMS = [
     # 'gentoo-17-0-systemd',
-    'opensuse-15',
 ]
 ALL_PLATFORMS = (CENTOS_PLATFORMS + DEBIAN_PLATFORMS +
                  UBUNTU_PLATFORMS + FEDORA_PLATFORMS +
@@ -72,7 +71,6 @@ NON_VOTING_JOBS = [
     'zuul-jobs-test-multinode-roles-gentoo-17-0-systemd',
     # nimble jobs for centos-7 and opensuse-15 are broken since long time
     'zuul-jobs-test-nimble-centos-7',
-    'zuul-jobs-test-nimble-opensuse-15'
 ]
 
 

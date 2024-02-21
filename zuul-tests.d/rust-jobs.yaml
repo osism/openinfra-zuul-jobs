@@ -75,16 +75,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-rust-opensuse-15
-    description: Test the rust roles on opensuse-15
-    parent: zuul-jobs-test-rust
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
-
-- job:
     name: zuul-jobs-test-rust-ubuntu-bionic
     description: Test the rust roles on ubuntu-bionic
     parent: zuul-jobs-test-rust
@@ -123,7 +113,6 @@
         - zuul-jobs-test-rust-debian-bookworm
         - zuul-jobs-test-rust-debian-bullseye
         - zuul-jobs-test-rust-debian-buster
-        - zuul-jobs-test-rust-opensuse-15
         - zuul-jobs-test-rust-ubuntu-bionic
         - zuul-jobs-test-rust-ubuntu-focal
         - zuul-jobs-test-rust-ubuntu-jammy

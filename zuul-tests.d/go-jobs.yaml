@@ -76,16 +76,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-golang-go-opensuse-15
-    description: Test the golang-go job on opensuse-15
-    parent: zuul-jobs-test-golang-go
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
-
-- job:
     name: zuul-jobs-test-golang-go-ubuntu-bionic
     description: Test the golang-go job on ubuntu-bionic
     parent: zuul-jobs-test-golang-go
@@ -124,7 +114,6 @@
         - zuul-jobs-test-golang-go-debian-bookworm
         - zuul-jobs-test-golang-go-debian-bullseye
         - zuul-jobs-test-golang-go-debian-buster
-        - zuul-jobs-test-golang-go-opensuse-15
         - zuul-jobs-test-golang-go-ubuntu-bionic
         - zuul-jobs-test-golang-go-ubuntu-focal
         - zuul-jobs-test-golang-go-ubuntu-jammy

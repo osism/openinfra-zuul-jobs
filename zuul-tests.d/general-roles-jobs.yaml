@@ -193,16 +193,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-base-roles-opensuse-15
-    description: Tests roles in the 'base' job on opensuse-15
-    parent: zuul-jobs-test-base-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
-
-- job:
     name: zuul-jobs-test-base-roles-ubuntu-bionic
     description: Tests roles in the 'base' job on ubuntu-bionic
     parent: zuul-jobs-test-base-roles
@@ -304,16 +294,6 @@
       nodes:
         - name: debian-buster
           label: debian-buster
-
-- job:
-    name: zuul-jobs-test-bindep-opensuse-15
-    description: Test the bindep role on opensuse-15
-    parent: zuul-jobs-test-bindep
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
 
 - job:
     name: zuul-jobs-test-bindep-ubuntu-bionic
@@ -532,16 +512,6 @@
           label: debian-buster
 
 - job:
-    name: zuul-jobs-test-dstat-graph-opensuse-15
-    description: Test the dstat-graph roles on opensuse-15
-    parent: zuul-jobs-test-dstat-graph
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: opensuse-15
-          label: opensuse-15
-
-- job:
     name: zuul-jobs-test-dstat-graph-ubuntu-bionic
     description: Test the dstat-graph roles on ubuntu-bionic
     parent: zuul-jobs-test-dstat-graph
@@ -695,25 +665,6 @@
           label: debian-buster
         - name: secondary
           label: debian-buster
-      groups:
-        - name: switch
-          nodes:
-            - primary
-        - name: peers
-          nodes:
-            - secondary
-
-- job:
-    name: zuul-jobs-test-multinode-roles-opensuse-15
-    description: Tests multinode setup roles on opensuse-15
-    parent: zuul-jobs-test-multinode-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: primary
-          label: opensuse-15
-        - name: secondary
-          label: opensuse-15
       groups:
         - name: switch
           nodes:
@@ -955,7 +906,6 @@
         - zuul-jobs-test-base-roles-debian-bookworm
         - zuul-jobs-test-base-roles-debian-bullseye
         - zuul-jobs-test-base-roles-debian-buster
-        - zuul-jobs-test-base-roles-opensuse-15
         - zuul-jobs-test-base-roles-ubuntu-bionic
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
@@ -965,7 +915,6 @@
         - zuul-jobs-test-bindep-debian-bookworm
         - zuul-jobs-test-bindep-debian-bullseye
         - zuul-jobs-test-bindep-debian-buster
-        - zuul-jobs-test-bindep-opensuse-15
         - zuul-jobs-test-bindep-ubuntu-bionic
         - zuul-jobs-test-bindep-ubuntu-focal
         - zuul-jobs-test-bindep-ubuntu-jammy
@@ -985,7 +934,6 @@
         - zuul-jobs-test-dstat-graph-debian-bookworm
         - zuul-jobs-test-dstat-graph-debian-bullseye
         - zuul-jobs-test-dstat-graph-debian-buster
-        - zuul-jobs-test-dstat-graph-opensuse-15
         - zuul-jobs-test-dstat-graph-ubuntu-bionic
         - zuul-jobs-test-dstat-graph-ubuntu-focal
         - zuul-jobs-test-dstat-graph-ubuntu-jammy
@@ -995,7 +943,6 @@
         - zuul-jobs-test-multinode-roles-debian-bookworm
         - zuul-jobs-test-multinode-roles-debian-bullseye
         - zuul-jobs-test-multinode-roles-debian-buster
-        - zuul-jobs-test-multinode-roles-opensuse-15
         - zuul-jobs-test-multinode-roles-ubuntu-bionic
         - zuul-jobs-test-multinode-roles-ubuntu-focal
         - zuul-jobs-test-multinode-roles-ubuntu-jammy
