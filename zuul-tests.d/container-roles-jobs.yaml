@@ -63,16 +63,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-ensure-docker-debian-buster
-    description: Tests ensure-docker role on debian-buster
-    parent: zuul-jobs-test-ensure-docker
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-ensure-docker-ubuntu-bionic
     description: Tests ensure-docker role on ubuntu-bionic
     parent: zuul-jobs-test-ensure-docker
@@ -582,7 +572,6 @@
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bookworm
         - zuul-jobs-test-ensure-docker-debian-bullseye
-        - zuul-jobs-test-ensure-docker-debian-buster
         - zuul-jobs-test-ensure-docker-ubuntu-bionic
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy

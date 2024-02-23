@@ -35,7 +35,6 @@ CENTOS_PLATFORMS = [
     'centos-9-stream',
 ]
 DEBIAN_PLATFORMS = [
-    'debian-buster',
     'debian-bullseye',
     'debian-bookworm',
 ]

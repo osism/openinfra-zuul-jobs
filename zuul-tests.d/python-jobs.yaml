@@ -58,16 +58,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-ensure-nox-debian-buster
-    description: Test the ensure-nox role on debian-buster
-    parent: zuul-jobs-test-ensure-nox
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-ensure-nox-ubuntu-bionic
     description: Test the ensure-nox role on ubuntu-bionic
     parent: zuul-jobs-test-ensure-nox
@@ -155,16 +145,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-ensure-pip-debian-buster
-    description: Test the ensure-pip role on debian-buster
-    parent: zuul-jobs-test-ensure-pip
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
 
 - job:
     name: zuul-jobs-test-ensure-pip-ubuntu-bionic
@@ -273,16 +253,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-ensure-tox-debian-buster
-    description: Test the ensure-tox role on debian-buster
-    parent: zuul-jobs-test-ensure-tox
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-ensure-tox-ubuntu-bionic
     description: Test the ensure-tox role on ubuntu-bionic
     parent: zuul-jobs-test-ensure-tox
@@ -372,16 +342,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-fetch-sphinx-tarball-debian-buster
-    description: Test the fetch-sphinx-tarball role on debian-buster
-    parent: zuul-jobs-test-fetch-sphinx-tarball
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
 
 - job:
     name: zuul-jobs-test-fetch-sphinx-tarball-ubuntu-bionic
@@ -532,7 +492,6 @@
         - zuul-jobs-test-ensure-nox-centos-9-stream
         - zuul-jobs-test-ensure-nox-debian-bookworm
         - zuul-jobs-test-ensure-nox-debian-bullseye
-        - zuul-jobs-test-ensure-nox-debian-buster
         - zuul-jobs-test-ensure-nox-ubuntu-bionic
         - zuul-jobs-test-ensure-nox-ubuntu-focal
         - zuul-jobs-test-ensure-nox-ubuntu-jammy
@@ -541,7 +500,6 @@
         - zuul-jobs-test-ensure-pip-centos-9-stream
         - zuul-jobs-test-ensure-pip-debian-bookworm
         - zuul-jobs-test-ensure-pip-debian-bullseye
-        - zuul-jobs-test-ensure-pip-debian-buster
         - zuul-jobs-test-ensure-pip-ubuntu-bionic
         - zuul-jobs-test-ensure-pip-ubuntu-focal
         - zuul-jobs-test-ensure-pip-ubuntu-jammy
@@ -552,7 +510,6 @@
         - zuul-jobs-test-ensure-tox-centos-9-stream
         - zuul-jobs-test-ensure-tox-debian-bookworm
         - zuul-jobs-test-ensure-tox-debian-bullseye
-        - zuul-jobs-test-ensure-tox-debian-buster
         - zuul-jobs-test-ensure-tox-ubuntu-bionic
         - zuul-jobs-test-ensure-tox-ubuntu-focal
         - zuul-jobs-test-ensure-tox-ubuntu-jammy
@@ -561,7 +518,6 @@
         - zuul-jobs-test-fetch-sphinx-tarball-centos-9-stream
         - zuul-jobs-test-fetch-sphinx-tarball-debian-bookworm
         - zuul-jobs-test-fetch-sphinx-tarball-debian-bullseye
-        - zuul-jobs-test-fetch-sphinx-tarball-debian-buster
         - zuul-jobs-test-fetch-sphinx-tarball-ubuntu-bionic
         - zuul-jobs-test-fetch-sphinx-tarball-ubuntu-focal
         - zuul-jobs-test-fetch-sphinx-tarball-ubuntu-jammy

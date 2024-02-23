@@ -63,16 +63,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-build-python-release-jobs-debian-buster
-    description: Test the build-python-release-jobs role on debian-buster
-    parent: zuul-jobs-test-build-python-release-jobs
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-build-python-release-jobs-ubuntu-bionic
     description: Test the build-python-release-jobs role on ubuntu-bionic
     parent: zuul-jobs-test-build-python-release-jobs
@@ -161,16 +151,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-ensure-python-pyenv-debian-buster
-    description: Test the ensure-python role with pyenv on debian-buster
-    parent: zuul-jobs-test-ensure-python-pyenv
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-ensure-python-pyenv-ubuntu-bionic
     description: Test the ensure-python role with pyenv on ubuntu-bionic
     parent: zuul-jobs-test-ensure-python-pyenv
@@ -208,7 +188,6 @@
         - zuul-jobs-test-build-python-release-jobs-centos-9-stream
         - zuul-jobs-test-build-python-release-jobs-debian-bookworm
         - zuul-jobs-test-build-python-release-jobs-debian-bullseye
-        - zuul-jobs-test-build-python-release-jobs-debian-buster
         - zuul-jobs-test-build-python-release-jobs-ubuntu-bionic
         - zuul-jobs-test-build-python-release-jobs-ubuntu-focal
         - zuul-jobs-test-build-python-release-jobs-ubuntu-jammy
@@ -217,7 +196,6 @@
         - zuul-jobs-test-ensure-python-pyenv-centos-9-stream
         - zuul-jobs-test-ensure-python-pyenv-debian-bookworm
         - zuul-jobs-test-ensure-python-pyenv-debian-bullseye
-        - zuul-jobs-test-ensure-python-pyenv-debian-buster
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-bionic
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-focal
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-jammy

@@ -68,16 +68,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-packer-debian-buster
-    description: Test packer job on debian-buster
-    parent: zuul-jobs-test-packer
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-packer-ubuntu-bionic
     description: Test packer job on ubuntu-bionic
     parent: zuul-jobs-test-packer
@@ -115,7 +105,6 @@
         - zuul-jobs-test-packer-centos-9-stream
         - zuul-jobs-test-packer-debian-bookworm
         - zuul-jobs-test-packer-debian-bullseye
-        - zuul-jobs-test-packer-debian-buster
         - zuul-jobs-test-packer-ubuntu-bionic
         - zuul-jobs-test-packer-ubuntu-focal
         - zuul-jobs-test-packer-ubuntu-jammy

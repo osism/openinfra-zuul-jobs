@@ -70,16 +70,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-terraform-debian-buster
-    description: Test terraform job on debian-buster
-    parent: zuul-jobs-test-terraform
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-terraform-ubuntu-bionic
     description: Test terraform job on ubuntu-bionic
     parent: zuul-jobs-test-terraform
@@ -182,16 +172,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-terraform-role-debian-buster
-    description: Test terraform roles on debian-buster
-    parent: zuul-jobs-test-terraform-role
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-terraform-role-ubuntu-bionic
     description: Test terraform roles on ubuntu-bionic
     parent: zuul-jobs-test-terraform-role
@@ -229,7 +209,6 @@
         - zuul-jobs-test-terraform-centos-9-stream
         - zuul-jobs-test-terraform-debian-bookworm
         - zuul-jobs-test-terraform-debian-bullseye
-        - zuul-jobs-test-terraform-debian-buster
         - zuul-jobs-test-terraform-ubuntu-bionic
         - zuul-jobs-test-terraform-ubuntu-focal
         - zuul-jobs-test-terraform-ubuntu-jammy
@@ -238,7 +217,6 @@
         - zuul-jobs-test-terraform-role-centos-9-stream
         - zuul-jobs-test-terraform-role-debian-bookworm
         - zuul-jobs-test-terraform-role-debian-bullseye
-        - zuul-jobs-test-terraform-role-debian-buster
         - zuul-jobs-test-terraform-role-ubuntu-bionic
         - zuul-jobs-test-terraform-role-ubuntu-focal
         - zuul-jobs-test-terraform-role-ubuntu-jammy

@@ -74,16 +74,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-nodejs-test-dependencies-debian-buster
-    description: Test the installation of nodejs test dependencies on debian-buster
-    parent: zuul-jobs-test-nodejs-test-dependencies
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-nodejs-test-dependencies-ubuntu-bionic
     description: Test the installation of nodejs test dependencies on ubuntu-bionic
     parent: zuul-jobs-test-nodejs-test-dependencies
@@ -122,7 +112,6 @@
         - zuul-jobs-test-fetch-javascript-tarball-synchronize
         - zuul-jobs-test-nodejs-test-dependencies-debian-bookworm
         - zuul-jobs-test-nodejs-test-dependencies-debian-bullseye
-        - zuul-jobs-test-nodejs-test-dependencies-debian-buster
         - zuul-jobs-test-nodejs-test-dependencies-ubuntu-bionic
         - zuul-jobs-test-nodejs-test-dependencies-ubuntu-focal
         - zuul-jobs-test-nodejs-test-dependencies-ubuntu-jammy

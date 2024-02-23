@@ -66,16 +66,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-golang-go-debian-buster
-    description: Test the golang-go job on debian-buster
-    parent: zuul-jobs-test-golang-go
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: debian-buster
-          label: debian-buster
-
-- job:
     name: zuul-jobs-test-golang-go-ubuntu-bionic
     description: Test the golang-go job on ubuntu-bionic
     parent: zuul-jobs-test-golang-go
@@ -113,7 +103,6 @@
         - zuul-jobs-test-golang-go-centos-9-stream
         - zuul-jobs-test-golang-go-debian-bookworm
         - zuul-jobs-test-golang-go-debian-bullseye
-        - zuul-jobs-test-golang-go-debian-buster
         - zuul-jobs-test-golang-go-ubuntu-bionic
         - zuul-jobs-test-golang-go-ubuntu-focal
         - zuul-jobs-test-golang-go-ubuntu-jammy
