@@ -1,0 +1,23 @@
+- name: "Synchronize {{ zj_project.value.canonical_name }}"
+  command: |-
+    {% if ansible_connection == "kubectl" %}
+      git push {% if mirror_workspace_quiet %}--quiet{% endif %} --mirror "ext::kubectl --context {{ zuul.resources[inventory_hostname].context }} -n {{ zuul.resources[inventory_hostname].namespace }} exec -i {{ zuul.resources[inventory_hostname].pod }} -- %S {{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
+    {% else %}
+      git push {% if mirror_workspace_quiet %}--quiet{% endif %} --mirror git+ssh://{{ ansible_user }}@{{ ansible_host | ipwrap }}:{{ ansible_port }}/{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}
+    {% endif %}
+  args:
+    chdir: "{{ zuul.executor.work_root }}/{{ zj_project.value.src_dir }}"
+  environment:
+    GIT_ALLOW_PROTOCOL: ext:ssh
+  delegate_to: localhost
+  # We occasionally see git pushes in the middle of this loop fail then
+  # subsequent pushes for other repos succeed. The entire loop ends up
+  # failing because one of the pushes failed. Mitigate this by retrying
+  # on failure.
+  register: git_push
+  until: git_push is success
+  retries: 3
+  # ANSIBLE0006: Skip linting since it triggers on the "git" command,
+  # but push is not supported by ansible git module.
+  tags:
+    - skip_ansible_lint
