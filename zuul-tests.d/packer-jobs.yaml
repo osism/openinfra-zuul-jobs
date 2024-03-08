@@ -18,16 +18,6 @@
         packer_test_content: "abc\n"
 
 - job:
-    name: zuul-jobs-test-packer-centos-7
-    description: Test packer job on centos-7
-    parent: zuul-jobs-test-packer
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-packer-centos-8-stream
     description: Test packer job on centos-8-stream
     parent: zuul-jobs-test-packer
@@ -100,7 +90,6 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-packer-centos-7
         - zuul-jobs-test-packer-centos-8-stream
         - zuul-jobs-test-packer-centos-9-stream
         - zuul-jobs-test-packer-debian-bookworm
