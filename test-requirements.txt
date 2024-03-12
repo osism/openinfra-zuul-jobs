@@ -37,8 +37,9 @@ protobuf<3.18;python_version<'3.6'
 # For upload-logs-s3
 boto3
 
-# Dep of azure-storage-blob
+# Deps of azure-storage-blob
 msrest<0.7.0;python_version=='2.7'
+requests-oauthlib<1.4.0;python_version=='2.7'
 
 # For upload-logs-azure
 azure-storage-blob
