@@ -30,7 +30,6 @@ import ruamellib
 # in the multinode jobs, so just use the real labels everywhere.
 
 CENTOS_PLATFORMS = [
-    'centos-7',
     'centos-8-stream',
     'centos-9-stream',
 ]
@@ -68,8 +67,6 @@ TAGS = {
 # Insert a job to make that single job non-voting
 NON_VOTING_JOBS = [
     'zuul-jobs-test-multinode-roles-gentoo-17-0-systemd',
-    # nimble jobs for centos-7 and opensuse-15 are broken since long time
-    'zuul-jobs-test-nimble-centos-7',
 ]
 
 

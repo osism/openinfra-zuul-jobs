@@ -133,16 +133,6 @@
       - ^test-playbooks/base-roles/.*
 
 - job:
-    name: zuul-jobs-test-base-roles-centos-7
-    description: Tests roles in the 'base' job on centos-7
-    parent: zuul-jobs-test-base-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-base-roles-centos-8-stream
     description: Tests roles in the 'base' job on centos-8-stream
     parent: zuul-jobs-test-base-roles
@@ -224,16 +214,6 @@
     vars:
       role_name: bindep
     tags: all-platforms
-
-- job:
-    name: zuul-jobs-test-bindep-centos-7
-    description: Test the bindep role on centos-7
-    parent: zuul-jobs-test-bindep
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
 
 - job:
     name: zuul-jobs-test-bindep-centos-8-stream
@@ -422,16 +402,6 @@
       - ^test-playbooks/dstat-graph.yaml
 
 - job:
-    name: zuul-jobs-test-dstat-graph-centos-7
-    description: Test the dstat-graph roles on centos-7
-    parent: zuul-jobs-test-dstat-graph
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-dstat-graph-centos-8-stream
     description: Test the dstat-graph roles on centos-8-stream
     parent: zuul-jobs-test-dstat-graph
@@ -518,25 +488,6 @@
       - ^roles/multi-node-known-hosts/.*
       - ^roles/persistent-firewall/.*
       - ^test-playbooks/multinode/.*
-
-- job:
-    name: zuul-jobs-test-multinode-roles-centos-7
-    description: Tests multinode setup roles on centos-7
-    parent: zuul-jobs-test-multinode-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: primary
-          label: centos-7
-        - name: secondary
-          label: centos-7
-      groups:
-        - name: switch
-          nodes:
-            - primary
-        - name: peers
-          nodes:
-            - secondary
 
 - job:
     name: zuul-jobs-test-multinode-roles-centos-8-stream
@@ -831,7 +782,6 @@
         - zuul-jobs-test-add-gpgkey
         - zuul-jobs-test-add-sshkey
         - zuul-jobs-test-encrypt-file
-        - zuul-jobs-test-base-roles-centos-7
         - zuul-jobs-test-base-roles-centos-8-stream
         - zuul-jobs-test-base-roles-centos-9-stream
         - zuul-jobs-test-base-roles-debian-bookworm
@@ -839,7 +789,6 @@
         - zuul-jobs-test-base-roles-ubuntu-bionic
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
-        - zuul-jobs-test-bindep-centos-7
         - zuul-jobs-test-bindep-centos-8-stream
         - zuul-jobs-test-bindep-centos-9-stream
         - zuul-jobs-test-bindep-debian-bookworm
@@ -856,7 +805,6 @@
         - zuul-jobs-test-validate-zone-db-ubuntu-bionic
         - zuul-jobs-test-validate-zone-db-ubuntu-focal
         - zuul-jobs-test-validate-zone-db-ubuntu-jammy
-        - zuul-jobs-test-dstat-graph-centos-7
         - zuul-jobs-test-dstat-graph-centos-8-stream
         - zuul-jobs-test-dstat-graph-centos-9-stream
         - zuul-jobs-test-dstat-graph-debian-bookworm
@@ -864,7 +812,6 @@
         - zuul-jobs-test-dstat-graph-ubuntu-bionic
         - zuul-jobs-test-dstat-graph-ubuntu-focal
         - zuul-jobs-test-dstat-graph-ubuntu-jammy
-        - zuul-jobs-test-multinode-roles-centos-7
         - zuul-jobs-test-multinode-roles-centos-8-stream
         - zuul-jobs-test-multinode-roles-centos-9-stream
         - zuul-jobs-test-multinode-roles-debian-bookworm

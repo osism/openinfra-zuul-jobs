@@ -13,16 +13,6 @@
       - fedora-platforms
 
 - job:
-    name: zuul-jobs-test-ensure-docker-centos-7
-    description: Tests ensure-docker role on centos-7
-    parent: zuul-jobs-test-ensure-docker
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-ensure-docker-centos-8-stream
     description: Tests ensure-docker role on centos-8-stream
     parent: zuul-jobs-test-ensure-docker
@@ -567,7 +557,6 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-ensure-docker-centos-7
         - zuul-jobs-test-ensure-docker-centos-8-stream
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bookworm

@@ -15,16 +15,6 @@
 #  Please re-run to generate new job lists
 
 - job:
-    name: zuul-jobs-test-rust-centos-7
-    description: Test the rust roles on centos-7
-    parent: zuul-jobs-test-rust
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-rust-centos-8-stream
     description: Test the rust roles on centos-8-stream
     parent: zuul-jobs-test-rust
@@ -97,7 +87,6 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-rust-centos-7
         - zuul-jobs-test-rust-centos-8-stream
         - zuul-jobs-test-rust-centos-9-stream
         - zuul-jobs-test-rust-debian-bookworm

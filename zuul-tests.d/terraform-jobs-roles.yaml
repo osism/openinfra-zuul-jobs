@@ -20,16 +20,6 @@
             }
 
 - job:
-    name: zuul-jobs-test-terraform-centos-7
-    description: Test terraform job on centos-7
-    parent: zuul-jobs-test-terraform
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-terraform-centos-8-stream
     description: Test terraform job on centos-8-stream
     parent: zuul-jobs-test-terraform
@@ -122,16 +112,6 @@
             }
 
 - job:
-    name: zuul-jobs-test-terraform-role-centos-7
-    description: Test terraform roles on centos-7
-    parent: zuul-jobs-test-terraform-role
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-terraform-role-centos-8-stream
     description: Test terraform roles on centos-8-stream
     parent: zuul-jobs-test-terraform-role
@@ -204,7 +184,6 @@
 - project:
     check: &id001
       jobs: &id002
-        - zuul-jobs-test-terraform-centos-7
         - zuul-jobs-test-terraform-centos-8-stream
         - zuul-jobs-test-terraform-centos-9-stream
         - zuul-jobs-test-terraform-debian-bookworm
@@ -212,7 +191,6 @@
         - zuul-jobs-test-terraform-ubuntu-bionic
         - zuul-jobs-test-terraform-ubuntu-focal
         - zuul-jobs-test-terraform-ubuntu-jammy
-        - zuul-jobs-test-terraform-role-centos-7
         - zuul-jobs-test-terraform-role-centos-8-stream
         - zuul-jobs-test-terraform-role-centos-9-stream
         - zuul-jobs-test-terraform-role-debian-bookworm

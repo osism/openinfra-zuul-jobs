@@ -18,16 +18,6 @@
 #  Please re-run to generate new job lists
 
 - job:
-    name: zuul-jobs-test-helm-lint-centos-7
-    description: Test the helm-lint job on centos-7
-    parent: zuul-jobs-test-helm-lint
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-7
-          label: centos-7
-
-- job:
     name: zuul-jobs-test-helm-lint-centos-8-stream
     description: Test the helm-lint job on centos-8-stream
     parent: zuul-jobs-test-helm-lint
@@ -100,7 +90,6 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-helm-lint-centos-7
         - zuul-jobs-test-helm-lint-centos-8-stream
         - zuul-jobs-test-helm-lint-centos-9-stream
         - zuul-jobs-test-helm-lint-debian-bookworm
