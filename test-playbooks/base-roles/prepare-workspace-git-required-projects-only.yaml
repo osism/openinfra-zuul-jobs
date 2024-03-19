@@ -1,0 +1,72 @@
+- name: Prepare to test the prepare-workspace-git role with sync required only
+  hosts: all
+  tasks:
+    - name: Delete remote source directory to start with clean state
+      file:
+        state: absent
+        path: "{{ ansible_user_dir }}/{{ item.value.src_dir }}"
+      with_dict: "{{ zuul.projects }}"
+
+# We need to override the zuul.projects variable, and that is not
+# possible in a Zuul job.  So we use a nested Ansible to perform this
+# test.
+- name: Test the prepare-workspace-git role with sync required only
+  hosts: localhost
+  vars:
+    # Mutate the zuul vars supplied to this test job to simulate a
+    # repo being included as non-required (i.e., a depends-on).
+    zuul_mod:
+      projects:
+        opendev.org/zuul/project-config:
+          required: false
+  tasks:
+    - name: Create nested zuul vars
+      set_fact:
+        nested_zuul:
+          zuul: "{{ zuul | combine(zuul_mod, recursive=true) }}"
+    - name: Write nested zuul vars
+      copy:
+        content: '{{ nested_zuul | to_nice_yaml(indent=2) }}'
+        dest: "{{ zuul.executor.work_root }}/nested-zuul-vars.yaml"
+    - name: Run nested Ansible
+      command: >-
+        {{ ansible_playbook_python | dirname}}/ansible-playbook
+        -vvv
+        -e @{{ zuul.executor.work_root }}/nested-zuul-vars.yaml
+        -e zuul_execution_phase=nested
+        -e zuul_execution_phase_index=0
+        -e zuul_execution_canonical_name_and_path=opendev.org/zuul/zuul-jobs/test-playbooks/base-roles/prepare-workspace-git-required-projects-only-inner.yaml
+        -e zuul_execution_trusted=False
+        -e zuul_execution_branch={{zuul_execution_branch}}
+        {{ zuul.executor.work_root }}/{{ zuul.projects['opendev.org/zuul/zuul-jobs'].src_dir }}/test-playbooks/base-roles/prepare-workspace-git-required-projects-only-inner.yaml
+      environment:
+        ANSIBLE_ROLES_PATH: "{{ zuul.executor.work_root }}/{{ zuul.projects['opendev.org/zuul/zuul-jobs'].src_dir }}/roles"
+
+- name: Verify the prepare-workspace-git role with sync required only
+  hosts: all
+  tasks:
+    # opendev/base-jobs is in 'required-projects'.
+    # Also check that the project being tested is being prepared.
+    # We're checking them explicitly rather than with_items on zuul.projects
+    # in case there is a regression which would take an item out.
+    - name: Check that opendev/base-jobs was prepared
+      stat:
+        path: "{{ ansible_user_dir }}/src/opendev.org/opendev/base-jobs"
+      register: base_jobs
+
+    - name: Check that zuul/project-config was not prepared
+      stat:
+        path: "{{ ansible_user_dir }}/src/opendev.org/zuul/project-config"
+      register: project_config
+
+    - name: Check this project was prepared
+      stat:
+        path: "{{ ansible_user_dir }}/src/{{ zuul.project.canonical_name }}"
+      register: self_config
+
+    - name: Validate that required projects have been prepared
+      assert:
+        that:
+          - base_jobs.stat.exists
+          - not project_config.stat.exists
+          - self_config.stat.exists

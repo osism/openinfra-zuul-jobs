@@ -1,5 +1,12 @@
 - name: Test the prepare-workspace-git role
   hosts: all
+  pre_tasks:
+    - name: Delete remote source directory to start with clean state
+      file:
+        state: absent
+        path: "{{ ansible_user_dir }}/{{ item.value.src_dir }}"
+      with_dict: "{{ zuul.projects }}"
+
   roles:
     - role: prepare-workspace-git
   post_tasks:
@@ -12,6 +19,11 @@
         path: "{{ ansible_user_dir }}/src/opendev.org/opendev/base-jobs"
       register: base_jobs
 
+    - name: Check that zuul/project-config was prepared
+      stat:
+        path: "{{ ansible_user_dir }}/src/opendev.org/zuul/project-config"
+      register: project_config
+
     - name: Check this project was prepared
       stat:
         path: "{{ ansible_user_dir }}/src/{{ zuul.project.canonical_name }}"
@@ -21,4 +33,5 @@
       assert:
         that:
           - base_jobs.stat.exists
+          - project_config.stat.exists
           - self_config.stat.exists

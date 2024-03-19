@@ -116,10 +116,11 @@
     tags: all-platforms
     abstract: true
     run: test-playbooks/base-roles/base.yaml
-    # Testing of fetch-zuul-cloner and use-cached-repos need this repo
-    # in required-projects
+    # Testing of fetch-zuul-cloner and prepare-workspace-git need
+    # these repos in required-projects
     required-projects:
       - opendev/base-jobs
+      - zuul/project-config
     files:
       - ^roles/configure-mirrors/.*
       - ^roles/emit-job-header/.*
