@@ -5,21 +5,11 @@
 - name: Install minikube
   when: ensure_kubernetes_type == 'minikube'
   block:
-    - name: Add all repositories
-      include_role:
-        name: ensure-package-repositories
-      vars:
-        repositories_keys:
-          - url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-        repositories_list:
-          - repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-
-    - name: Install kubernetes packages and dependencies
+    - name: Install kubernetes dependencies
       become: yes
       apt:
         name:
           - conntrack
-          - kubectl
           - liblz4-tool
         update_cache: yes
 

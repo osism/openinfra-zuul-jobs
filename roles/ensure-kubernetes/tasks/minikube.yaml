@@ -10,6 +10,13 @@
     mode: 0755
   when: not stat_result.stat.exists
 
+- name: Install kubectl as minikube
+  become: true
+  file:
+    src: /tmp/minikube
+    dest: /usr/local/bin/kubectl
+    state: link
+
 - name: Run ensure-docker role
   include_role:
     name: ensure-docker
