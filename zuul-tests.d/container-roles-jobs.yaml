@@ -307,119 +307,43 @@
         - name: builder
           label: ubuntu-jammy
 
-- job:
-    name: zuul-jobs-test-registry-buildset-registry
-    parent: opendev-buildset-registry
-    description: |
-      Run a buildset registry for the test-registry jobs
+# FIXME(yoctozepto): crio jobs are disabled because their repository seems to be broken
 
-      This runs two registries: a real buildset registry so that we
-      can receive speculative zuul-registry images, and a fake
-      buildset registry (running the speculative or latest
-      zuul-registry) that is used to test using the buildset registry
-      role.
+# - job:
+#     name: zuul-jobs-test-ensure-kubernetes-crio
+#     description: |
+#       Test the ensure-kubernetes role with crio-o
 
-      It is not meant to be used directly but rather run on changes
-      to roles in the zuul-jobs repo.
-    files:
-      - roles/pull-from-intermediate-registry/.*
-      - roles/push-to-intermediate-registry/.*
-      - roles/ensure-docker/.*
-      - roles/ensure-kubernetes/.*
-      - roles/ensure-openshift/.*
-      - roles/ensure-package-repositories/.*
-      - roles/build-docker-image/.*
-      - roles/run-buildset-registry/.*
-      - roles/use-buildset-registry/.*
-      - test-playbooks/registry/.*
-      - zuul-tests.d/container-roles-jobs.yaml
-    pre-run: test-playbooks/registry/buildset-registry-pre.yaml
-    run: test-playbooks/registry/buildset-registry.yaml
-    post-run: test-playbooks/registry/test-registry-post.yaml
-    vars:
-      container_command: docker
+#       This job tests changes to the ensure-kubernetes roles.  It
+#       is not meant to be used directly but rather run on changes to
+#       roles in the zuul-jobs repo.
+#     # Does not work under ubuntu-bionic
+#     abstract: true
+#     files:
+#       - roles/ensure-docker/.*
+#       - roles/ensure-kubernetes/.*
+#       - roles/ensure-package-repositories/.*
+#       - test-playbooks/ensure-kubernetes/.*
+#     run: test-playbooks/ensure-kubernetes/crio.yaml
+#     post-run: test-playbooks/ensure-kubernetes/post.yaml
 
-- job:
-    name: zuul-jobs-test-registry-buildset-registry-k8s-crio
-    dependencies: zuul-jobs-test-registry-buildset-registry
-    description: |
-      Test a buildset registry with kubernetes and CRIO
+# - job:
+#     name: zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
+#     description: Test the ensure-kubernetes role with crio-o on ubuntu-focal
+#     parent: zuul-jobs-test-ensure-kubernetes-crio
+#     nodeset:
+#       nodes:
+#         - name: ubuntu-focal
+#           label: ubuntu-focal
 
-      It is not meant to be used directly but rather run on changes
-      to roles in the zuul-jobs repo.
-    files:
-      - roles/pull-from-intermediate-registry/.*
-      - roles/push-to-intermediate-registry/.*
-      - roles/ensure-docker/.*
-      - roles/ensure-kubernetes/.*
-      - roles/ensure-package-repositories/.*
-      - roles/build-docker-image/.*
-      - roles/run-buildset-registry/.*
-      - roles/use-buildset-registry/.*
-      - test-playbooks/registry/.*
-    run: test-playbooks/registry/buildset-registry-k8s-crio.yaml
-    post-run:
-      - test-playbooks/registry/buildset-registry-k8s-crio-post.yaml
-      - test-playbooks/registry/test-registry-post.yaml
-    vars:
-      container_command: podman
-
-- job:
-    name: zuul-jobs-test-registry-buildset-registry-k8s-microk8s
-    dependencies: zuul-jobs-test-registry-buildset-registry
-    description: |
-      Test a buildset registry with microk8s
-
-      It is not meant to be used directly but rather run on changes
-      to roles in the zuul-jobs repo.
-    files:
-      - roles/pull-from-intermediate-registry/.*
-      - roles/push-to-intermediate-registry/.*
-      - roles/ensure-docker/.*
-      - roles/ensure-package-repositories/.*
-      - roles/build-docker-image/.*
-      - roles/run-buildset-registry/.*
-      - roles/use-buildset-registry/.*
-      - test-playbooks/registry/.*
-    run: test-playbooks/registry/buildset-registry-k8s-microk8s.yaml
-    post-run:
-      - test-playbooks/registry/test-registry-post.yaml
-
-- job:
-    name: zuul-jobs-test-ensure-kubernetes-crio
-    description: |
-      Test the ensure-kubernetes role with crio-o
-
-      This job tests changes to the ensure-kubernetes roles.  It
-      is not meant to be used directly but rather run on changes to
-      roles in the zuul-jobs repo.
-    # Does not work under ubuntu-bionic
-    abstract: true
-    files:
-      - roles/ensure-docker/.*
-      - roles/ensure-kubernetes/.*
-      - roles/ensure-package-repositories/.*
-      - test-playbooks/ensure-kubernetes/.*
-    run: test-playbooks/ensure-kubernetes/crio.yaml
-    post-run: test-playbooks/ensure-kubernetes/post.yaml
-
-- job:
-    name: zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
-    description: Test the ensure-kubernetes role with crio-o on ubuntu-focal
-    parent: zuul-jobs-test-ensure-kubernetes-crio
-    nodeset:
-      nodes:
-        - name: ubuntu-focal
-          label: ubuntu-focal
-
-- job:
-    name: zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
-    description: Test the ensure-kubernetes role with crio-o on ubuntu-jammy
-    parent: zuul-jobs-test-ensure-kubernetes-crio
-    nodeset:
-      nodes:
-        - name: ubuntu-jammy
-          label: ubuntu-jammy
+# - job:
+#     name: zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
+#     description: Test the ensure-kubernetes role with crio-o on ubuntu-jammy
+#     parent: zuul-jobs-test-ensure-kubernetes-crio
+#     nodeset:
+#       nodes:
+#         - name: ubuntu-jammy
+#           label: ubuntu-jammy
 
 - job:
     name: zuul-jobs-test-ensure-kubernetes-microk8s
@@ -575,11 +499,6 @@
         - zuul-jobs-test-registry-docker
         - zuul-jobs-test-registry-docker-multiarch
         - zuul-jobs-test-registry-podman
-        - zuul-jobs-test-registry-buildset-registry
-        - zuul-jobs-test-registry-buildset-registry-k8s-crio
-        - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
-        - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
-        - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-ubuntu-bionic
