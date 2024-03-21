@@ -1,2 +1,4 @@
 ensure_skopeo_install_from_upstream: false
-ensure_skopeo_install_from_upstream_version: 'v1.9.3'
+# Needs to be 1.14.2 or newer to negotiate Docker API versions against
+# Docker 25 or newer.
+ensure_skopeo_install_from_upstream_version: 'v1.14.2'

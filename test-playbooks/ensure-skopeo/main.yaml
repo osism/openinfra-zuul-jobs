@@ -11,6 +11,16 @@
         name: ensure-skopeo
       vars:
         ensure_skopeo_install_from_upstream: true
+        # Skopeo 1.14.0 and newer require golang 1.19 but only 1.18 is
+        # available on jammy.
+        ensure_skopeo_install_from_upstream_version: 'v1.13.3'
+
+    - name: Additionally test from source on Debian Bookworm
+      when: ansible_distribution_release == 'bookworm'
+      include_role:
+        name: ensure-skopeo
+      vars:
+        ensure_skopeo_install_from_upstream: true
 
     - name: Exercise skopeo
       command: /usr/bin/skopeo -v

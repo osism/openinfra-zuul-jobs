@@ -1,7 +1,10 @@
 - hosts: all
   roles:
     - ensure-docker
-    - ensure-skopeo
+    - role: ensure-skopeo
+      vars:
+        # Needs to be new enough skopeo to negotiate docker api versions
+        ensure_skopeo_install_from_upstream: true
 
   tasks:
     # This happens in the pre-playbook of the

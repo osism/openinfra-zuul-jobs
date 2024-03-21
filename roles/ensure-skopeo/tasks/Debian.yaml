@@ -1,0 +1,49 @@
+- name: Install skopeo from packages
+  when: not ensure_skopeo_install_from_upstream
+  package:
+    name:
+      - skopeo
+      - uidmap
+    state: present
+  become: yes
+
+- name: Install skopeo from upstream
+  when: ensure_skopeo_install_from_upstream
+  block:
+
+    - name: Install dependencies
+      become: yes
+      package:
+        name:
+          - libgpgme-dev
+          - libassuan-dev
+          - libbtrfs-dev
+          - libdevmapper-dev
+          - pkg-config
+          - build-essential
+          - golang
+        state: present
+
+    - name: Clone upstream source
+      git:
+        repo: https://github.com/containers/skopeo
+        dest: '{{ ansible_user_dir }}/skopeo'
+        version: '{{ ensure_skopeo_install_from_upstream_version }}'
+
+    - name: Build skopeo
+      command: 'make'
+      args:
+        chdir: '{{ ansible_user_dir }}/skopeo'
+      environment:
+        DISABLE_DOCS: 1
+
+    - name: Install binary
+      become: yes
+      command: 'make install'
+      args:
+        chdir: '{{ ansible_user_dir }}/skopeo'
+      environment:
+        DISABLE_DOCS: 1
+
+    - name: Test binary
+      command: '/usr/local/bin/skopeo --version'

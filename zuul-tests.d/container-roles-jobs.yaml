@@ -235,12 +235,12 @@
     vars:
       container_command: docker
       multiarch: false
-    nodeset:
+    nodeset: &registry_nodeset
       nodes:
         - name: intermediate-registry
           label: ubuntu-jammy
         - name: executor
-          label: ubuntu-jammy
+          label: debian-bookworm
         - name: builder
           label: ubuntu-jammy
 
@@ -266,14 +266,7 @@
     vars:
       container_command: docker
       multiarch: true
-    nodeset:
-      nodes:
-        - name: intermediate-registry
-          label: ubuntu-jammy
-        - name: executor
-          label: ubuntu-jammy
-        - name: builder
-          label: ubuntu-jammy
+    nodeset: *registry_nodeset
 
 - job:
     name: zuul-jobs-test-registry-podman
@@ -298,16 +291,95 @@
     vars:
       container_command: podman
       multiarch: false
+    nodeset: *registry_nodeset
+
+- job:
+    name: zuul-jobs-test-registry-buildset-registry
+    parent: opendev-buildset-registry
+    description: |
+      Run a buildset registry for the test-registry jobs
+
+      This runs two registries: a real buildset registry so that we
+      can receive speculative zuul-registry images, and a fake
+      buildset registry (running the speculative or latest
+      zuul-registry) that is used to test using the buildset registry
+      role.
+
+      It is not meant to be used directly but rather run on changes
+      to roles in the zuul-jobs repo.
+    files:
+      - roles/pull-from-intermediate-registry/.*
+      - roles/push-to-intermediate-registry/.*
+      - roles/ensure-docker/.*
+      - roles/ensure-kubernetes/.*
+      - roles/ensure-openshift/.*
+      - roles/ensure-package-repositories/.*
+      - roles/build-docker-image/.*
+      - roles/run-buildset-registry/.*
+      - roles/use-buildset-registry/.*
+      - test-playbooks/registry/.*
+      - zuul-tests.d/container-roles-jobs.yaml
+    pre-run: test-playbooks/registry/buildset-registry-pre.yaml
+    run: test-playbooks/registry/buildset-registry.yaml
+    post-run: test-playbooks/registry/test-registry-post.yaml
+    vars:
+      container_command: docker
+      # Override the docker_mirror_base_url back to the role default. OpenDev
+      # base jobs set this to the OpenDev mirrors but those mirrors only host
+      # Ubuntu not Debian packages.
+      docker_mirror_base_url: '{{ _docker_mirror_base_url }}'
     nodeset:
       nodes:
-        - name: intermediate-registry
-          label: ubuntu-jammy
-        - name: executor
-          label: ubuntu-jammy
-        - name: builder
-          label: ubuntu-jammy
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-registry-buildset-registry-k8s-microk8s
+    dependencies: zuul-jobs-test-registry-buildset-registry
+    description: |
+      Test a buildset registry with microk8s
+
+      It is not meant to be used directly but rather run on changes
+      to roles in the zuul-jobs repo.
+    files:
+      - roles/pull-from-intermediate-registry/.*
+      - roles/push-to-intermediate-registry/.*
+      - roles/ensure-docker/.*
+      - roles/ensure-package-repositories/.*
+      - roles/build-docker-image/.*
+      - roles/run-buildset-registry/.*
+      - roles/use-buildset-registry/.*
+      - test-playbooks/registry/.*
+    run: test-playbooks/registry/buildset-registry-k8s-microk8s.yaml
+    post-run:
+      - test-playbooks/registry/test-registry-post.yaml
 
 # FIXME(yoctozepto): crio jobs are disabled because their repository seems to be broken
+
+# - job:
+#     name: zuul-jobs-test-registry-buildset-registry-k8s-crio
+#     dependencies: zuul-jobs-test-registry-buildset-registry
+#     description: |
+#       Test a buildset registry with kubernetes and CRIO
+
+#       It is not meant to be used directly but rather run on changes
+#       to roles in the zuul-jobs repo.
+#     files:
+#       - roles/pull-from-intermediate-registry/.*
+#       - roles/push-to-intermediate-registry/.*
+#       - roles/ensure-docker/.*
+#       - roles/ensure-kubernetes/.*
+#       - roles/ensure-package-repositories/.*
+#       - roles/build-docker-image/.*
+#       - roles/run-buildset-registry/.*
+#       - roles/use-buildset-registry/.*
+#       - test-playbooks/registry/.*
+#     run: test-playbooks/registry/buildset-registry-k8s-crio.yaml
+#     post-run:
+#       - test-playbooks/registry/buildset-registry-k8s-crio-post.yaml
+#       - test-playbooks/registry/test-registry-post.yaml
+#     vars:
+#       container_command: podman
 
 # - job:
 #     name: zuul-jobs-test-ensure-kubernetes-crio
@@ -409,12 +481,32 @@
       used directly but rather run on changes to roles in the
       zuul-jobs repo.
     abstract: true
-    tags: ubuntu-platforms
+    tags: debuntu-platforms
     files:
       - roles/ensure-skopeo/.*
       - roles/ensure-package-repositories/.*
       - test-playbooks/ensure-skopeo/.*
     run: test-playbooks/ensure-skopeo/main.yaml
+
+- job:
+    name: zuul-jobs-test-ensure-skopeo-debian-bookworm
+    description: Test the ensure-skopeo role on debian-bookworm
+    parent: zuul-jobs-test-ensure-skopeo
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-skopeo-debian-bullseye
+    description: Test the ensure-skopeo role on debian-bullseye
+    parent: zuul-jobs-test-ensure-skopeo
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
 
 - job:
     name: zuul-jobs-test-ensure-skopeo-ubuntu-bionic
@@ -499,8 +591,12 @@
         - zuul-jobs-test-registry-docker
         - zuul-jobs-test-registry-docker-multiarch
         - zuul-jobs-test-registry-podman
+        - zuul-jobs-test-registry-buildset-registry
+        - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
+        - zuul-jobs-test-ensure-skopeo-debian-bookworm
+        - zuul-jobs-test-ensure-skopeo-debian-bullseye
         - zuul-jobs-test-ensure-skopeo-ubuntu-bionic
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
