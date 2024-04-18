@@ -7,7 +7,7 @@
   become: true
   pip:
     name:
-    - yamale==1.8.0
+    - yamale==1.8.1
     - yamllint==1.13.0
 
 - name: Install chart-testing
