@@ -30,6 +30,10 @@
     fi
     cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
     git config --local --bool core.bare false
+    # Allow pushing to non-bare repo
+    git config --local receive.denyCurrentBranch ignore
+    # Allow deleting current branch
+    git config --local receive.denyDeleteCurrent ignore
     git remote -v | grep origin && git remote rm origin || true
     git remote add origin file:///dev/null
   args:
@@ -41,16 +45,6 @@
   # doesn't support features we need.
   tags:
     - skip_ansible_lint
-
-- name: Allow pushing to non-bare repo
-  git_config:
-    name: receive.denyCurrentBranch
-    value: ignore
-    scope: local
-    repo: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
-  with_dict: "{{ _zuul_projects }}"
-  loop_control:
-    loop_var: zj_project
 
 - name: Synchronize src repos to workspace directory
   command: |-
@@ -90,6 +84,7 @@
     git clean -xdf
     # Undo the config setting we did above
     git config --local --unset receive.denyCurrentBranch
+    git config --local --unset receive.denyDeleteCurrent
     # checkout the branch matching the branch set up by the executor
     git checkout {% if mirror_workspace_quiet %}--quiet{% endif %} {{ zj_project.value.checkout }}
     # put out a status line with the current HEAD
