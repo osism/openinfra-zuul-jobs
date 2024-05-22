@@ -85,6 +85,16 @@
         - name: ubuntu-jammy
           label: ubuntu-jammy
 
+- job:
+    name: zuul-jobs-test-golang-go-ubuntu-noble
+    description: Test the golang-go job on ubuntu-noble
+    parent: zuul-jobs-test-golang-go
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
 - project:
     check:
       jobs: &id001
@@ -95,6 +105,7 @@
         - zuul-jobs-test-golang-go-ubuntu-bionic
         - zuul-jobs-test-golang-go-ubuntu-focal
         - zuul-jobs-test-golang-go-ubuntu-jammy
+        - zuul-jobs-test-golang-go-ubuntu-noble
     gate:
       jobs: *id001
     periodic-weekly:

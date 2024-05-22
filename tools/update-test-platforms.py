@@ -41,6 +41,7 @@ UBUNTU_PLATFORMS = [
     'ubuntu-bionic',
     'ubuntu-focal',
     'ubuntu-jammy',
+    'ubuntu-noble',
 ]
 FEDORA_PLATFORMS = [
 ]

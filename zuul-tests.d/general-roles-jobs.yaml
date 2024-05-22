@@ -204,6 +204,16 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-base-roles-ubuntu-noble
+    description: Tests roles in the 'base' job on ubuntu-noble
+    parent: zuul-jobs-test-base-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-bindep
     description: Test the bindep role
     files:
@@ -285,6 +295,16 @@
       nodes:
         - name: ubuntu-jammy
           label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-bindep-ubuntu-noble
+    description: Test the bindep role on ubuntu-noble
+    parent: zuul-jobs-test-bindep
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
 
 - job:
     name: zuul-jobs-test-clear-firewall
@@ -392,6 +412,16 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-validate-zone-db-ubuntu-noble
+    description: Test the validate-zone-db role on ubuntu-noble
+    parent: zuul-jobs-test-validate-zone-db
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-dstat-graph
     description: Test the dstat-graph roles
     run: test-playbooks/dstat-graph.yaml
@@ -471,6 +501,16 @@
       nodes:
         - name: ubuntu-jammy
           label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-dstat-graph-ubuntu-noble
+    description: Test the dstat-graph roles on ubuntu-noble
+    parent: zuul-jobs-test-dstat-graph
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
 
 - job:
     name: zuul-jobs-test-multinode-roles
@@ -624,6 +664,25 @@
             - secondary
 
 - job:
+    name: zuul-jobs-test-multinode-roles-ubuntu-noble
+    description: Tests multinode setup roles on ubuntu-noble
+    parent: zuul-jobs-test-multinode-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: primary
+          label: ubuntu-noble
+        - name: secondary
+          label: ubuntu-noble
+      groups:
+        - name: switch
+          nodes:
+            - primary
+        - name: peers
+          nodes:
+            - secondary
+
+- job:
     name: zuul-jobs-test-generate-zuul-manifest
     description: Test the generate-zuul-manifest role
     run: test-playbooks/generate-zuul-manifest.yaml
@@ -724,6 +783,16 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-ensure-zookeeper-ubuntu-noble
+    description: Test the ensure-zookeeper roles on ubuntu-noble
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-update-json-file
     description: Test the json edit role
     run: test-playbooks/update-json-file.yaml
@@ -790,6 +859,7 @@
         - zuul-jobs-test-base-roles-ubuntu-bionic
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
+        - zuul-jobs-test-base-roles-ubuntu-noble
         - zuul-jobs-test-bindep-centos-8-stream
         - zuul-jobs-test-bindep-centos-9-stream
         - zuul-jobs-test-bindep-debian-bookworm
@@ -797,6 +867,7 @@
         - zuul-jobs-test-bindep-ubuntu-bionic
         - zuul-jobs-test-bindep-ubuntu-focal
         - zuul-jobs-test-bindep-ubuntu-jammy
+        - zuul-jobs-test-bindep-ubuntu-noble
         - zuul-jobs-test-clear-firewall
         - zuul-jobs-test-enable-fips
         - zuul-jobs-test-ensure-bazelisk
@@ -806,6 +877,7 @@
         - zuul-jobs-test-validate-zone-db-ubuntu-bionic
         - zuul-jobs-test-validate-zone-db-ubuntu-focal
         - zuul-jobs-test-validate-zone-db-ubuntu-jammy
+        - zuul-jobs-test-validate-zone-db-ubuntu-noble
         - zuul-jobs-test-dstat-graph-centos-8-stream
         - zuul-jobs-test-dstat-graph-centos-9-stream
         - zuul-jobs-test-dstat-graph-debian-bookworm
@@ -813,6 +885,7 @@
         - zuul-jobs-test-dstat-graph-ubuntu-bionic
         - zuul-jobs-test-dstat-graph-ubuntu-focal
         - zuul-jobs-test-dstat-graph-ubuntu-jammy
+        - zuul-jobs-test-dstat-graph-ubuntu-noble
         - zuul-jobs-test-multinode-roles-centos-8-stream
         - zuul-jobs-test-multinode-roles-centos-9-stream
         - zuul-jobs-test-multinode-roles-debian-bookworm
@@ -820,6 +893,7 @@
         - zuul-jobs-test-multinode-roles-ubuntu-bionic
         - zuul-jobs-test-multinode-roles-ubuntu-focal
         - zuul-jobs-test-multinode-roles-ubuntu-jammy
+        - zuul-jobs-test-multinode-roles-ubuntu-noble
         - zuul-jobs-test-generate-zuul-manifest
         - zuul-jobs-test-upload-artifactory
         - zuul-jobs-test-upload-git-mirror
@@ -829,6 +903,7 @@
         - zuul-jobs-test-ensure-zookeeper-ubuntu-bionic
         - zuul-jobs-test-ensure-zookeeper-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-noble
         - zuul-jobs-test-update-json-file
         - zuul-jobs-test-stage-output
         - zuul-jobs-test-fetch-translation-output

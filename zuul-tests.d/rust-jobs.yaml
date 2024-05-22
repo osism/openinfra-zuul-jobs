@@ -84,6 +84,16 @@
         - name: ubuntu-jammy
           label: ubuntu-jammy
 
+- job:
+    name: zuul-jobs-test-rust-ubuntu-noble
+    description: Test the rust roles on ubuntu-noble
+    parent: zuul-jobs-test-rust
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
 - project:
     check:
       jobs: &id001
@@ -94,6 +104,7 @@
         - zuul-jobs-test-rust-ubuntu-bionic
         - zuul-jobs-test-rust-ubuntu-focal
         - zuul-jobs-test-rust-ubuntu-jammy
+        - zuul-jobs-test-rust-ubuntu-noble
     gate:
       jobs: *id001
     periodic-weekly:

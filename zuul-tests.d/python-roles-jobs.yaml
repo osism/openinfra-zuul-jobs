@@ -83,6 +83,16 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-build-python-release-jobs-ubuntu-noble
+    description: Test the build-python-release-jobs role on ubuntu-noble
+    parent: zuul-jobs-test-build-python-release-jobs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-ensure-python-pyenv
     description: Test the ensure-python role with pyenv
     files:
@@ -160,6 +170,16 @@
         - name: ubuntu-jammy
           label: ubuntu-jammy
 
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-ubuntu-noble
+    description: Test the ensure-python role with pyenv on ubuntu-noble
+    parent: zuul-jobs-test-ensure-python-pyenv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
 - project:
     check:
       jobs: &id001
@@ -170,6 +190,7 @@
         - zuul-jobs-test-build-python-release-jobs-ubuntu-bionic
         - zuul-jobs-test-build-python-release-jobs-ubuntu-focal
         - zuul-jobs-test-build-python-release-jobs-ubuntu-jammy
+        - zuul-jobs-test-build-python-release-jobs-ubuntu-noble
         - zuul-jobs-test-ensure-python-pyenv-centos-8-stream
         - zuul-jobs-test-ensure-python-pyenv-centos-9-stream
         - zuul-jobs-test-ensure-python-pyenv-debian-bookworm
@@ -177,6 +198,7 @@
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-bionic
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-focal
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-jammy
+        - zuul-jobs-test-ensure-python-pyenv-ubuntu-noble
     gate:
       jobs: *id001
     periodic-weekly:

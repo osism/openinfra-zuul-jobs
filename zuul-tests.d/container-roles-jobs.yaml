@@ -83,6 +83,16 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-ensure-docker-ubuntu-noble
+    description: Tests ensure-docker role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-docker
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-build-docker-or-container-image-base
     abstract: true
     description: |
@@ -537,6 +547,16 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-ensure-skopeo-ubuntu-noble
+    description: Test the ensure-skopeo role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-skopeo
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-ensure-podman-centos-8-stream
     description: Tests ensure-podman role on centos-8-stream
     parent: zuul-jobs-test-ensure-podman
@@ -578,6 +598,7 @@
         - zuul-jobs-test-ensure-docker-ubuntu-bionic
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
+        - zuul-jobs-test-ensure-docker-ubuntu-noble
         - zuul-jobs-test-build-container-image-docker-release
         - zuul-jobs-test-build-container-image-docker-release-multiarch
         - zuul-jobs-test-build-container-image-podman-release
@@ -601,6 +622,7 @@
         - zuul-jobs-test-ensure-skopeo-ubuntu-bionic
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
+        - zuul-jobs-test-ensure-skopeo-ubuntu-noble
         - zuul-jobs-test-ensure-podman-centos-8-stream
         - zuul-jobs-test-ensure-podman-ubuntu-bionic
         - zuul-jobs-test-ensure-podman-debian-bullseye
