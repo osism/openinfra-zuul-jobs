@@ -35,6 +35,8 @@
             state: present
           loop:
             - build-essential
+            # pkg-config appears to be explicitly needed on Ubuntu Noble
+            - pkg-config
             - libssl-dev
             - libffi-dev
             - python3-dev
@@ -44,4 +46,7 @@
           shell: |
             python3 -m venv ./venv
             ./venv/bin/pip install --upgrade pip
+            # Python cryptography relies on a working Rust toolchain to build
+            # from source. We set the --no-binary flag to ensure cryptography
+            # is built rather than installed via an upstream wheel
             ./venv/bin/pip install cryptography --no-binary cryptography

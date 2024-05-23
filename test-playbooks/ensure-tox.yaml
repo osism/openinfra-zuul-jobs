@@ -27,7 +27,7 @@
     - name: Verify tox_executable is set
       assert:
         that:
-          - tox_executable == "{{ ansible_user_dir }}/.local/tox/bin/tox"
+          - tox_executable == ansible_user_dir + '/.local/tox/bin/tox'
     - name: Verify tox is installed
       command: "{{ tox_executable }} --version"
       register: result
@@ -48,4 +48,4 @@
     - name: Verify tox_executable is set to the virtualenv tox
       assert:
         that:
-          - tox_executable == '{{ ansible_user_dir }}/tox-venv/bin/tox'
+          - tox_executable == ansible_user_dir + '/tox-venv/bin/tox'

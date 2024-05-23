@@ -27,7 +27,7 @@
     - name: Verify nox_executable is set
       assert:
         that:
-          - nox_executable == "{{ ansible_user_dir }}/.local/nox/bin/nox"
+          - nox_executable == ansible_user_dir + '/.local/nox/bin/nox'
     - name: Verify nox is installed
       command: "{{ nox_executable }} --version"
       register: result
@@ -48,4 +48,4 @@
     - name: Verify nox_executable is set to the virtualenv nox
       assert:
         that:
-          - nox_executable == '{{ ansible_user_dir }}/nox-venv/bin/nox'
+          - nox_executable == ansible_user_dir + '/nox-venv/bin/nox'

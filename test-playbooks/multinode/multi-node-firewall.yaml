@@ -13,7 +13,7 @@
     - name: Validate ipv4 private firewall configuration
       assert:
         that:
-          - "'-A INPUT -s {{ hostvars[item]['nodepool']['private_ipv4'] }}/32 -j ACCEPT' in iptables_rules.stdout"
+          - "'-A INPUT -s ' + hostvars[item]['nodepool']['private_ipv4'] + '/32 -j ACCEPT' in iptables_rules.stdout"
       with_items: "{{ groups['all'] }}"
       when:
         - hostvars[item]['nodepool']['private_ipv4']
@@ -21,7 +21,7 @@
     - name: Validate ipv4 public firewall configuration
       assert:
         that:
-          - "'-A INPUT -s {{ hostvars[item]['nodepool']['public_ipv4'] }}/32 -j ACCEPT' in iptables_rules.stdout"
+          - "'-A INPUT -s ' + hostvars[item]['nodepool']['public_ipv4'] + '/32 -j ACCEPT' in iptables_rules.stdout"
       with_items: "{{ groups['all'] }}"
       when:
         - hostvars[item]['nodepool']['public_ipv4']
@@ -40,5 +40,5 @@
         - name: Validate ipv6 firewall configuration
           assert:
             that:
-              - "'-A INPUT -s {{ hostvars[item]['nodepool']['public_ipv6'] }}/128 -j ACCEPT' in ip6tables_rules.stdout"
+              - "'-A INPUT -s ' + hostvars[item]['nodepool']['public_ipv6'] + '/128 -j ACCEPT' in ip6tables_rules.stdout"
           with_items: "{{ groups['all'] }}"

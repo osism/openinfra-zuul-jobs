@@ -7,5 +7,8 @@ python3-dev [test platform:dpkg platform:apk]
 # Required for subprocess32
 python2-devel [test platform:fedora]
 python-devel [test platform:rpm !platform:fedora !platform:centos-8 !platform:rhel-8]
-python-dev [test platform:dpkg platform:apk !platform:ubuntu-jammy !platform:debian-bookworm]
+python-dev [test platform:dpkg platform:apk !platform:ubuntu-jammy !platform:ubuntu-noble !platform:debian-bookworm]
 python2-dev [test platform:ubuntu-jammy]
+
+# Required for sphinx testing on Noble for Pillow wheel builds
+libjpeg-dev [doc platform:ubuntu-noble]
