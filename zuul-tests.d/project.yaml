@@ -6,9 +6,6 @@
     check:
       jobs:
         - zuul-tox-docs
-        - tox-py27
-        - tox-py38:
-            nodeset: ubuntu-focal
         - tox-py39:
             nodeset: ubuntu-focal
         - tox-py310:
@@ -18,9 +15,6 @@
     gate:
       jobs:
         - zuul-tox-docs
-        - tox-py27
-        - tox-py38:
-            nodeset: ubuntu-focal
         - tox-py39:
             nodeset: ubuntu-focal
         - tox-py310:

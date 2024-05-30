@@ -7,7 +7,7 @@
 # by 4 weeks to give people time to update before any roles start
 # depending on new features.
 
-ansible>=2.8,<2.9
+ansible>=8,<9
 stestr>=1.0.0,<3.0.0;python_version<'3.5' # Apache-2.0
 stestr>=1.0.0;python_version>='3.5' # Apache-2.0
 
