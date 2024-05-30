@@ -12,6 +12,8 @@
             nodeset: ubuntu-jammy
         - tox-py311:
             nodeset: ubuntu-jammy
+        - tox-py312:
+            nodeset: ubuntu-noble
     gate:
       jobs:
         - zuul-tox-docs
@@ -21,6 +23,8 @@
             nodeset: ubuntu-jammy
         - tox-py311:
             nodeset: ubuntu-jammy
+        - tox-py312:
+            nodeset: ubuntu-noble
     promote:
       jobs:
         - zuul-promote-docs

@@ -10,6 +10,7 @@ Python Jobs
 .. zuul:autojob:: tox-py39
 .. zuul:autojob:: tox-py310
 .. zuul:autojob:: tox-py311
+.. zuul:autojob:: tox-py312
 .. zuul:autojob:: tox-docs
 .. zuul:autojob:: tox-linters
 .. zuul:autojob:: tox-molecule
@@ -24,6 +25,7 @@ Python Jobs
 .. zuul:autojob:: nox-py39
 .. zuul:autojob:: nox-py310
 .. zuul:autojob:: nox-py311
+.. zuul:autojob:: nox-py312
 .. zuul:autojob:: nox-docs
 .. zuul:autojob:: nox-linters
 .. zuul:autojob:: nox-cover
