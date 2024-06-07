@@ -13,16 +13,6 @@
       - fedora-platforms
 
 - job:
-    name: zuul-jobs-test-ensure-docker-centos-8-stream
-    description: Tests ensure-docker role on centos-8-stream
-    parent: zuul-jobs-test-ensure-docker
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-ensure-docker-centos-9-stream
     description: Tests ensure-docker role on centos-9-stream
     parent: zuul-jobs-test-ensure-docker
@@ -51,16 +41,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-ensure-docker-ubuntu-bionic
-    description: Tests ensure-docker role on ubuntu-bionic
-    parent: zuul-jobs-test-ensure-docker
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-ensure-docker-ubuntu-focal
@@ -517,16 +497,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-ensure-skopeo-ubuntu-bionic
-    description: Test the ensure-skopeo role on ubuntu-bionic
-    parent: zuul-jobs-test-ensure-skopeo
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
-
-- job:
     name: zuul-jobs-test-ensure-skopeo-ubuntu-focal
     description: Test the ensure-skopeo role on ubuntu-focal
     parent: zuul-jobs-test-ensure-skopeo
@@ -557,24 +527,6 @@
           label: ubuntu-noble
 
 - job:
-    name: zuul-jobs-test-ensure-podman-centos-8-stream
-    description: Tests ensure-podman role on centos-8-stream
-    parent: zuul-jobs-test-ensure-podman
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
-    name: zuul-jobs-test-ensure-podman-ubuntu-bionic
-    description: Tests ensure-podman role on ubuntu-bionic
-    parent: zuul-jobs-test-ensure-podman
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
-
-- job:
     name: zuul-jobs-test-ensure-podman-debian-bullseye
     description: Tests ensure-podman role on debian-bullseye
     parent: zuul-jobs-test-ensure-podman
@@ -591,11 +543,9 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-ensure-docker-centos-8-stream
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bookworm
         - zuul-jobs-test-ensure-docker-debian-bullseye
-        - zuul-jobs-test-ensure-docker-ubuntu-bionic
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
         - zuul-jobs-test-ensure-docker-ubuntu-noble
@@ -619,12 +569,9 @@
         - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bullseye
-        - zuul-jobs-test-ensure-skopeo-ubuntu-bionic
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
         - zuul-jobs-test-ensure-skopeo-ubuntu-noble
-        - zuul-jobs-test-ensure-podman-centos-8-stream
-        - zuul-jobs-test-ensure-podman-ubuntu-bionic
         - zuul-jobs-test-ensure-podman-debian-bullseye
     gate:
       jobs: *id001

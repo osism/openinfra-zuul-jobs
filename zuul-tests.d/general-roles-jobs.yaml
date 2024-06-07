@@ -134,16 +134,6 @@
       - ^test-playbooks/base-roles/.*
 
 - job:
-    name: zuul-jobs-test-base-roles-centos-8-stream
-    description: Tests roles in the 'base' job on centos-8-stream
-    parent: zuul-jobs-test-base-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-base-roles-centos-9-stream
     description: Tests roles in the 'base' job on centos-9-stream
     parent: zuul-jobs-test-base-roles
@@ -172,16 +162,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-base-roles-ubuntu-bionic
-    description: Tests roles in the 'base' job on ubuntu-bionic
-    parent: zuul-jobs-test-base-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-base-roles-ubuntu-focal
@@ -227,16 +207,6 @@
     tags: all-platforms
 
 - job:
-    name: zuul-jobs-test-bindep-centos-8-stream
-    description: Test the bindep role on centos-8-stream
-    parent: zuul-jobs-test-bindep
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-bindep-centos-9-stream
     description: Test the bindep role on centos-9-stream
     parent: zuul-jobs-test-bindep
@@ -265,16 +235,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-bindep-ubuntu-bionic
-    description: Test the bindep role on ubuntu-bionic
-    parent: zuul-jobs-test-bindep
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-bindep-ubuntu-focal
@@ -382,16 +342,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-validate-zone-db-ubuntu-bionic
-    description: Test the validate-zone-db role on ubuntu-bionic
-    parent: zuul-jobs-test-validate-zone-db
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
-
-- job:
     name: zuul-jobs-test-validate-zone-db-ubuntu-focal
     description: Test the validate-zone-db role on ubuntu-focal
     parent: zuul-jobs-test-validate-zone-db
@@ -433,16 +383,6 @@
       - ^test-playbooks/dstat-graph.yaml
 
 - job:
-    name: zuul-jobs-test-dstat-graph-centos-8-stream
-    description: Test the dstat-graph roles on centos-8-stream
-    parent: zuul-jobs-test-dstat-graph
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-dstat-graph-centos-9-stream
     description: Test the dstat-graph roles on centos-9-stream
     parent: zuul-jobs-test-dstat-graph
@@ -471,16 +411,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-dstat-graph-ubuntu-bionic
-    description: Test the dstat-graph roles on ubuntu-bionic
-    parent: zuul-jobs-test-dstat-graph
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-dstat-graph-ubuntu-focal
@@ -531,25 +461,6 @@
       - ^test-playbooks/multinode/.*
 
 - job:
-    name: zuul-jobs-test-multinode-roles-centos-8-stream
-    description: Tests multinode setup roles on centos-8-stream
-    parent: zuul-jobs-test-multinode-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: primary
-          label: centos-8-stream
-        - name: secondary
-          label: centos-8-stream
-      groups:
-        - name: switch
-          nodes:
-            - primary
-        - name: peers
-          nodes:
-            - secondary
-
-- job:
     name: zuul-jobs-test-multinode-roles-centos-9-stream
     description: Tests multinode setup roles on centos-9-stream
     parent: zuul-jobs-test-multinode-roles
@@ -598,25 +509,6 @@
           label: debian-bullseye
         - name: secondary
           label: debian-bullseye
-      groups:
-        - name: switch
-          nodes:
-            - primary
-        - name: peers
-          nodes:
-            - secondary
-
-- job:
-    name: zuul-jobs-test-multinode-roles-ubuntu-bionic
-    description: Tests multinode setup roles on ubuntu-bionic
-    parent: zuul-jobs-test-multinode-roles
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: primary
-          label: ubuntu-bionic
-        - name: secondary
-          label: ubuntu-bionic
       groups:
         - name: switch
           nodes:
@@ -753,16 +645,6 @@
           label: debian-bullseye
 
 - job:
-    name: zuul-jobs-test-ensure-zookeeper-ubuntu-bionic
-    description: Test the ensure-zookeeper roles on ubuntu-bionic
-    parent: zuul-jobs-test-ensure-zookeeper
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
-
-- job:
     name: zuul-jobs-test-ensure-zookeeper-ubuntu-focal
     description: Test the ensure-zookeeper roles on ubuntu-focal
     parent: zuul-jobs-test-ensure-zookeeper
@@ -852,19 +734,15 @@
         - zuul-jobs-test-add-gpgkey
         - zuul-jobs-test-add-sshkey
         - zuul-jobs-test-encrypt-file
-        - zuul-jobs-test-base-roles-centos-8-stream
         - zuul-jobs-test-base-roles-centos-9-stream
         - zuul-jobs-test-base-roles-debian-bookworm
         - zuul-jobs-test-base-roles-debian-bullseye
-        - zuul-jobs-test-base-roles-ubuntu-bionic
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
         - zuul-jobs-test-base-roles-ubuntu-noble
-        - zuul-jobs-test-bindep-centos-8-stream
         - zuul-jobs-test-bindep-centos-9-stream
         - zuul-jobs-test-bindep-debian-bookworm
         - zuul-jobs-test-bindep-debian-bullseye
-        - zuul-jobs-test-bindep-ubuntu-bionic
         - zuul-jobs-test-bindep-ubuntu-focal
         - zuul-jobs-test-bindep-ubuntu-jammy
         - zuul-jobs-test-bindep-ubuntu-noble
@@ -874,23 +752,18 @@
         - zuul-jobs-test-netconsole
         - zuul-jobs-test-validate-zone-db-debian-bookworm
         - zuul-jobs-test-validate-zone-db-debian-bullseye
-        - zuul-jobs-test-validate-zone-db-ubuntu-bionic
         - zuul-jobs-test-validate-zone-db-ubuntu-focal
         - zuul-jobs-test-validate-zone-db-ubuntu-jammy
         - zuul-jobs-test-validate-zone-db-ubuntu-noble
-        - zuul-jobs-test-dstat-graph-centos-8-stream
         - zuul-jobs-test-dstat-graph-centos-9-stream
         - zuul-jobs-test-dstat-graph-debian-bookworm
         - zuul-jobs-test-dstat-graph-debian-bullseye
-        - zuul-jobs-test-dstat-graph-ubuntu-bionic
         - zuul-jobs-test-dstat-graph-ubuntu-focal
         - zuul-jobs-test-dstat-graph-ubuntu-jammy
         - zuul-jobs-test-dstat-graph-ubuntu-noble
-        - zuul-jobs-test-multinode-roles-centos-8-stream
         - zuul-jobs-test-multinode-roles-centos-9-stream
         - zuul-jobs-test-multinode-roles-debian-bookworm
         - zuul-jobs-test-multinode-roles-debian-bullseye
-        - zuul-jobs-test-multinode-roles-ubuntu-bionic
         - zuul-jobs-test-multinode-roles-ubuntu-focal
         - zuul-jobs-test-multinode-roles-ubuntu-jammy
         - zuul-jobs-test-multinode-roles-ubuntu-noble
@@ -900,7 +773,6 @@
         - zuul-jobs-test-shake-build
         - zuul-jobs-test-ensure-zookeeper-debian-bookworm
         - zuul-jobs-test-ensure-zookeeper-debian-bullseye
-        - zuul-jobs-test-ensure-zookeeper-ubuntu-bionic
         - zuul-jobs-test-ensure-zookeeper-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-ubuntu-noble

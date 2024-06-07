@@ -15,16 +15,6 @@
 #  Please re-run to generate new job lists
 
 - job:
-    name: zuul-jobs-test-rust-centos-8-stream
-    description: Test the rust roles on centos-8-stream
-    parent: zuul-jobs-test-rust
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-rust-centos-9-stream
     description: Test the rust roles on centos-9-stream
     parent: zuul-jobs-test-rust
@@ -53,16 +43,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-rust-ubuntu-bionic
-    description: Test the rust roles on ubuntu-bionic
-    parent: zuul-jobs-test-rust
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-rust-ubuntu-focal
@@ -97,11 +77,9 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-rust-centos-8-stream
         - zuul-jobs-test-rust-centos-9-stream
         - zuul-jobs-test-rust-debian-bookworm
         - zuul-jobs-test-rust-debian-bullseye
-        - zuul-jobs-test-rust-ubuntu-bionic
         - zuul-jobs-test-rust-ubuntu-focal
         - zuul-jobs-test-rust-ubuntu-jammy
         - zuul-jobs-test-rust-ubuntu-noble

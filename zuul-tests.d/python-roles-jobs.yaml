@@ -13,16 +13,6 @@
     tags: all-platforms
 
 - job:
-    name: zuul-jobs-test-build-python-release-jobs-centos-8-stream
-    description: Test the build-python-release-jobs role on centos-8-stream
-    parent: zuul-jobs-test-build-python-release-jobs
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-build-python-release-jobs-centos-9-stream
     description: Test the build-python-release-jobs role on centos-9-stream
     parent: zuul-jobs-test-build-python-release-jobs
@@ -51,16 +41,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-build-python-release-jobs-ubuntu-bionic
-    description: Test the build-python-release-jobs role on ubuntu-bionic
-    parent: zuul-jobs-test-build-python-release-jobs
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-build-python-release-jobs-ubuntu-focal
@@ -101,16 +81,6 @@
     tags: all-platforms
 
 - job:
-    name: zuul-jobs-test-ensure-python-pyenv-centos-8-stream
-    description: Test the ensure-python role with pyenv on centos-8-stream
-    parent: zuul-jobs-test-ensure-python-pyenv
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-ensure-python-pyenv-centos-9-stream
     description: Test the ensure-python role with pyenv on centos-9-stream
     parent: zuul-jobs-test-ensure-python-pyenv
@@ -139,16 +109,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-ensure-python-pyenv-ubuntu-bionic
-    description: Test the ensure-python role with pyenv on ubuntu-bionic
-    parent: zuul-jobs-test-ensure-python-pyenv
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-ensure-python-pyenv-ubuntu-focal
@@ -183,19 +143,15 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-build-python-release-jobs-centos-8-stream
         - zuul-jobs-test-build-python-release-jobs-centos-9-stream
         - zuul-jobs-test-build-python-release-jobs-debian-bookworm
         - zuul-jobs-test-build-python-release-jobs-debian-bullseye
-        - zuul-jobs-test-build-python-release-jobs-ubuntu-bionic
         - zuul-jobs-test-build-python-release-jobs-ubuntu-focal
         - zuul-jobs-test-build-python-release-jobs-ubuntu-jammy
         - zuul-jobs-test-build-python-release-jobs-ubuntu-noble
-        - zuul-jobs-test-ensure-python-pyenv-centos-8-stream
         - zuul-jobs-test-ensure-python-pyenv-centos-9-stream
         - zuul-jobs-test-ensure-python-pyenv-debian-bookworm
         - zuul-jobs-test-ensure-python-pyenv-debian-bullseye
-        - zuul-jobs-test-ensure-python-pyenv-ubuntu-bionic
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-focal
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-jammy
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-noble

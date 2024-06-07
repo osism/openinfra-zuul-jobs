@@ -30,7 +30,6 @@ import ruamellib
 # in the multinode jobs, so just use the real labels everywhere.
 
 CENTOS_PLATFORMS = [
-    'centos-8-stream',
     'centos-9-stream',
 ]
 DEBIAN_PLATFORMS = [
@@ -38,7 +37,6 @@ DEBIAN_PLATFORMS = [
     'debian-bookworm',
 ]
 UBUNTU_PLATFORMS = [
-    'ubuntu-bionic',
     'ubuntu-focal',
     'ubuntu-jammy',
     'ubuntu-noble',

@@ -18,16 +18,6 @@
         packer_test_content: "abc\n"
 
 - job:
-    name: zuul-jobs-test-packer-centos-8-stream
-    description: Test packer job on centos-8-stream
-    parent: zuul-jobs-test-packer
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-packer-centos-9-stream
     description: Test packer job on centos-9-stream
     parent: zuul-jobs-test-packer
@@ -56,16 +46,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-packer-ubuntu-bionic
-    description: Test packer job on ubuntu-bionic
-    parent: zuul-jobs-test-packer
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-packer-ubuntu-focal
@@ -100,11 +80,9 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-packer-centos-8-stream
         - zuul-jobs-test-packer-centos-9-stream
         - zuul-jobs-test-packer-debian-bookworm
         - zuul-jobs-test-packer-debian-bullseye
-        - zuul-jobs-test-packer-ubuntu-bionic
         - zuul-jobs-test-packer-ubuntu-focal
         - zuul-jobs-test-packer-ubuntu-jammy
         - zuul-jobs-test-packer-ubuntu-noble

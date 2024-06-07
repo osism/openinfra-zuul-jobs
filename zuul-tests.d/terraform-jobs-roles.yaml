@@ -20,16 +20,6 @@
             }
 
 - job:
-    name: zuul-jobs-test-terraform-centos-8-stream
-    description: Test terraform job on centos-8-stream
-    parent: zuul-jobs-test-terraform
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-terraform-centos-9-stream
     description: Test terraform job on centos-9-stream
     parent: zuul-jobs-test-terraform
@@ -58,16 +48,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-terraform-ubuntu-bionic
-    description: Test terraform job on ubuntu-bionic
-    parent: zuul-jobs-test-terraform
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-terraform-ubuntu-focal
@@ -122,16 +102,6 @@
             }
 
 - job:
-    name: zuul-jobs-test-terraform-role-centos-8-stream
-    description: Test terraform roles on centos-8-stream
-    parent: zuul-jobs-test-terraform-role
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-terraform-role-centos-9-stream
     description: Test terraform roles on centos-9-stream
     parent: zuul-jobs-test-terraform-role
@@ -160,16 +130,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-terraform-role-ubuntu-bionic
-    description: Test terraform roles on ubuntu-bionic
-    parent: zuul-jobs-test-terraform-role
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-terraform-role-ubuntu-focal
@@ -204,19 +164,15 @@
 - project:
     check: &id001
       jobs: &id002
-        - zuul-jobs-test-terraform-centos-8-stream
         - zuul-jobs-test-terraform-centos-9-stream
         - zuul-jobs-test-terraform-debian-bookworm
         - zuul-jobs-test-terraform-debian-bullseye
-        - zuul-jobs-test-terraform-ubuntu-bionic
         - zuul-jobs-test-terraform-ubuntu-focal
         - zuul-jobs-test-terraform-ubuntu-jammy
         - zuul-jobs-test-terraform-ubuntu-noble
-        - zuul-jobs-test-terraform-role-centos-8-stream
         - zuul-jobs-test-terraform-role-centos-9-stream
         - zuul-jobs-test-terraform-role-debian-bookworm
         - zuul-jobs-test-terraform-role-debian-bullseye
-        - zuul-jobs-test-terraform-role-ubuntu-bionic
         - zuul-jobs-test-terraform-role-ubuntu-focal
         - zuul-jobs-test-terraform-role-ubuntu-jammy
         - zuul-jobs-test-terraform-role-ubuntu-noble

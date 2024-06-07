@@ -16,16 +16,6 @@
 #  Please re-run to generate new job lists
 
 - job:
-    name: zuul-jobs-test-golang-go-centos-8-stream
-    description: Test the golang-go job on centos-8-stream
-    parent: zuul-jobs-test-golang-go
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-golang-go-centos-9-stream
     description: Test the golang-go job on centos-9-stream
     parent: zuul-jobs-test-golang-go
@@ -54,16 +44,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-golang-go-ubuntu-bionic
-    description: Test the golang-go job on ubuntu-bionic
-    parent: zuul-jobs-test-golang-go
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-golang-go-ubuntu-focal
@@ -98,11 +78,9 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-golang-go-centos-8-stream
         - zuul-jobs-test-golang-go-centos-9-stream
         - zuul-jobs-test-golang-go-debian-bookworm
         - zuul-jobs-test-golang-go-debian-bullseye
-        - zuul-jobs-test-golang-go-ubuntu-bionic
         - zuul-jobs-test-golang-go-ubuntu-focal
         - zuul-jobs-test-golang-go-ubuntu-jammy
         - zuul-jobs-test-golang-go-ubuntu-noble

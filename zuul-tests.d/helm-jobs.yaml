@@ -18,16 +18,6 @@
 #  Please re-run to generate new job lists
 
 - job:
-    name: zuul-jobs-test-helm-lint-centos-8-stream
-    description: Test the helm-lint job on centos-8-stream
-    parent: zuul-jobs-test-helm-lint
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
-
-- job:
     name: zuul-jobs-test-helm-lint-centos-9-stream
     description: Test the helm-lint job on centos-9-stream
     parent: zuul-jobs-test-helm-lint
@@ -56,16 +46,6 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
-
-- job:
-    name: zuul-jobs-test-helm-lint-ubuntu-bionic
-    description: Test the helm-lint job on ubuntu-bionic
-    parent: zuul-jobs-test-helm-lint
-    tags: auto-generated
-    nodeset:
-      nodes:
-        - name: ubuntu-bionic
-          label: ubuntu-bionic
 
 - job:
     name: zuul-jobs-test-helm-lint-ubuntu-focal
@@ -100,11 +80,9 @@
 - project:
     check:
       jobs: &id001
-        - zuul-jobs-test-helm-lint-centos-8-stream
         - zuul-jobs-test-helm-lint-centos-9-stream
         - zuul-jobs-test-helm-lint-debian-bookworm
         - zuul-jobs-test-helm-lint-debian-bullseye
-        - zuul-jobs-test-helm-lint-ubuntu-bionic
         - zuul-jobs-test-helm-lint-ubuntu-focal
         - zuul-jobs-test-helm-lint-ubuntu-jammy
         - zuul-jobs-test-helm-lint-ubuntu-noble
