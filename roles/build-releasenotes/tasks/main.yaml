@@ -4,7 +4,6 @@
     path: "{{ zuul_work_dir }}/releasenotes/source/locale"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: translations
 
 - name: Prepare release note translations

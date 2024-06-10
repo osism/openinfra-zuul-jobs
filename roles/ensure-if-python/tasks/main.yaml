@@ -21,7 +21,6 @@
   stat:
     get_checksum: false
     get_mime: false
-    get_md5: false
     path: "{{ zuul_work_dir }}/requirements.txt"
   register: requirements_file
 

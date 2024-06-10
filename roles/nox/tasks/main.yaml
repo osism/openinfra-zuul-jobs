@@ -3,7 +3,6 @@
     path: "{{ nox_constraints_file }}"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: stat_results
   when: nox_constraints_file is defined
 

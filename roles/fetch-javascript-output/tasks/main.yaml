@@ -22,7 +22,6 @@
     path: "{{ zuul_work_dir }}/yarn.lock"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: yarn_lock
 
 - name: Check for shrinkwrap
@@ -30,7 +29,6 @@
     path: "{{ zuul_work_dir }}/npm-shrinkwrap.json"
     get_checksum: false
     get_mime: false
-    get_md5: false
   when: not yarn_lock.stat.exists
   register: shrinkwrap
 
@@ -59,7 +57,6 @@
     path: "{{ zuul_work_dir }}/reports"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: reports_stat
 
 - name: Collect npm reports
@@ -77,7 +74,6 @@
     path: "{{ zuul_work_dir }}/karma.subunit"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: karma_stat
 
 - name: Collect karma subunit files
@@ -96,7 +92,6 @@
     path: "{{ zuul_work_dir }}/npm-shrinkwrap.json"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: shrinkwrap_final
 
 - name: Collect shrinkwrap file
@@ -116,7 +111,6 @@
     path: "{{ zuul_work_dir }}/{{ javascript_content_dir }}"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: javascript_output
 
 - name: Collect javascript output

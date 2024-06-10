@@ -20,7 +20,6 @@
     path: "{{ zuul_work_dir }}/yarn.lock"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: yarn_lock_exists
 
 - name: Set js_build_tool fact

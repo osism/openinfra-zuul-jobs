@@ -68,7 +68,6 @@
     path: "{{ zuul_work_virtualenv }}/bin/whereto"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: whereto
 
 - name: Check for htaccess
@@ -76,7 +75,6 @@
     path: "{{ zuul_work_dir }}/{{ sphinx_source_dir }}/_extra/.htaccess"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: htaccess
 
 - name: Run whereto

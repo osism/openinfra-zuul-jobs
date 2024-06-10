@@ -7,7 +7,12 @@
 # by 4 weeks to give people time to update before any roles start
 # depending on new features.
 
-ansible>=8,<9
+# Some older versions of Ansible don't support older versions of
+# python we have on older test nodes, so do the best we can in those
+# cases.
+
+ansible>=6,<9;python_version<'3.9'
+ansible>=8,<9;python_version>='3.9'
 stestr>=1.0.0,<3.0.0;python_version<'3.5' # Apache-2.0
 stestr>=1.0.0;python_version>='3.5' # Apache-2.0
 

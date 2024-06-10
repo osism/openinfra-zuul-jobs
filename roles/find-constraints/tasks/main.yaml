@@ -3,7 +3,6 @@
     path: "{{ constraints_file | default('missing') }}"
     get_checksum: false
     get_mime: false
-    get_md5: false
   register: stat_results
   when: constraints_file is defined
 

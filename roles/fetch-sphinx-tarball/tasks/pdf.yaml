@@ -7,7 +7,6 @@
     path: "{{ zuul_work_dir }}/{{ sphinx_build_dir }}/pdf/{{ zj_sphinx_pdf }}"
     get_checksum: false
     get_mime: false
-    get_md5: false
   with_items: "{{ sphinx_pdf_files }}"
   loop_control:
     loop_var: zj_sphinx_pdf
