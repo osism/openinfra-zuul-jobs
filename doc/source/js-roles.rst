@@ -9,6 +9,7 @@ Javascript Roles
 .. zuul:autorole:: fetch-javascript-output
 .. zuul:autorole:: fetch-javascript-tarball
 .. zuul:autorole:: js-package-manager
+.. zuul:autorole:: netlify-publish
 .. zuul:autorole:: nodejs-test-dependencies
 .. zuul:autorole:: npm
 .. zuul:autorole:: upload-npm

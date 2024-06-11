@@ -1,0 +1,3 @@
+javascript_content_dir: public
+zuul_work_dir: "{{ zuul.project.src_dir }}"
+netlify_publish_skip_upload: false

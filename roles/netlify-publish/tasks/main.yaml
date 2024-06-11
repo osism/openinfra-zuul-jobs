@@ -1,0 +1,42 @@
+- name: Ensure user .netlify dir
+  file:
+    state: directory
+    mode: 0700
+    path: "{{ ansible_user_dir }}/.netlify"
+
+- name: Write netlify config file
+  template:
+    src: config.json.j2
+    mode: 0600
+    dest: "{{ ansible_user_dir }}/.netlify/config.json"
+
+- name: Ensure repo .netlify dir
+  file:
+    state: directory
+    path: "{{ zuul_work_dir }}/.netlify"
+
+- name: Write repo netlify config file
+  template:
+    src: state.json.j2
+    dest: "{{ zuul_work_dir }}/.netlify/state.json"
+
+- name: Check if netlify cli is installed
+  stat:
+    path: "{{ zuul_work_dir }}/node_modules/.bin/netlify"
+  register: has_netlify_cli
+
+- name: Set netlify cli command
+  set_fact:
+    netlify_cli: "{{ has_netlify_cli.stat.exists | ternary('npx netlify', 'npx -p netlify-cli netlify') }}"
+
+- name: Run netlify deployment
+  command:
+    cmd: "{{ netlify_cli }} deploy --prod -d {{ javascript_content_dir }}"
+    chdir: "{{ zuul_work_dir }}"
+  when: not netlify_publish_skip_upload
+
+- name: Verify netlify command works
+  command:
+    cmd: "{{ netlify_cli }} help"
+    chdir: "{{ zuul_work_dir }}"
+  when: netlify_publish_skip_upload

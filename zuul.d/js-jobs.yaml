@@ -96,6 +96,59 @@
     post-run: playbooks/javascript/tarball.yaml
 
 - job:
+    name: publish-javascript-to-netlify
+    parent: build-javascript-deployment
+    description: |
+      Builds javascript site and deploys to netlify.
+
+      Responds to these variables:
+
+      .. zuul:jobvar:: js_build_command
+         :default: build
+
+         Command to pass to the javascript package manager..
+
+      .. zuul:jobvar:: js_build_tool
+         :default: autodetected
+
+         Command to use for running the package manager, such as npm or yarn.
+
+      .. zuul:jobvar:: node_version
+         :default: 20
+
+         The version of Node to use. Netlify CLI requires at least v18.
+
+      .. zuul:jobvar:: zuul_work_dir
+         :default: {{ zuul.project.src_dir }}
+
+         Path to operate in.
+
+      .. zuul:jobvar:: javascript_content_dir
+         :default: public
+
+         Directory, relative to zuul_work_dir, holding build content.
+
+      .. zuul:jobvar:: netlify_site_id
+
+         Site id for the site to publish. This can be found on the site
+         general settings page as ``API Id``.
+
+      .. zuul:rolevar:: netlify_auth
+         :type: dict
+
+         Complex argument which contains the netlify authentication credentials.
+         This is expected to come from a secret.
+
+         .. zuul:rolevar:: token
+
+            API token to use to publish the content. Instructions for creating
+            a token can be found at
+            https://docs.netlify.com/cli/get-started/#obtain-a-token-in-the-netlify-ui
+    post-run: playbooks/javascript/netlify-publish.yaml
+    vars:
+      node_version: 20
+
+- job:
     name: nodejs-run-test
     parent: js-build
     description: |
