@@ -1,0 +1,35 @@
+- hosts: all
+  name: Test ensure-poetry installs into user environment
+  tasks:
+    - name: Verify poetry is not installed
+      command: "poetry --version"
+      register: result
+      failed_when: result.rc == 0
+    - name: Run ensure-poetry with poetry not installed
+      include_role:
+        name: ensure-poetry
+    - name: Verify ensure_poetry_executable is set
+      assert:
+        that:
+          - ensure_poetry_executable == ansible_user_dir + '/.local/poetry/bin/poetry'
+    - name: Verify poetry is installed
+      command: "{{ ensure_poetry_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+
+- hosts: all
+  name: Test ensure-poetry when ensure_poetry_executable is set to an already installed poetry
+  tasks:
+    - name: Create a virtualenv
+      command: '{{ ensure_pip_virtualenv_command }} {{ ansible_user_dir }}/poetry-venv'
+    - name: Install poetry to local venv
+      command: '{{ ansible_user_dir }}/poetry-venv/bin/pip install poetry'
+    - name: Run ensure-poetry pointing to an already installed poetry
+      include_role:
+        name: ensure-poetry
+      vars:
+        ensure_poetry_executable: "{{ ansible_user_dir }}/poetry-venv/bin/poetry"
+    - name: Verify ensure_poetry_executable is set to the virtualenv poetry
+      assert:
+        that:
+          - ensure_poetry_executable == ansible_user_dir + '/poetry-venv/bin/poetry'

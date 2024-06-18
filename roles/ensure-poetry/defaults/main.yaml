@@ -1,0 +1,4 @@
+ensure_poetry_global_symlink: false
+ensure_poetry_version: ""
+ensure_poetry_executable: poetry
+ensure_poetry_venv_path: "{{ ansible_user_dir }}/.local/poetry"

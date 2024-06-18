@@ -1,0 +1,44 @@
+- name: Install pip
+  include_role:
+    name: ensure-pip
+
+- name: Check if poetry is installed
+  shell: |
+    command -v {{ ensure_poetry_executable }} {{ ensure_poetry_venv_path }}/bin/poetry || exit 1
+  args:
+    executable: /bin/bash
+  register: poetry_preinstalled
+  failed_when: false
+
+- name: Export preinstalled ensure_poetry_executable
+  set_fact:
+    ensure_poetry_executable: "{{ poetry_preinstalled.stdout_lines[0] }}"
+    cacheable: true
+  when: poetry_preinstalled.rc == 0
+
+- name: Install poetry to local env
+  when: poetry_preinstalled.rc != 0
+  block:
+    - name: Create local venv
+      command: "{{ ensure_pip_virtualenv_command }} {{ ensure_poetry_venv_path }}"
+
+    - name: Install poetry to local venv
+      command: "{{ ensure_poetry_venv_path }}/bin/pip install poetry{{ ensure_poetry_version }}"
+
+    - name: Export installed ensure_poetry_executable path
+      set_fact:
+        ensure_poetry_executable: "{{ ensure_poetry_venv_path }}/bin/poetry"
+        cacheable: true
+
+- name: Output poetry version
+  command: "{{ ensure_poetry_executable }} --version"
+
+- name: Make global symlink
+  when:
+    - ensure_poetry_global_symlink
+    - ensure_poetry_executable != '/usr/local/bin/poetry'
+  file:
+    state: link
+    src: "{{ ensure_poetry_executable }}"
+    dest: /usr/local/bin/poetry
+  become: yes

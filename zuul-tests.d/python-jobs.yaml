@@ -145,6 +145,75 @@
       nodes: []
 
 - job:
+    name: zuul-jobs-test-ensure-poetry
+    description: Test the ensure-poetry role
+    files:
+      - roles/ensure-poetry/.*
+      - test-playbooks/ensure-poetry.yaml
+    run: test-playbooks/ensure-poetry.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-poetry-centos-9-stream
+    description: Test the ensure-poetry role on centos-9-stream
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-poetry-debian-bookworm
+    description: Test the ensure-poetry role on debian-bookworm
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-poetry-debian-bullseye
+    description: Test the ensure-poetry role on debian-bullseye
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-poetry-ubuntu-focal
+    description: Test the ensure-poetry role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-poetry-ubuntu-jammy
+    description: Test the ensure-poetry role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-poetry-ubuntu-noble
+    description: Test the ensure-poetry role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-ensure-sphinx
     description: Test the ensure-sphinx role
     files:
@@ -420,6 +489,12 @@
         - zuul-jobs-test-ensure-pip-ubuntu-jammy
         - zuul-jobs-test-ensure-pip-ubuntu-noble
         - zuul-jobs-test-ensure-pip-localhost
+        - zuul-jobs-test-ensure-poetry-centos-9-stream
+        - zuul-jobs-test-ensure-poetry-debian-bookworm
+        - zuul-jobs-test-ensure-poetry-debian-bullseye
+        - zuul-jobs-test-ensure-poetry-ubuntu-focal
+        - zuul-jobs-test-ensure-poetry-ubuntu-jammy
+        - zuul-jobs-test-ensure-poetry-ubuntu-noble
         - zuul-jobs-test-ensure-sphinx
         - zuul-jobs-test-ensure-tox-centos-9-stream
         - zuul-jobs-test-ensure-tox-debian-bookworm
