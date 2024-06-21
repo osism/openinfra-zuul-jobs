@@ -8,6 +8,12 @@
     - "{{ ansible_distribution }}.yaml"
     - "{{ ansible_os_family }}.yaml"
 
+- name: Put .python-version contents into variable
+  when:
+    - python_version is not defined
+  set_fact:
+    python_version: "{{ lookup('ansible.builtin.file', zuul.executor.work_root ~ '/' ~ zuul.project.src_dir ~ '/.python-version') }}"
+
 - name: Install python build depends
   become: true
   package:
@@ -19,7 +25,7 @@
     dest: "{{ ansible_user_dir }}/.pyenv"
     version: master
 
-# NOTE(mnaser): pyenv does not allow us to let it install Python from a specific
+# NOTE(mnaser): python-build does not allow us to let it install Python from a specific
 #               series so we have to do some magic to find out what's the latest
 #               release from a series
 - name: Determine Python version

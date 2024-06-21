@@ -56,7 +56,6 @@
 
 - name: Install python using pyenv
   when:
-    - python_version is defined
     - python_use_pyenv
   include_tasks: pyenv.yaml
 

@@ -140,6 +140,80 @@
         - name: ubuntu-noble
           label: ubuntu-noble
 
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-python-version
+    description: Test the ensure-python role with pyenv and a python-version file
+    files:
+      - roles/ensure-python/.*
+    run: test-playbooks/ensure-python-pyenv-python-version.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-python-version-centos-9-stream
+    description: Test the ensure-python role with pyenv and a python-version file
+      on centos-9-stream
+    parent: zuul-jobs-test-ensure-python-pyenv-python-version
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-python-version-debian-bookworm
+    description: Test the ensure-python role with pyenv and a python-version file
+      on debian-bookworm
+    parent: zuul-jobs-test-ensure-python-pyenv-python-version
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-python-version-debian-bullseye
+    description: Test the ensure-python role with pyenv and a python-version file
+      on debian-bullseye
+    parent: zuul-jobs-test-ensure-python-pyenv-python-version
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-python-version-ubuntu-focal
+    description: Test the ensure-python role with pyenv and a python-version file
+      on ubuntu-focal
+    parent: zuul-jobs-test-ensure-python-pyenv-python-version
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-python-version-ubuntu-jammy
+    description: Test the ensure-python role with pyenv and a python-version file
+      on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-python-pyenv-python-version
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-python-pyenv-python-version-ubuntu-noble
+    description: Test the ensure-python role with pyenv and a python-version file
+      on ubuntu-noble
+    parent: zuul-jobs-test-ensure-python-pyenv-python-version
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
 - project:
     check:
       jobs: &id001
@@ -155,6 +229,12 @@
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-focal
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-jammy
         - zuul-jobs-test-ensure-python-pyenv-ubuntu-noble
+        - zuul-jobs-test-ensure-python-pyenv-python-version-centos-9-stream
+        - zuul-jobs-test-ensure-python-pyenv-python-version-debian-bookworm
+        - zuul-jobs-test-ensure-python-pyenv-python-version-debian-bullseye
+        - zuul-jobs-test-ensure-python-pyenv-python-version-ubuntu-focal
+        - zuul-jobs-test-ensure-python-pyenv-python-version-ubuntu-jammy
+        - zuul-jobs-test-ensure-python-pyenv-python-version-ubuntu-noble
     gate:
       jobs: *id001
     periodic-weekly:

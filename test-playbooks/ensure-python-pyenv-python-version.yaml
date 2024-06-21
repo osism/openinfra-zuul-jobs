@@ -1,0 +1,18 @@
+- hosts: all
+  tasks:
+    - name: Create a python-version file with a python version in it
+      delegate_to: localhost
+      copy:
+        content: 3.11
+        dest: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}/.python-version"
+
+    - name: Include ensure-python role
+      include_role:
+        name: ensure-python
+      vars:
+        python_use_pyenv: true
+
+    - name: Check installed version of Python
+      command: /usr/local/bin/python3 --version
+      register: _check_version
+      failed_when: "'Python 3.11' not in _check_version.stdout"

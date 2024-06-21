@@ -15,6 +15,12 @@ There are three ways to install the python interpreter:
 
 **Role Variables**
 
+.. zuul:jobvar:: zuul_work_dir
+   :default: {{ zuul.project.src_dir }}
+
+   The project directory.  Serves as the location for version files for
+   ``python_use_pyenv``.
+
 .. zuul:rolevar:: python_version
    :type: str
 
@@ -27,7 +33,8 @@ There are three ways to install the python interpreter:
    :default: False
 
    Whether to optionally use ``pyenv`` to install python instead of distro
-   packages.
+   packages. If this is given without a ``python_version``,
+   it will look for a ``.python-version`` file in the ``zuul_work_dir``.
 
 .. zuul:rolevar:: python_use_stow
    :type: bool
