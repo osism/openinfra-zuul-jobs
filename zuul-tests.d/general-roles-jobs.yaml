@@ -286,8 +286,8 @@
       nslookup_target: opendev.org
     nodeset:
       nodes:
-        - name: centos-8-stream
-          label: centos-8-stream
+        - name: centos-9-stream
+          label: centos-9-stream
 
 - job:
     name: zuul-jobs-test-ensure-bazelisk
