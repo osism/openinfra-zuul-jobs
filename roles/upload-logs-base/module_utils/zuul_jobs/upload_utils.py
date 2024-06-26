@@ -47,7 +47,9 @@ try:
 except ImportError:
     from collections import Sequence
 
-mimetypes.init()
+if not mimetypes.inited:
+    # We don't want to reinit and override any previously added types.
+    mimetypes.init()
 mimetypes.add_type('text/plain', '.yaml')
 
 MAX_UPLOAD_THREADS = 24

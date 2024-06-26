@@ -23,7 +23,9 @@ import sys
 from ansible.module_utils.basic import AnsibleModule
 
 
-mimetypes.init()
+if not mimetypes.inited:
+    # We don't want to reinit and override any previously added types.
+    mimetypes.init()
 
 
 def path_in_tree(root, path):
