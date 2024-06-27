@@ -1,0 +1,18 @@
+- name: Ensure DIB image root
+  file:
+    path: "{{ build_diskimage_image_root }}"
+    state: directory
+
+- name: Build diskimage
+  command: >
+    "{{ build_diskimage_command }}"
+      -o "{{ build_diskimage_image_root }}/{{ build_diskimage_image_name | mandatory }}"
+      -t "{{ build_diskimage_formats | join(',') }}"
+      --logfile "{{ build_diskimage_logs_dir }}/diskimage-{{ build_diskimage_image_name }}.log"
+      {{ build_diskimage_elements | mandatory | join(' ') }}
+  args:
+    chdir: "{{ build_diskimage_image_root }}"
+  register: build_diskimage_result
+  until: build_diskimage_result is not failed
+  retries: "{{ build_diskimage_retry_limit }}"
+  delay: "{{ build_diskimage_retry_delay }}"
