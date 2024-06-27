@@ -1,0 +1,21 @@
+- hosts: all
+  roles:
+    - ensure-dib
+    - role: build-diskimage
+      build_diskimage_image_name: foo-ubuntu-image
+      build_diskimage_formats: ["raw"]
+      build_diskimage_elements: ["vm", "ubuntu"]
+      environment:
+        DIB_RELEASE: "noble"
+    - role: convert-diskimage
+      convert_diskimage_source_image: "/home/zuul/dib-images/foo-ubuntu-image.raw"
+      convert_diskimage_target_image: "/home/zuul/dib-images/foo-ubuntu-image"
+      convert_diskimage_target_formats: ["qcow2"]
+  tasks:
+    - name: Gather image file info
+      stat:
+        path: "/home/zuul/dib-images/foo-ubuntu-image.qcow2"
+      register: image_file
+    - name: Assert image file exists
+      assert:
+        that: image_file.stat.exists

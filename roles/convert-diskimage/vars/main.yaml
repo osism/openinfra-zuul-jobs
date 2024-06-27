@@ -1,0 +1,3 @@
+convert_diskimage_supported_formats:
+  - raw
+  - qcow2
