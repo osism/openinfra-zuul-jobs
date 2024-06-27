@@ -1,0 +1,71 @@
+- job:
+    name: zuul-jobs-test-ensure-dib
+    description: Test the ensure-dib role
+    files:
+      - roles/ensure-dib/.*
+      - test-playbooks/diskimage-builder/.*
+    run: test-playbooks/diskimage-builder/ensure-dib.yaml
+    tags: debuntu-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-dib-debian-bookworm
+    description: Test the ensure-dib role on debian-bookworm
+    parent: zuul-jobs-test-ensure-dib
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-dib-debian-bullseye
+    description: Test the ensure-dib role on debian-bullseye
+    parent: zuul-jobs-test-ensure-dib
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-dib-ubuntu-focal
+    description: Test the ensure-dib role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-dib
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-dib-ubuntu-jammy
+    description: Test the ensure-dib role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-dib
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-dib-ubuntu-noble
+    description: Test the ensure-dib role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-dib
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- project:
+    check:
+      jobs: &id001
+        - zuul-jobs-test-ensure-dib-debian-bookworm
+        - zuul-jobs-test-ensure-dib-debian-bullseye
+        - zuul-jobs-test-ensure-dib-ubuntu-focal
+        - zuul-jobs-test-ensure-dib-ubuntu-jammy
+        - zuul-jobs-test-ensure-dib-ubuntu-noble
+    gate:
+      jobs: *id001
+    periodic-weekly:
+      jobs: *id001

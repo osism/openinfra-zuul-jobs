@@ -1,0 +1,10 @@
+- hosts: all
+  roles:
+    - ensure-dib
+  tasks:
+    - name: Run build-disk-image
+      command: "{{ ensure_dib_command }} --help"
+      register: dib
+    - name: Assert dib being executed successfully
+      assert:
+        that: dib is successful

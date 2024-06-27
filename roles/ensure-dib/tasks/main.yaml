@@ -1,0 +1,69 @@
+- name: Make sure the role is run on Debian or Ubuntu
+  fail:
+    msg: "This role supports Debian and Ubuntu distributions only"
+  when: ansible_distribution not in ["Debian", "Ubuntu"]
+
+- name: Install diskimage-builder requirements
+  become: true
+  package:
+    state: present
+    name:
+      # these deps are taken from the upstream
+      # openstack/diskimage-builder/bindep.txt
+      - apt-transport-https
+      - curl
+      - debootstrap
+      - dosfstools
+      - gdisk
+      - git
+      - gnupg2
+      - inetutils-ping
+      - kpartx
+      - qemu-utils
+      - rpm
+      - squashfs-tools
+      - sudo
+      - uuid-runtime
+      - zstd
+
+- name: Check if diskimage-builder is installed
+  shell: >
+    command -v {{ ensure_dib_venv_dir }}/bin/disk-image-create
+      disk-image-create
+  args:
+    executable: /bin/bash
+  register: dib_preinstalled
+  ignore_errors: true
+
+- name: Export preinstalled dib executable
+  when: dib_preinstalled is successful
+  set_fact:
+    ensure_dib_command: "{{ dib_preinstalled.stdout_lines[0] }}"
+    cacheable: true
+
+- name: Install dib in venv
+  when: dib_preinstalled is not successful
+  block:
+    - name: Ensure pip
+      include_role:
+        name: ensure-pip
+    - name: Install latest diskimage-builder
+      when: not ensure_dib_version
+      pip:
+        name:
+          - setuptools
+          - diskimage-builder
+        virtualenv: "{{ ensure_dib_venv_dir }}"
+        virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
+    - name: Install versioned diskimage-builder
+      when: ensure_dib_version
+      pip:
+        name:
+          - setuptools
+          - "diskimage-builder=={{ ensure_dib_version }}"
+        virtualenv: "{{ ensure_dib_venv_dir }}"
+        virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
+    - name: Export DIB binary path
+      set_fact:
+        ensure_dib_command: "{{ ensure_dib_venv_dir }}/bin/disk-image-create"
+        cacheable: true
