@@ -21,23 +21,24 @@
 - name: Set initial repo states in workspace
   shell: |
     set -ex
-    if [ -d "{{ cached_repos_root }}/{{ zj_project.canonical_name }}" ] ; then
-        # We do a bare clone here first so that we skip creating a working
-        # copy that will be overwritten later anyway.
-        git clone --bare {{ cached_repos_root }}/{{ zj_project.canonical_name }} {{ zuul_workspace_root }}/{{ zj_project.src_dir }}/.git
-    else
-        git init {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
+    if [ ! -d "{{ zuul_workspace_root }}/{{ zj_project.src_dir }}" ] ; then
+      if [ -d "{{ cached_repos_root }}/{{ zj_project.canonical_name }}" ] ; then
+          # We do a bare clone here first so that we skip creating a working
+          # copy that will be overwritten later anyway.
+          git clone --bare {{ cached_repos_root }}/{{ zj_project.canonical_name }} {{ zuul_workspace_root }}/{{ zj_project.src_dir }}/.git
+      else
+          git init {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
+      fi
+      cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
+      git config --local --bool core.bare false
+      git remote -v | grep origin && git remote rm origin || true
+      git remote add origin file:///dev/null
     fi
     cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
-    git config --local --bool core.bare false
     # Allow pushing to non-bare repo
     git config --local receive.denyCurrentBranch ignore
     # Allow deleting current branch
     git config --local receive.denyDeleteCurrent ignore
-    git remote -v | grep origin && git remote rm origin || true
-    git remote add origin file:///dev/null
-  args:
-    creates: "{{ zuul_workspace_root }}/{{ zj_project.src_dir }}"
   with_items: "{{ _zuul_projects.values() }}"
   loop_control:
     loop_var: zj_project
@@ -46,32 +47,11 @@
   tags:
     - skip_ansible_lint
 
-- name: Synchronize src repos to workspace directory
-  command: |-
-    {% if ansible_connection == "kubectl" %}
-      git push {% if mirror_workspace_quiet %}--quiet{% endif %} --mirror "ext::kubectl --context {{ zuul.resources[inventory_hostname].context }} -n {{ zuul.resources[inventory_hostname].namespace }} exec -i {{ zuul.resources[inventory_hostname].pod }} -- %S {{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
-    {% else %}
-      git push {% if mirror_workspace_quiet %}--quiet{% endif %} --mirror git+ssh://{{ ansible_user }}@{{ ansible_host | ipwrap }}:{{ ansible_port }}/{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}
-    {% endif %}
-  args:
-    chdir: "{{ zuul.executor.work_root }}/{{ zj_project.value.src_dir }}"
-  environment:
-    GIT_ALLOW_PROTOCOL: ext:ssh
+- name: Include tasks to synchronize src repos to workspace directory
+  include_tasks: sync-project.yaml
   with_dict: "{{ _zuul_projects }}"
   loop_control:
     loop_var: zj_project
-  delegate_to: localhost
-  # We occasionally see git pushes in the middle of this loop fail then
-  # subsequent pushes for other repos succeed. The entire loop ends up
-  # failing because one of the pushes failed. Mitigate this by retrying
-  # on failure.
-  register: git_push
-  until: git_push is success
-  retries: 3
-  # ANSIBLE0006: Skip linting since it triggers on the "git" command,
-  # but push is not supported by ansible git module.
-  tags:
-    - skip_ansible_lint
 
 # Do this as a multi-line shell so that we can do the loop once
 - name: Update remote repository state correctly

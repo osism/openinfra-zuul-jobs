@@ -21,23 +21,24 @@
 - name: Set initial repo states in workspace
   shell: |
     set -ex
-    if [ -d "{{ cached_repos_root }}/{{ zj_project.canonical_name }}" ] ; then
-        # We do a bare clone here first so that we skip creating a working
-        # copy that will be overwritten later anyway.
-        git clone --bare {{ cached_repos_root }}/{{ zj_project.canonical_name }} {{ zuul_workspace_root }}/{{ zj_project.src_dir }}/.git
-    else
-        git init {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
+    if [ ! -d "{{ zuul_workspace_root }}/{{ zj_project.src_dir }}" ] ; then
+      if [ -d "{{ cached_repos_root }}/{{ zj_project.canonical_name }}" ] ; then
+          # We do a bare clone here first so that we skip creating a working
+          # copy that will be overwritten later anyway.
+          git clone --bare {{ cached_repos_root }}/{{ zj_project.canonical_name }} {{ zuul_workspace_root }}/{{ zj_project.src_dir }}/.git
+      else
+          git init {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
+      fi
+      cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
+      git config --local --bool core.bare false
+      git remote -v | grep origin && git remote rm origin || true
+      git remote add origin file:///dev/null
     fi
     cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
-    git config --local --bool core.bare false
     # Allow pushing to non-bare repo
     git config --local receive.denyCurrentBranch ignore
     # Allow deleting current branch
     git config --local receive.denyDeleteCurrent ignore
-    git remote -v | grep origin && git remote rm origin || true
-    git remote add origin file:///dev/null
-  args:
-    creates: "{{ zuul_workspace_root }}/{{ zj_project.src_dir }}"
   with_items: "{{ _zuul_projects.values() }}"
   loop_control:
     loop_var: zj_project
