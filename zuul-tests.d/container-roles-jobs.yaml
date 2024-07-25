@@ -402,6 +402,33 @@
           label: ubuntu-focal
 
 - job:
+    name: zuul-jobs-test-ensure-kubernetes-podman
+    description: |
+      Test the ensure-kubernetes role with minikube+podman+cri-o
+
+      This job tests changes to the ensure-kubernetes roles.  It
+      is not meant to be used directly but rather run on changes to
+      roles in the zuul-jobs repo.
+    # Requires at least ubuntu-noble
+    abstract: true
+    files:
+      - roles/ensure-docker/.*
+      - roles/ensure-kubernetes/.*
+      - roles/ensure-package-repositories/.*
+      - test-playbooks/ensure-kubernetes/.*
+    run: test-playbooks/ensure-kubernetes/minikube.yaml
+    post-run: test-playbooks/ensure-kubernetes/post.yaml
+
+- job:
+    name: zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
+    description: Test the ensure-kubernetes role with minikube on ubuntu-noble
+    parent: zuul-jobs-test-ensure-kubernetes-podman
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-ensure-kubernetes-microk8s
     description: |
       Test the ensure-kubernetes role with microk8s
@@ -560,6 +587,7 @@
         - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
+        - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
         - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bookworm

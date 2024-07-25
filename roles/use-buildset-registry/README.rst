@@ -52,3 +52,13 @@ Use this role on any host which should use the buildset registry.
 
    The default may change in the future as more general-purpose public
    registries become known.
+
+.. zuul:rolevar:: buildset_registry_unqualified_registries
+   :default: [ 'docker.io' ]
+
+   Some tools` like `podman` and `cri-o` are stricter when looking for
+   unqualified registries. This sets up `containerd` (and `cri-o`) with
+   a default unqualified search prefix, making it compatible with legacy
+   behaviour. More detail at `containers-registries.conf`_.
+
+.. _containers-registries.conf: https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md

@@ -40,10 +40,52 @@ An ansible role to install kubernetes.
 .. zuul:rolevar:: kubernetes_runtime
    :default: docker
 
-   Which kubernetes runtime to use for minikube; values are ``docker`` or
-   ``cri-o``.
+   Which kubernetes runtime to use for minikube; values are ``docker``,
+   ``cri-o`` or ``podman``. For any other values the
+   ``ensure_kubernetes_minikube_*`` options will be used instead. Please
+   note that only some combinations of profiles and distros might be
+   valid.
 
 .. zuul:rolevar:: ensure_kubernetes_minikube_addons
    :default: []
 
    List of addons to configure in k8s. Use this to enable the addons.
+
+.. zuul:rolevar:: ensure_kubernetes_minikube_driver
+   :default: none
+
+   Which driver to use for minikube. The default is the ``none`` driver.
+   See also ``kubernetes_runtime``.
+
+.. zuul:rolevar:: ensure_kubernetes_minikube_runtime
+   :default: docker
+
+   Which kubernetes runtime to use for minikube. See also
+   ``kubernetes_runtime``.
+
+.. zuul:rolevar:: ensure_kubernetes_minikube_provider
+   :default: docker
+
+   Which container provider to use for minikube. See also
+   ``kubernetes_runtime``.
+
+.. zuul:rolevar:: ensure_kubernetes_bin_path
+   :default: /tmp
+
+   Where to install binaries for minikube. This is currently set to retain
+   compatibility with existing users, but the intention is to move the
+   install default to a more sane location in the future.
+
+.. zuul:rolevar:: ensure_kubernetes_minikube_memory
+   :default: no-limit
+
+   For the ``podman`` runtime, the podman container running the entire
+   minikube instance can have a global memory limit applied. The default
+   value sets no limit.
+
+.. zuul:rolevar:: ensure_kubernetes_minikube_cpus
+   :default: no-limit
+
+   For the ``podman`` runtime, the podman container running the entire
+   minikube instance can have a global cpu limit applied. The default
+   value sets no limit.

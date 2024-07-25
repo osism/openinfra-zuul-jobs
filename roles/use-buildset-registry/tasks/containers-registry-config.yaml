@@ -1,0 +1,69 @@
+- name: Include OS-specific variables
+  include_vars: "{{ zj_distro_os }}"
+  with_first_found:
+    - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yaml"
+    - "{{ ansible_distribution }}.{{ ansible_architecture }}.yaml"
+    - "{{ ansible_distribution }}.yaml"
+    - "{{ ansible_os_family }}.yaml"
+    - "default.yaml"
+  loop_control:
+    loop_var: zj_distro_os
+
+# Docker doesn't understand docker push [1234:5678::]:5000/image/path:tag
+# so we set up /etc/hosts with a registry alias name to support ipv6 and 4.
+- name: Configure /etc/hosts for buildset_registry to workaround docker not understanding ipv6 addresses
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    regex: "^{{ buildset_registry.host }}\tzuul-jobs.buildset-registry$"
+    line: "{{ buildset_registry.host }}\tzuul-jobs.buildset-registry"
+    insertafter: EOF
+  when: buildset_registry.host | ipaddr
+
+- name: Set buildset_registry alias variable when using ip
+  set_fact:
+    buildset_registry_alias: zuul-jobs.buildset-registry
+  when: buildset_registry.host | ipaddr
+
+- name: Set buildset_registry alias variable when using name
+  set_fact:
+    buildset_registry_alias: "{{ buildset_registry.host }}"
+  when: not ( buildset_registry.host | ipaddr )
+
+- name: Ensure containers directory exists
+  become: yes
+  file:
+    state: directory
+    path: /etc/containers
+    mode: 0755
+
+- name: Modify registries.conf
+  become: yes
+  modify_registries_conf:
+    path: /etc/containers/registries.conf
+    buildset_registry: "{{ buildset_registry }}"
+    buildset_registry_alias: "{{ buildset_registry_alias }}"
+    namespaces: "{{ buildset_registry_namespaces }}"
+  no_log: true
+
+- name: Set up unqualified registries
+  become: yes
+  ini_file:
+    path: /etc/containers/registries.conf
+    option: unqualified-search-registries
+    value: "{{ buildset_registry_unqualified_registries }}"
+    state: present
+
+- name: Write buildset registry TLS certificate
+  become: true
+  copy:
+    content: "{{ buildset_registry.cert }}"
+    dest: "{{ ca_dir }}/{{ buildset_registry_alias }}.crt"
+    mode: 0644
+  register: _tls_ca
+
+- name: Update CA certs  # noqa: no-handler
+  command: "{{ ca_command }}"
+  become: true
+  when: _tls_ca is changed

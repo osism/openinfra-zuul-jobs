@@ -53,7 +53,28 @@
             name: collect-kubernetes-logs
 
         - name: Get minikube logs
-          become: true
-          shell: "/tmp/minikube logs > {{ ansible_user_dir }}/zuul-output/logs/minikube.txt || true"
+          shell: "minikube logs > {{ ansible_user_dir }}/zuul-output/logs/minikube.txt"
           environment:
             MINIKUBE_HOME: "{{ ansible_user_dir }}"
+          failed_when: false
+
+        - name: Get kubelet logs inside podman container
+          shell: |
+            set -x
+            KUBELET_LOG_DIR={{ ansible_user_dir }}/zuul-output/logs/kubelet/
+            mkdir -p ${KUBELET_LOG_DIR}
+            JOURNALCTL_CMD="sudo podman exec -it minikube journalctl"
+            ${JOURNALCTL_CMD} -u kubelet.service >> ${KUBELET_LOG_DIR}/kubelet.txt
+          failed_when: false
+
+        - name: Fetch the system cri-o logs
+          become: true
+          shell: |
+            ZUUL_LOG_DIR={{ ansible_user_dir }}/zuul-output/logs
+            cp /etc/resolv.conf ${ZUUL_LOG_DIR}
+            mkdir -p ${ZUUL_LOG_DIR}/containerd
+            cp -r /etc/containers ${ZUUL_LOG_DIR}/containerd
+            mkdir -p ${ZUUL_LOG_DIR}/cri-o
+            systemctl status crio > ${ZUUL_LOG_DIR}/cri-o/systemctl-status.txt
+            journalctl -u crio > ${ZUUL_LOG_DIR}/cri-o/journalctl-u.txt
+          failed_when: false

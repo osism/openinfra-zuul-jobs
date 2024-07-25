@@ -1,5 +1,16 @@
 - hosts: all
   tasks:
+    - name: Fetch cri-o logs
+      become: true
+      shell: |
+        ZUUL_LOG_DIR={{ ansible_user_dir }}/zuul-output/logs
+        cp /etc/resolv.conf ${ZUUL_LOG_DIR}
+        mkdir -p ${ZUUL_LOG_DIR}/containerd
+        cp -r /etc/containers ${ZUUL_LOG_DIR}/containerd
+        mkdir -p ${ZUUL_LOG_DIR}/cri-o
+        systemctl status crio > ${ZUUL_LOG_DIR}/cri-o/systemctl-status.txt
+        journalctl -u crio > ${ZUUL_LOG_DIR}/cri-o/journalctl-u.txt
+      failed_when: no
     - name: Describe dockertest pod
       command: kubectl describe pod/quaytest
       ignore_errors: true
