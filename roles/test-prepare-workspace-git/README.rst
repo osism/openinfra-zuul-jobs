@@ -24,10 +24,8 @@ The cached repos need to be placed using the canonical name under the
    list to only use projects which are required by the job.
 
 .. zuul:rolevar:: mirror_workspace_quiet
-   :default: false
 
-   If `true` git operations will be silenced and won't print every
-   changed reference.
+   This value is ignored; it should be removed from job configuration.
 
 .. zuul:rolevar:: zuul_workspace_root
    :default: "{{ ansible_user_dir }}"
