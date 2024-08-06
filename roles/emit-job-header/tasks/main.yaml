@@ -24,6 +24,9 @@
           Event ID: {{ zuul.event_id }}
           {% endif %}
 
+    # The "Product Name" prints the instance type for AWS nodes but may be something else
+    # for other providers. It is useful when AWS EC2 Fleet is configured so that we know
+    # the exact instance type of the running node
     - name: Print node information
       debug:
         msg: |
@@ -34,6 +37,7 @@
           Distro: {{ hostvars[zj_item]['ansible_distribution'] | default('unknown') }} {{ hostvars[zj_item]['ansible_distribution_version'] | default('unknown') }}
           Provider: {{ hostvars[zj_item]['nodepool']['provider'] }}
           Label: {{ hostvars[zj_item]['nodepool']['label'] }}
+          Product Name: {{ hostvars[zj_item]['ansible_product_name'] | default('unknown') }}
           {% if hostvars[zj_item]['nodepool']['interface_ip'] is defined %}
           Interface IP: {{ hostvars[zj_item]['nodepool']['interface_ip'] }}
           {% endif %}
