@@ -459,6 +459,110 @@
     run: test-playbooks/ensure-podman/main.yaml
     vars:
       ensure_podman_validate: true
+    tags:
+      - debuntu-platforms
+      - exclude-ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-podman-debian-bookworm
+    description: Test the ensure-podman role on debian-bookworm
+    parent: zuul-jobs-test-ensure-podman
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-podman-debian-bullseye
+    description: Test the ensure-podman role on debian-bullseye
+    parent: zuul-jobs-test-ensure-podman
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-podman-ubuntu-jammy
+    description: Test the ensure-podman role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-podman
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-podman-ubuntu-noble
+    description: Test the ensure-podman role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-podman
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-podman-socket
+    description: |
+      Test the ensure-podman role with the socket option
+
+      This job tests the ensure-podman role.  It is not meant to be
+      used directly but rather run on changes to roles in the
+      zuul-jobs repo.
+    abstract: true
+    files:
+      - roles/ensure-podman/.*
+      - roles/ensure-package-repositories/.*
+      - test-playbooks/ensure-podman/.*
+    run: test-playbooks/ensure-podman/main.yaml
+    vars:
+      ensure_podman_validate: true
+      ensure_podman_socket: true
+    tags:
+      - debuntu-platforms
+      - exclude-ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-podman-socket-debian-bookworm
+    description: Test the ensure-podman role with the socket option on debian-bookworm
+    parent: zuul-jobs-test-ensure-podman-socket
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-podman-socket-debian-bullseye
+    description: Test the ensure-podman role with the socket option on debian-bullseye
+    parent: zuul-jobs-test-ensure-podman-socket
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
+    description: Test the ensure-podman role with the socket option on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-podman-socket
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-podman-socket-ubuntu-noble
+    description: Test the ensure-podman role with the socket option on ubuntu-noble
+    parent: zuul-jobs-test-ensure-podman-socket
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
 
 - job:
     name: zuul-jobs-test-ensure-skopeo
@@ -567,6 +671,14 @@
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
+        - zuul-jobs-test-ensure-podman-debian-bookworm
+        - zuul-jobs-test-ensure-podman-debian-bullseye
+        - zuul-jobs-test-ensure-podman-ubuntu-jammy
+        - zuul-jobs-test-ensure-podman-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-socket-debian-bookworm
+        - zuul-jobs-test-ensure-podman-socket-debian-bullseye
+        - zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
+        - zuul-jobs-test-ensure-podman-socket-ubuntu-noble
         - zuul-jobs-test-ensure-skopeo-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bullseye
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal

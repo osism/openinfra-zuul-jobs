@@ -1,1 +1,3 @@
 ensure_podman_validate: false
+ensure_podman_socket: false
+ensure_podman_group: podman

@@ -1,0 +1,43 @@
+# We have a podman group, like the docker group, for controlling
+# access to the root-owned podman service.
+- name: Ensure "podman" group exists
+  become: true
+  group:
+    name: "{{ ensure_podman_group }}"
+    state: present
+
+- name: Add user to podman group
+  become: true
+  user:
+    name: "{{ ansible_user }}"
+    groups:
+      - "{{ ensure_podman_group }}"
+    append: yes
+
+- name: Ensure systemd config directory exists
+  become: true
+  file:
+    path: /etc/systemd/system/podman.socket.d
+    state: directory
+
+- name: Add podman socket override config
+  become: true
+  template:
+    src: podman.socket.override.conf.j2
+    dest: /etc/systemd/system/podman.socket.d/override.conf
+
+- name: Reset ssh connection to pick up podman group
+  meta: reset_connection
+
+- name: Assure podman.socket service is running
+  become: true
+  service:
+    name: podman.socket
+    enabled: yes
+    state: started
+
+- name: Correct group ownership on podman sock
+  become: true
+  file:
+    path: /run/podman/podman.sock
+    group: "{{ ensure_podman_group }}"
