@@ -3,6 +3,16 @@
     path: /tmp/minikube
   register: stat_result
 
+# This is needed because minikube is installed in /tmp
+- name: Disable protections for races in /tmp
+  sysctl:
+    name: fs.protected_regular
+    value: '0'
+    sysctl_set: true
+    state: present
+    reload: true
+  become: true
+
 - name: Download Minikube
   get_url:
     url: https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube-linux-amd64
@@ -17,13 +27,28 @@
     dest: /usr/local/bin/kubectl
     state: link
 
+- name: Get the kubernetes version
+  command: >-
+    /tmp/minikube kubectl --
+    version --client=true --output=json
+  changed_when: False
+  register: ensure_kubernetes_kubectl_version_result
+
+- name: Set the kubernetes version
+  vars:
+    kubectl_version: >-
+      {{ ensure_kubernetes_kubectl_version_result.stdout | from_json }}
+  set_fact:
+    ensure_kubernetes_kubectl_version: >-
+      v{{ kubectl_version['clientVersion']['major'] }}.{{ kubectl_version['clientVersion']['minor'] }}
+
 - name: Run ensure-docker role
   include_role:
     name: ensure-docker
 
-# Ubuntu focal doesn't have cri-o-1.15 packages, per distro tasks is
-# required to install crio
-- name: Install crio
+# Ubuntu doesn't have cri-o packages, per distro tasks is
+# required to install cri-o
+- name: Install cri-o
   # Note this is required even for the docker runtime, as minikube only
   # supports cri now.  See below for the docker wrapper
   include_tasks: "{{ zj_distro_os }}"

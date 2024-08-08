@@ -1,0 +1,28 @@
+- name: Add all repositories
+  include_role:
+    name: ensure-package-repositories
+  vars:
+    repositories_keys:
+      - url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
+      - url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24/xUbuntu_{{ ansible_distribution_version }}/Release.key"
+    repositories_list:
+      - repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ansible_distribution_version }}/ /"
+      - repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24/xUbuntu_{{ ansible_distribution_version }}/ /"
+- name: Install packages
+  package:
+    name:
+      - cri-o
+      - cri-o-runc
+      - containernetworking-plugins
+      - podman
+      - cri-tools
+    state: present
+  become: true
+- name: Set crio cgroup driver
+  ini_file:
+    path: /etc/crio/crio.conf
+    section: crio.runtime
+    option: cgroup_manager
+    value: '"cgroupfs"'
+    mode: 0644
+  become: true

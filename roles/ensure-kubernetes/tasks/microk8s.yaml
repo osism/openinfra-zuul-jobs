@@ -1,7 +1,7 @@
 - name: Check distro
   assert:
-    that: ansible_distribution_release in ['jammy', 'bookworm']
-    msg: 'This role only supported on Jammy or Bookworm'
+    that: ansible_distribution_release in ['jammy', 'bookworm', 'noble']
+    msg: 'This role is only supported on Jammy or Bookworm or Noble'
 
 - name: Install snapd
   become: yes

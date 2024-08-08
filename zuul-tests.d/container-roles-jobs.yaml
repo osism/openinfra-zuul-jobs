@@ -368,6 +368,11 @@
       - test-playbooks/registry/test-registry-post.yaml
     vars:
       container_command: podman
+    # There seems to be flakiness in pre-Noble
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
 
 - job:
     name: zuul-jobs-test-ensure-kubernetes-crio
@@ -395,15 +400,6 @@
       nodes:
         - name: ubuntu-focal
           label: ubuntu-focal
-
-- job:
-    name: zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
-    description: Test the ensure-kubernetes role with crio-o on ubuntu-jammy
-    parent: zuul-jobs-test-ensure-kubernetes-crio
-    nodeset:
-      nodes:
-        - name: ubuntu-jammy
-          label: ubuntu-jammy
 
 - job:
     name: zuul-jobs-test-ensure-kubernetes-microk8s
@@ -564,7 +560,6 @@
         - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
         - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
-        - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bookworm
