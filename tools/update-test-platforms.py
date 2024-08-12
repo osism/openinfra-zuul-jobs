@@ -110,6 +110,9 @@ def handle_file(fn):
             platforms = sorted(platforms)
             if platforms:
                 for platform in platforms:
+                    exclude_tag = f'exclude-{platform}'
+                    if exclude_tag in tags:
+                        continue
                     voting = False if platform in NON_VOTING else True
                     ojob = CommentedMap()
                     ojob['name'] = job['name'] + '-' + platform
