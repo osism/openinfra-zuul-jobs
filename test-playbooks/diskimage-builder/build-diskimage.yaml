@@ -5,7 +5,7 @@
       build_diskimage_image_name: foo-ubuntu-image
       build_diskimage_formats: ["qcow2"]
       build_diskimage_elements: ["vm", "ubuntu"]
-      environment:
+      build_diskimage_environment:
         DIB_RELEASE: "noble"
   tasks:
     - name: Gather image file info
