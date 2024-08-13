@@ -1,0 +1,59 @@
+# Jobs listed in dib-jobs.rst.
+
+- job:
+    name: build-diskimage
+    description: |
+      Build an image using diskimage-builder
+
+      Note that this job does not perform any actions with the image
+      after building it.  In particular, due to the typical sizes of
+      diskimages, it does not move the image artifact to the executor
+      or prepare it to be uploaded to log storage.
+
+      .. zuul:jobvar:: build_diskimage_image_name
+
+         Name of the image to build.
+
+      .. zuul:jobvar:: build_diskimage_formats
+         :type: list
+         :default: ['qcow2']
+
+         List of image types to generate.
+
+      .. zuul:jobvar:: build_diskimage_elements
+         :type: list
+         :default: ['ubuntu', 'vm']
+
+         List of elements that should be used when creating the disk image.
+
+      .. zuul:jobvar:: build_diskimage_environment
+         :type: dict
+
+         Environment variables for the diskimage builder command may be
+         supplied using this variable (or by directly using the Ansible
+         ``environment`` argument).
+
+      .. zuul:jobvar:: build_diskimage_image_root
+         :default: "{{ ansible_user_dir }}/dib-images"
+
+         Directory to store the build images.
+
+      .. zuul:jobvar:: build_diskimage_logs_dir
+         :default: {{ ansible_user_dir }}/zuul-output/logs
+
+         The path where the log output of the diskimage-builder shall be written to
+
+      .. zuul:jobvar:: build_diskimage_retry_limit
+         :default: 0
+
+         The number of times the build-diskimage command shall be retried until
+         successful.
+
+      .. zuul:jobvar:: build_diskimage_retry_delay
+         :default: 120
+
+         The number of seconds to wait between retries of the build-diskimage
+         command.
+
+    pre-run: playbooks/dib-image/pre.yaml
+    run: playbooks/dib-image/run.yaml
