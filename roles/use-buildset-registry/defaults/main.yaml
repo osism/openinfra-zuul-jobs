@@ -3,3 +3,5 @@ buildset_registry_namespaces:
   - ['quay.io', 'https://quay.io']
   - ['gcr.io', 'https://gcr.io']
   - ['registry.k8s.io', 'https://registry.k8s.io']
+buildset_registry_unqualified_registries:
+  - 'docker.io'

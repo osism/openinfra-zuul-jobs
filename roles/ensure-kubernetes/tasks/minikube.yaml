@@ -1,6 +1,29 @@
+# The following set_facts are used to select individual parameters from
+# profiles.
+- name: Set the minikube parameters for cri-o
+  set_fact:
+    ensure_kubernetes_minikube_runtime: cri-o
+    ensure_kubernetes_minikube_driver: none
+    ensure_kubernetes_container_provider: docker
+  when: kubernetes_runtime == 'cri-o'
+
+- name: Set the minikube parameters for docker
+  set_fact:
+    ensure_kubernetes_minikube_runtime: docker
+    ensure_kubernetes_minikube_driver: none
+    ensure_kubernetes_container_provider: docker
+  when: kubernetes_runtime == 'docker'
+
+- name: Set the minikube parameters for podman+cri-o
+  set_fact:
+    ensure_kubernetes_minikube_runtime: cri-o
+    ensure_kubernetes_minikube_driver: podman
+    ensure_kubernetes_container_provider: podman
+  when: kubernetes_runtime == 'podman'
+
 - name: Check for Minikube install
   stat:
-    path: /tmp/minikube
+    path: "{{ ensure_kubernetes_bin_path }}/minikube"
   register: stat_result
 
 # This is needed because minikube is installed in /tmp
@@ -12,24 +35,26 @@
     state: present
     reload: true
   become: true
+  when: '"/tmp" == ensure_kubernetes_bin_path'
 
 - name: Download Minikube
+  become: true
   get_url:
     url: https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube-linux-amd64
-    dest: /tmp/minikube
+    dest: "{{ ensure_kubernetes_bin_path }}/minikube"
     mode: 0755
   when: not stat_result.stat.exists
 
 - name: Install kubectl as minikube
   become: true
   file:
-    src: /tmp/minikube
+    src: "{{ ensure_kubernetes_bin_path }}/minikube"
     dest: /usr/local/bin/kubectl
     state: link
 
 - name: Get the kubernetes version
   command: >-
-    /tmp/minikube kubectl --
+    {{ ensure_kubernetes_bin_path }}/minikube kubectl --
     version --client=true --output=json
   changed_when: False
   register: ensure_kubernetes_kubectl_version_result
@@ -42,31 +67,32 @@
     ensure_kubernetes_kubectl_version: >-
       v{{ kubectl_version['clientVersion']['major'] }}.{{ kubectl_version['clientVersion']['minor'] }}
 
-- name: Run ensure-docker role
+- name: Load the role for the minikube container provider
   include_role:
-    name: ensure-docker
+    name: "ensure-{{ ensure_kubernetes_container_provider }}"
 
-# Ubuntu doesn't have cri-o packages, per distro tasks is
-# required to install cri-o
-- name: Install cri-o
-  # Note this is required even for the docker runtime, as minikube only
-  # supports cri now.  See below for the docker wrapper
-  include_tasks: "{{ zj_distro_os }}"
-  with_first_found:
-    - "crio-{{ ansible_distribution }}-{{ ansible_distribution_version }}.yaml"
-    - "crio-default.yaml"
-  loop_control:
-    loop_var: zj_distro_os
-
-- name: Workaround missing 02-crio.conf
-  # See: https://github.com/kubernetes/minikube/issues/13816
+# Ubuntu doesn't have cri-o packages, a per distro task is required to install
+# cri-o. We only need to install cri-o if we're using the 'none' driver.
+- name: Install cri-o when needed
   block:
-    - name: Add misisng crio.conf.d folder
+    - name: Install crio
+      # Note this is required even for the docker runtime, as minikube only
+      # supports cri now.  See below for the docker wrapper
+      include_tasks: "{{ zj_distro_os }}"
+      with_first_found:
+        - "crio-{{ ansible_distribution }}-{{ ansible_distribution_version }}.yaml"
+        - "crio-default.yaml"
+      loop_control:
+        loop_var: zj_distro_os
+
+    # See: https://github.com/kubernetes/minikube/issues/13816
+    - name: Add missing crio.conf.d folder
       file:
         path: /etc/crio/crio.conf.d
         state: directory
         mode: 0755
       become: true
+
     - name: Fix missing 02-crio.conf
       copy:
         content: |
@@ -81,12 +107,21 @@
         dest: /etc/crio/crio.conf.d/02-crio.conf
         mode: 0644
       become: true
+  when:
+    - ensure_kubernetes_minikube_runtime == 'cri-o'
+    - ensure_kubernetes_minikube_driver == 'none'
 
-- name: Create .kube directory
+- name: Create directories
   file:
-    path: "{{ ansible_user_dir }}/.kube"
+    path: "{{ zj_mkdir }}"
     state: directory
     mode: 0755
+  loop_control:
+    loop_var: zj_mkdir
+  loop:
+    - "{{ ansible_user_dir }}/.kube"
+    - "{{ ansible_user_dir }}/.minikube/files/etc/containers"
+    - "{{ ansible_user_dir }}/.minikube/certs"
 
 - name: Create .kube/config file
   file:
@@ -94,31 +129,63 @@
     state: touch
     mode: 0644
 
-- name: Create .minikube directory
+- name: Create .minikube/files/etc/containers/ directory
   file:
-    path: "{{ ansible_user_dir }}/.minikube"
+    path: "{{ ansible_user_dir }}/.minikube/files/etc/containers"
     state: directory
     mode: 0755
 
-- name: Default args
-  set_fact:
-    extra_args: ""
-
-- name: Configure dns options if set
-  when: minikube_dns_resolvers|length>0
+- name: Update registries.conf if a buildset registry is used
   block:
-    - name: Write resolv.conf
-      template:
-        src: resolv.conf.j2
-        dest: "{{ ansible_user_dir }}/.minikube/k8s_resolv.conf"
+    - name: Use buildset registry
+      include_role:
+        name: use-buildset-registry
+        tasks_from: containers-registry-config.yaml
+      vars:
+        buildset_registry_docker_user: root
+
+    - name: Set registries.conf for minikube
+      copy:
+        src: /etc/containers/registries.conf
+        dest: >-
+          {{ ansible_user_dir }}/.minikube/files/etc/containers/registries.conf
+        remote_src: true
         mode: "0444"
-    - name: Set extra kube setttings
-      set_fact:
-        extra_args: "--extra-config=kubelet.resolv-conf={{ ansible_user_dir }}/.minikube/k8s_resolv.conf"
+
+    - name: Write buildset registry TLS certificate
+      copy:
+        content: "{{ buildset_registry.cert }}"
+        dest: "{{ ansible_user_dir}}/.minikube/certs/buildset.pem"
+        mode: preserve
+      when: buildset_registry.cert
+  when: buildset_registry is defined
+
+- name: Write resolv.conf for minikube
+  template:
+    src: resolv.conf.j2
+    dest: "{{ ansible_user_dir }}/.minikube/files/etc/resolv.conf"
+    mode: "0444"
+  when: minikube_dns_resolvers|length>0
+
+- name: Enable extra cri-o debugging
+  block:
+    - name: Create .minikube/files/etc/default directory
+      file:
+        path: "{{ ansible_user_dir }}/.minikube/files/etc/default"
+        state: directory
+        mode: 0755
+
+    - name: Enable debugging for cri-o
+      copy:
+        content: |
+          CRIO_CONFIG_OPTIONS="--log-level debug"
+        dest: "{{ ansible_user_dir }}/.minikube/files/etc/default/crio"
+        mode: "0644"
+  when: ensure_kubernetes_debug_crio | bool
 
 # See https://github.com/kubernetes/minikube/issues/14410
 - name: Setup cri-dockerd
-  when: kubernetes_runtime == 'docker'
+  when: ensure_kubernetes_minikube_runtime == 'docker'
   become: yes
   block:
     - name: Check for pre-existing cri-docker service
@@ -180,17 +247,20 @@
         state: started
 
 - name: Start Minikube
-  become: yes
   command: >-
-    /tmp/minikube start
+    {{ ensure_kubernetes_bin_path }}/minikube start
     --v=7
-    --vm-driver=none
-    --container-runtime={{ kubernetes_runtime }}
-    {{ extra_args }}
+    --driver={{ ensure_kubernetes_minikube_driver }}
+    --container-runtime={{ ensure_kubernetes_minikube_runtime }}
     {% for _addon in ensure_kubernetes_minikube_addons %}
     --addons={{ _addon }}
     {% endfor %}
     {{ '--network-plugin=cni' if kubernetes_runtime == 'cri-o' }}
+    --embed-certs
+    {% if ensure_kubernetes_minikube_driver == 'podman' %}
+    --cpus={{ ensure_kubernetes_minikube_cpus }}
+    --memory={{ ensure_kubernetes_minikube_memory }}
+    {% endif %}
   environment:
     MINIKUBE_WANTUPDATENOTIFICATION: false
     MINIKUBE_WANTREPORTERRORPROMPT: false
@@ -207,15 +277,6 @@
 - name: Parse KUBECONFIG YAML
   set_fact:
     kube_config: "{{ kubeconfig_yaml.stdout | from_yaml }}"
-
-- name: Ensure minikube config is owned by ansible_user
-  become: yes
-  loop: "{{ kube_config['users'] }}"
-  loop_control:
-    loop_var: zj_item
-  file:
-    path: "{{ zj_item['user']['client-key'] }}"
-    owner: "{{ ansible_user }}"
 
 - name: Get cluster info
   command: kubectl cluster-info

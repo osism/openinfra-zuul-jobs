@@ -14,3 +14,12 @@ minikube_version: latest
 minikube_dns_resolvers: []
 ensure_kubernetes_minikube_addons: []
 kubernetes_runtime: docker
+
+ensure_kubernetes_minikube_driver: none
+ensure_kubernetes_minikube_runtime: docker
+ensure_kubernetes_container_provider: docker
+
+ensure_kubernetes_bin_path: /tmp
+ensure_kubernetes_debug_crio: False
+ensure_kubernetes_minikube_memory: no-limit
+ensure_kubernetes_minikube_cpus: no-limit
