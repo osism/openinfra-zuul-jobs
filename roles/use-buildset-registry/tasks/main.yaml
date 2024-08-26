@@ -79,13 +79,38 @@
     mode: 0644
   become: true
 
-- name: Restart docker daemon
-  service:
-    name: docker
-    state: restarted
-  become: true
-  register: docker_restart
-  failed_when: docker_restart is failed and not 'Could not find the requested service' in docker_restart.msg
+- name: Populate service facts
+  service_facts:
+
+# This is a copy of the logic from the ensure-docker handlers
+- name: Restart docker if it exists
+  block:
+    - name: Stop docker.socket to avoid any conflict
+      become: true
+      service:
+        name: docker.socket
+        enabled: yes
+        state: stopped
+      failed_when: false
+
+    - name: Assure docker service is running
+      become: true
+      service:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Assure docker.socket service is running
+      become: true
+      service:
+        name: docker.socket
+        enabled: yes
+        state: started
+      failed_when: false
+  when:
+    # docker-ce may have been uninstalled by cri-o
+    - "'docker.service' in ansible_facts.services"
+    - ansible_facts.services['docker.service']['status'] != 'not-found'
 
 - name: Ensure containers directory exists
   become: yes

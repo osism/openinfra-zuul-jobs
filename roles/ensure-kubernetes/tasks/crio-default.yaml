@@ -1,28 +1,62 @@
 - name: Add all repositories
+  # Instructions from here: https://github.com/cri-o/packaging making
+  # the assumption that CRIO_VERSION == KUBERNETES_VERSION
   include_role:
     name: ensure-package-repositories
   vars:
     repositories_keys:
-      - url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
-      - url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24/xUbuntu_{{ ansible_distribution_version }}/Release.key"
+      - url: "https://pkgs.k8s.io/core:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/Release.key"
+      - url: "https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/Release.key"
     repositories_list:
-      - repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ansible_distribution_version }}/ /"
-      - repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24/xUbuntu_{{ ansible_distribution_version }}/ /"
+      - repo: "deb https://pkgs.k8s.io/core:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/ /"
+      - repo: "deb https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/ /"
+
 - name: Install packages
   package:
     name:
       - cri-o
-      - cri-o-runc
+      - runc
       - containernetworking-plugins
-      - podman
       - cri-tools
+      - podman
+      - kubernetes-cni
     state: present
   become: true
-- name: Set crio cgroup driver
+
+# The the following two options are recommended from cri-o install notes
+- name: Enable ipv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+  become: true
+
+- name: Load br_netfilter
+  modprobe:
+    name: br_netfilter
+    state: present
+    persistent: present
+  become: true
+
+- name: Find networking plugins
   ini_file:
     path: /etc/crio/crio.conf
-    section: crio.runtime
-    option: cgroup_manager
-    value: '"cgroupfs"'
+    section: crio.network
+    option: plugin_dirs
+    value:
+      - '/opt/cni/bin/'
+      - '/usr/lib/cni'
     mode: 0644
   become: true
+  register: _crio_conf_updated
+
+# NOTE: want to restart here rather than notify and do it later, so
+# that we don't go on without the config correct.
+- name: Restart crio to pickup changes  # noqa no-handler
+  service:
+    name: crio
+    state: restarted
+  become: yes
+  when: _crio_conf_updated.changed
