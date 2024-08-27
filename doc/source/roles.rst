@@ -14,6 +14,7 @@ Roles
    cloud-roles
    container-roles
    deprecated-roles
+   dib-roles
    galaxy-roles
    go-roles
    hashicorp-roles
