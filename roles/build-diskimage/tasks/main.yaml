@@ -12,6 +12,7 @@
       {{ build_diskimage_elements | mandatory | join(' ') }}
   args:
     chdir: "{{ build_diskimage_image_root }}"
+  environment: "{{ build_diskimage_environment }}"
   register: build_diskimage_result
   until: build_diskimage_result is not failed
   retries: "{{ build_diskimage_retry_limit }}"

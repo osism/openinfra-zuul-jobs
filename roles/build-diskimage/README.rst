@@ -1,7 +1,12 @@
 Role for building images using diskimage-builder.
 
 Diskimage-builder and diskimage elements can be configured by passing
-corresponding settings as environment variables to this role.
+corresponding settings as environment variables to this role, or using
+the ``build_diskimage_environment`` variable.
+
+By default the `build-disk-image` command does not print its output to stdout,
+but only to a log file in the configured log directory. To additionally log to
+stdout, set `DIB_QUIET: 0` in `build_diskimage_environment`.
 
 Example:
 
@@ -36,6 +41,13 @@ Example:
    :default: ['ubuntu', 'vm']
 
    List of elements that should be used when creating the disk image.
+
+.. zuul:rolevar:: build_diskimage_environment
+   :type: dict
+
+   Environment variables for the diskimage builder command may be
+   supplied using this variable (or by directly using the Ansible
+   ``environment`` argument).
 
 .. zuul:rolevar:: build_diskimage_image_root
    :default: "{{ ansible_user_dir }}/dib-images"
