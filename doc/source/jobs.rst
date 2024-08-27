@@ -7,6 +7,7 @@ Jobs
    general-jobs
    python-jobs
    js-jobs
+   dib-jobs
    docker-jobs
    container-jobs
    go-jobs
