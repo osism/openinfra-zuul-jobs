@@ -57,6 +57,65 @@
         - name: ubuntu-noble
           label: ubuntu-noble
 
+- job:
+    name: zuul-jobs-test-build-diskimage
+    description: Test the build-diskimage role
+    files:
+      - roles/build-diskimage/.*
+      - test-playbooks/diskimage-builder/.*
+    run: test-playbooks/diskimage-builder/build-diskimage.yaml
+    tags: debuntu-platforms
+
+- job:
+    name: zuul-jobs-test-build-diskimage-debian-bookworm
+    description: Test the build-diskimage role on debian-bookworm
+    parent: zuul-jobs-test-build-diskimage
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-build-diskimage-debian-bullseye
+    description: Test the build-diskimage role on debian-bullseye
+    parent: zuul-jobs-test-build-diskimage
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-build-diskimage-ubuntu-focal
+    description: Test the build-diskimage role on ubuntu-focal
+    parent: zuul-jobs-test-build-diskimage
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-build-diskimage-ubuntu-jammy
+    description: Test the build-diskimage role on ubuntu-jammy
+    parent: zuul-jobs-test-build-diskimage
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-build-diskimage-ubuntu-noble
+    description: Test the build-diskimage role on ubuntu-noble
+    parent: zuul-jobs-test-build-diskimage
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
 - project:
     check:
       jobs: &id001
@@ -65,6 +124,11 @@
         - zuul-jobs-test-ensure-dib-ubuntu-focal
         - zuul-jobs-test-ensure-dib-ubuntu-jammy
         - zuul-jobs-test-ensure-dib-ubuntu-noble
+        - zuul-jobs-test-build-diskimage-debian-bookworm
+        - zuul-jobs-test-build-diskimage-debian-bullseye
+        - zuul-jobs-test-build-diskimage-ubuntu-focal
+        - zuul-jobs-test-build-diskimage-ubuntu-jammy
+        - zuul-jobs-test-build-diskimage-ubuntu-noble
     gate:
       jobs: *id001
     periodic-weekly:

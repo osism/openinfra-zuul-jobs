@@ -1,0 +1,13 @@
+build_diskimage_command: "{{ ensure_dib_command }}"
+
+build_diskimage_formats:
+  - qcow2
+
+build_diskimage_elements:
+  - ubuntu
+  - vm
+
+build_diskimage_image_root: "{{ ansible_user_dir }}/dib-images"
+build_diskimage_logs_dir: "{{ ansible_user_dir }}/zuul-output/logs"
+build_diskimage_retry_limit: 0
+build_diskimage_retry_delay: 120
