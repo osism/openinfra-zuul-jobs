@@ -15,67 +15,27 @@
     _zuul_projects: "{{ zuul.projects }}"
   when: not prepare_workspace_sync_required_projects_only
 
-# Do all the steps in a single shell script. This reduces the number of times
-# ansible must loop over the list of projects which reduces the amount of
-# task startup time we incur.
 - name: Set initial repo states in workspace
-  shell: |
-    set -ex
-    if [ ! -d "{{ zuul_workspace_root }}/{{ zj_project.src_dir }}" ] ; then
-      if [ -d "{{ cached_repos_root }}/{{ zj_project.canonical_name }}" ] ; then
-          # We do a bare clone here first so that we skip creating a working
-          # copy that will be overwritten later anyway.
-          git clone --bare {{ cached_repos_root }}/{{ zj_project.canonical_name }} {{ zuul_workspace_root }}/{{ zj_project.src_dir }}/.git
-      else
-          git init {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
-      fi
-      cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
-    fi
-    cd {{ zuul_workspace_root }}/{{ zj_project.src_dir }}
-    git config --local --bool core.bare false
-    # Allow pushing to non-bare repo
-    git config --local receive.denyCurrentBranch ignore
-    # Allow deleting current branch
-    git config --local receive.denyDeleteCurrent ignore
-    git remote -v | grep origin && git remote rm origin || true
-    git remote add origin file:///dev/null
-  with_items: "{{ _zuul_projects.values() }}"
-  loop_control:
-    loop_var: zj_project
-  # We're using git in a shell script because it is faster and the module
-  # doesn't support features we need.
-  tags:
-    - skip_ansible_lint
+  repo_prep:
+    cached_repos_root: "{{ cached_repos_root }}"
+    executor_work_root: "{{ zuul.executor.work_root }}"
+    zuul_projects: "{{ _zuul_projects }}"
+    zuul_workspace_root: "{{ zuul_workspace_root }}"
 
-- name: Include tasks to synchronize src repos to workspace directory
-  include_tasks: sync-project.yaml
-  with_dict: "{{ _zuul_projects }}"
-  loop_control:
-    loop_var: zj_project
+- name: Synchronize src repos to workspace directory
+  delegate_to: localhost
+  repo_sync:
+    ansible_connection: "{{ ansible_connection }}"
+    ansible_host: "{{ ansible_host | ansible.utils.ipwrap }}"
+    ansible_port: "{{ ansible_port }}"
+    ansible_user: "{{ ansible_user }}"
+    executor_work_root: "{{ zuul.executor.work_root }}"
+    inventory_hostname: "{{ inventory_hostname }}"
+    zuul_projects: "{{ _zuul_projects }}"
+    zuul_resources: "{{ zuul.resources | default({}) }}"
+    zuul_workspace_root: "{{ zuul_workspace_root }}"
 
-# Do this as a multi-line shell so that we can do the loop once
-- name: Update remote repository state correctly
-  shell: |
-    set -eu
-
-    # Reset is needed because we pushed to a non-bare repo
-    git reset --hard
-    # Clean is needed because we pushed to a non-bare repo
-    git clean -xdf
-    # Undo the config setting we did above
-    git config --local --unset receive.denyCurrentBranch
-    git config --local --unset receive.denyDeleteCurrent
-    # checkout the branch matching the branch set up by the executor
-    git checkout {% if mirror_workspace_quiet %}--quiet{% endif %} {{ zj_project.value.checkout }}
-    # put out a status line with the current HEAD
-    echo "{{ zj_project.value.canonical_name }} checked out to:"
-    git log --pretty=oneline  -1
-  args:
-    chdir: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
-  with_dict: "{{ _zuul_projects }}"
-  loop_control:
-    loop_var: zj_project
-  # ANSIBLE0006: Skip linting since it triggers on the "git" command,
-  # but we prefer the shell above
-  tags:
-    - skip_ansible_lint
+- name: Update remote repository state
+  repo_update:
+    zuul_projects: "{{ _zuul_projects }}"
+    zuul_workspace_root: "{{ zuul_workspace_root }}"
