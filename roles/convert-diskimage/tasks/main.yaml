@@ -1,0 +1,32 @@
+- name: Make sure the role is run on Debian or Ubuntu
+  fail:
+    msg: "This role supports Debian and Ubuntu distributions only"
+  when: ansible_distribution not in ["Debian", "Ubuntu"]
+
+- name: Make sure required variables are set
+  assert:
+    that:
+      - convert_diskimage_source_image is defined
+      - convert_diskimage_target_image is defined
+      - convert_diskimage_target_formats is defined
+
+- name: Make sure target formats are supported
+  assert:
+    that: zj_format in convert_diskimage_supported_formats
+  loop: "{{ convert_diskimage_target_formats }}"
+  loop_control:
+    loop_var: zj_format
+
+- name: Install qemu tools
+  become: true
+  package:
+    state: present
+    name: qemu-utils
+
+- name: Convert image to the given formats
+  command: >
+    qemu-img convert {{ convert_diskimage_source_image }}
+    -O {{ zj_format }} {{ convert_diskimage_target_image }}.{{ zj_format }}
+  loop: "{{ convert_diskimage_target_formats }}"
+  loop_control:
+    loop_var: zj_format
