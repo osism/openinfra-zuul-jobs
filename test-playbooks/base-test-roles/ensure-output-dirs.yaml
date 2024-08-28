@@ -1,0 +1,62 @@
+- name: Test the ensure-output-dirs role
+  hosts: all
+  roles:
+    - role: ensure-output-dirs
+  post_tasks:
+    - name: Check that log dir has been created
+      file:
+        path: "{{ zuul_output_dir }}/logs"
+        state: directory
+      register: log_directory
+
+    - name: Check that artifact dir has been created
+      file:
+        path: "{{ zuul_output_dir }}/artifacts"
+        state: directory
+      register: artifact_directory
+
+    - name: Check that doc dir has been created
+      file:
+        path: "{{ zuul_output_dir }}/docs"
+        state: directory
+      register: doc_directory
+
+    - name: Validate that directories were set correctly
+      assert:
+        that:
+          - log_directory is not changed
+          - log_directory is succeeded
+          - artifact_directory is not changed
+          - artifact_directory is succeeded
+          - doc_directory is not changed
+          - doc_directory is succeeded
+
+    - name: Add a logfile, artifact, and doc item
+      file:
+        path: "{{ zuul_output_dir }}/{{ item }}/file.txt"
+        state: touch
+      loop:
+        - docs
+        - artifacts
+        - logs
+
+    - name: Run ensure-output-dirs
+      include_role:
+        name: ensure-output-dirs
+
+    - name: Make sure output dirs were emptied
+      file:
+        path: "{{ zuul_output_dir }}/{{ item }}/file.txt"
+        state: absent
+      register: output_items
+      loop:
+        - docs
+        - artifacts
+        - logs
+
+    - name: Validate that files were removed in ensure-output-dirs
+      loop: "{{ output_items.results }}"
+      assert:
+        that:
+          - item is not changed
+          - item is succeeded

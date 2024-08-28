@@ -31,7 +31,7 @@ except ImportError:
 
 
 def update_one_project(args, project, output):
-    cwd = f"{args['zuul_workspace_root']}/{project['src_dir']}"
+    cwd = "%s/%s" % (args['zuul_workspace_root'], project['src_dir'])
     output['dest'] = cwd
 
     start = time.monotonic()
@@ -43,7 +43,7 @@ def update_one_project(args, project, output):
     run("git config --local --unset receive.denyCurrentBranch", cwd=cwd)
     run("git config --local --unset receive.denyDeleteCurrent", cwd=cwd)
     # checkout the branch matching the branch set up by the executor
-    out = run(f"git checkout --quiet {project['checkout']}", cwd=cwd)
+    out = run("git checkout --quiet %s" % (project['checkout'],), cwd=cwd)
     output['checkout'] = out.stdout.decode('utf8').strip()
     # put out a status line with the current HEAD
     out = run("git log --pretty=oneline -1", cwd=cwd)

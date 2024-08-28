@@ -194,6 +194,112 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-base-test-roles
+    description: |
+      Tests roles in the 'base-test' job
+
+      These roles are tested together in this job because testing them
+      relies on using base-minimal, which avoids running these roles.
+      However, for the job to fully function, they all need to have
+      been run (once) by the end.
+
+      Currently only prepare-workspace-git has a test-* variant; this
+      is the only difference from zuul-jobs-test-base-roles
+    parent: base-minimal
+    tags: all-platforms
+    abstract: true
+    run: test-playbooks/base-test-roles/base.yaml
+    # Testing of fetch-zuul-cloner and prepare-workspace-git need
+    # these repos in required-projects
+    required-projects:
+      - opendev/base-jobs
+      - zuul/project-config
+    files:
+      - ^roles/configure-mirrors/.*
+      - ^roles/emit-job-header/.*
+      - ^roles/ensure-output-dirs/.*
+      - ^roles/fetch-output/.*
+      - ^roles/fetch-subunit-output/.*
+      - ^roles/fetch-zuul-cloner/.*
+      - ^roles/set-zuul-log-path-fact/.*
+      - ^roles/test-prepare-workspace-git/.*
+      - ^roles/validate-host/.*
+      - ^test-playbooks/base-roles/.*
+
+- job:
+    name: zuul-jobs-test-base-test-roles-centos-9-stream
+    description: Tests roles in the 'base-test' job on centos-9-stream
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-base-test-roles-debian-bookworm
+    description: Tests roles in the 'base-test' job on debian-bookworm
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-base-test-roles-debian-bullseye
+    description: Tests roles in the 'base-test' job on debian-bullseye
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-base-test-roles-ubuntu-focal
+    description: Tests roles in the 'base-test' job on ubuntu-focal
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-base-test-roles-ubuntu-jammy
+    description: Tests roles in the 'base-test' job on ubuntu-jammy
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-base-test-roles-ubuntu-noble
+    description: Tests roles in the 'base-test' job on ubuntu-noble
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-base-test-roles-ubuntu-xenial
+    description: Tests roles in the 'base-test' job on ubuntu-xenial
+    parent: zuul-jobs-test-base-test-roles
+    # Note this is manually curated since xenial is not really
+    # supported on opendev, but we want the job to run until the last
+    # possible moment.
+    ansible-version: '8'
+    nodeset:
+      nodes:
+        - name: ubuntu-xenial
+          label: ubuntu-xenial
+
+- job:
     name: zuul-jobs-test-bindep
     description: Test the bindep role
     files:
@@ -740,6 +846,13 @@
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
         - zuul-jobs-test-base-roles-ubuntu-noble
+        - zuul-jobs-test-base-test-roles-centos-9-stream
+        - zuul-jobs-test-base-test-roles-debian-bookworm
+        - zuul-jobs-test-base-test-roles-debian-bullseye
+        - zuul-jobs-test-base-test-roles-ubuntu-focal
+        - zuul-jobs-test-base-test-roles-ubuntu-jammy
+        - zuul-jobs-test-base-test-roles-ubuntu-noble
+        - zuul-jobs-test-base-test-roles-ubuntu-xenial
         - zuul-jobs-test-bindep-centos-9-stream
         - zuul-jobs-test-bindep-debian-bookworm
         - zuul-jobs-test-bindep-debian-bullseye

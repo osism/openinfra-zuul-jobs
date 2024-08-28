@@ -44,7 +44,7 @@ class TestPrepareWorkspace(testtools.TestCase):
             run("git commit -a -m init", cwd=project_root)
         except Exception as e:
             if hasattr(e, 'output'):
-                msg = f'{str(e)} : {e.output}'
+                msg = '%s : %s' % (str(e), e.output)
             else:
                 msg = str(e)
             print(msg)
@@ -139,7 +139,7 @@ class TestPrepareWorkspace(testtools.TestCase):
         self.assertEqual(dest, project_output['dest'])
         head = run("git rev-parse HEAD", cwd=dest,
                    ).stdout.decode('utf8').strip()
-        self.assertEqual(f'{head} init', project_output['HEAD'])
+        self.assertEqual('%s init' % (head,), project_output['HEAD'])
         self.assertTrue(project_output['elapsed'] > 0)
 
     def test_prepare_workspace_ssh_new(self):

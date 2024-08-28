@@ -45,7 +45,7 @@ def for_each_project(func, args, output):
             except Exception as e:
                 msg = str(e)
                 if hasattr(e, 'output'):
-                    msg = f'{str(e)} : {e.output}'
+                    msg = '%s : %s' % (str(e), e.output)
                 else:
                     msg = str(e)
                 project_out['error'] = msg

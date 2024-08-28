@@ -1,0 +1,15 @@
+# Roles that are part of the 'base' job
+
+# If you add new tests, also update the files section in job
+# base-integration in zuul.d/jobs.yaml.
+
+# Note: set-zuul-log-path-fact is tested by emit-job-header.yaml
+- import_playbook: emit-job-header.yaml
+- import_playbook: ensure-output-dirs.yaml
+- import_playbook: prepare-workspace-git-required-projects-only.yaml
+- import_playbook: prepare-workspace-git.yaml
+- import_playbook: configure-mirrors.yaml
+- import_playbook: fetch-zuul-cloner.yaml
+- import_playbook: validate-host.yaml
+- import_playbook: fetch-output.yaml
+- import_playbook: fetch-subunit-output.yaml

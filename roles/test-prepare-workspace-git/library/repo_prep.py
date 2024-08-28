@@ -33,19 +33,20 @@ except ImportError:
 
 def prep_one_project(args, project, output):
     start = time.monotonic()
-    dest = f"{args['zuul_workspace_root']}/{project['src_dir']}"
+    dest = "%s/%s" % (args['zuul_workspace_root'], project['src_dir'])
     output['dest'] = dest
     if not os.path.isdir(dest):
-        cache = f"{args['cached_repos_root']}/{project['canonical_name']}"
+        cache = "%s/%s" % (args['cached_repos_root'],
+                           project['canonical_name'])
         if os.path.isdir(cache):
             # We do a bare clone here first so that we skip creating a working
             # copy that will be overwritten later anyway.
             output['initial_state'] = 'cloned-from-cache'
-            out = run(f"git clone --bare {cache} {dest}/.git")
+            out = run("git clone --bare %s %s/.git" % (cache, dest))
             output['clone'] = out.stdout.decode('utf8').strip()
         else:
             output['initial_state'] = 'git-init'
-            out = run(f"git init {dest}")
+            out = run("git init %s" % (dest,))
             output['init'] = out.stdout.decode('utf8').strip()
     else:
         output['initial_state'] = 'pre-existing'

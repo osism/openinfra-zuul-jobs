@@ -1,0 +1,57 @@
+- name: Test the configure-mirrors role with http
+  hosts: all
+  roles:
+    - role: configure-mirrors
+      mirror_fqdn: "{{ zuul_site_mirror_fqdn }}"
+      set_apt_mirrors_trusted: True
+  post_tasks:
+    - name: Set emacs package fact for gentoo
+      set_fact:
+        emacs_package: app-editors/emacs
+      when: ansible_distribution == 'Gentoo'
+    - name: Install a package to sanity check the http mirror configuration
+      package:
+        name: "{{ emacs_package | default('emacs') }}"
+        state: "present"
+      become: yes
+
+- name: Test the configure-mirrors role with https
+  hosts: all
+  roles:
+    - role: configure-mirrors
+      mirror_fqdn: "{{ zuul_site_mirror_fqdn }}"
+      mirror_use_ssl: True
+      set_apt_mirrors_trusted: True
+  post_tasks:
+    - name: Set emacs package fact for gentoo
+      set_fact:
+        emacs_package: app-editors/emacs
+      when: ansible_distribution == 'Gentoo'
+    - name: Remove existing emacs package install
+      package:
+        name: "{{ emacs_package | default('emacs') }}"
+        state: "absent"
+      become: yes
+    - name: Install a package to sanity check the https mirror configuration
+      package:
+        name: "{{ emacs_package | default('emacs') }}"
+        state: "present"
+      become: yes
+
+- name: Ensure no apt warnings
+  hosts: all
+  tasks:
+    - name: Check apt output
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+      block:
+        - name: Run apt-get update
+          command: 'apt-get update'
+          register: _apt_get_output
+          become: yes
+          tags:
+            - skip_ansible_lint
+
+        - name: Check for warnings in output
+          fail:
+            msg: 'Warnings found in apt output'
+          when: _apt_get_output is regex('^W:.*$')

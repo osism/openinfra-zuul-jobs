@@ -1,0 +1,131 @@
+- name: Run the fetch-subunit-output role
+  hosts: all
+  vars:
+    tests_data:
+      main:
+        directory: "{{ zuul_work_dir }}"
+        test_pattern: "WorkingTest.test_success"
+      secondary:
+        directory: "/var/tmp/extratests"
+        test_pattern: "FailingTest.test_failure"
+  pre_tasks:
+    - name: Ensure pip
+      include_role:
+        name: ensure-pip
+    # Required packages; install them into a .tox path
+    # to cover the find-*.sh scripts in the role a bit more.
+    - name: Install stestr and subunit-output
+      pip:
+        name:
+          - stestr
+          - python-subunit
+          - 'voluptuous==0.13.1'
+        virtualenv: "{{ zuul_work_dir }}/.tox/utests/"
+        virtualenv_command: '{{ ensure_pip_virtualenv_command }}'
+
+    - name: Ensure that the test directories exists
+      file:
+        name: "{{ item.value.directory }}"
+        state: directory
+      loop: "{{ tests_data|dict2items }}"
+
+    - name: Copy the test files on all directories
+      copy:
+        src: "subunit_tests"
+        dest: "{{ item.value.directory }}"
+      loop: "{{ tests_data|dict2items }}"
+
+    - name: Prepare the test results on all directories
+      shell: |
+        . {{ zuul_work_dir }}/.tox/utests/bin/activate
+        stestr init
+        stestr run --test-path subunit_tests {{ item.value.test_pattern }}
+      args:
+        chdir: "{{ item.value.directory }}"
+      ignore_errors: yes
+      loop: "{{ tests_data|dict2items }}"
+  roles:
+    - role: fetch-subunit-output
+  post_tasks:
+    - name: Check that the testrepository file has been pulled
+      delegate_to: localhost
+      file:
+        path: "{{ zuul.executor.log_root }}/testrepository.subunit"
+        state: file
+      register: local_subunit_file
+
+    - name: Check that HTML test result file has been pulled
+      delegate_to: localhost
+      file:
+        path: "{{ zuul.executor.log_root }}/testr_results.html"
+        state: file
+      register: local_html_test_results
+
+    - name: Validate that files were pulled correctly
+      assert:
+        that:
+          - local_subunit_file is not changed
+          - local_subunit_file is succeeded
+          - local_html_test_results is not changed
+          - local_html_test_results is succeeded
+
+    # only one subunit file; the failed result should be hidden
+    - name: Check the content of the HTML file
+      delegate_to: localhost
+      shell: |
+        GLOBAL_RESULT=1
+        zgrep -q -E 'subunit_tests.test_working.WorkingTest.test_success$' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T1=$?
+        zgrep -q -E 'subunit_tests.test_failing.FailingTest.test_failure.*_StringException:' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T2=$?
+        if [ ${T1} -eq 0 ] && [ ${T2} -ne 0 ]; then
+            GLOBAL_RESULT=0
+        fi
+        exit $GLOBAL_RESULT
+
+# The following test(s) require(s) the previous playbook
+- name: Run the fetch-subunit-output role with multiple subunits
+  hosts: all
+  roles:
+    - role: fetch-subunit-output
+      fetch_subunit_output_additional_dirs:
+        - "/var/tmp/extratests"
+  post_tasks:
+    - name: Check that the testrepository file has been pulled
+      delegate_to: localhost
+      file:
+        path: "{{ zuul.executor.log_root }}/testrepository.subunit"
+        state: file
+      register: local_subunit_file
+
+    - name: Check that HTML test result file has been pulled
+      delegate_to: localhost
+      file:
+        path: "{{ zuul.executor.log_root }}/testr_results.html"
+        state: file
+      register: local_html_test_results
+
+    - name: Validate that files were pulled correctly
+      assert:
+        that:
+          - local_subunit_file is not changed
+          - local_subunit_file is succeeded
+          - local_html_test_results is not changed
+          - local_html_test_results is succeeded
+
+    - name: Check the content of the HTML file
+      delegate_to: localhost
+      shell: |
+        GLOBAL_RESULT=1
+        zgrep -q -E 'subunit_tests.test_working.WorkingTest.test_success$' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T1=$?
+        zgrep -q -E 'subunit_tests.test_failing.FailingTest.test_failure.*_StringException:' \
+            {{ zuul.executor.log_root }}/testr_results.html
+        T2=$?
+        if [ ${T1} -eq 0 ] && [ ${T2} -eq 0 ]; then
+            GLOBAL_RESULT=0
+        fi
+        exit $GLOBAL_RESULT
