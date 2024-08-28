@@ -194,6 +194,19 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-base-roles-ubuntu-xenial
+    description: Tests roles in the 'base' job on ubuntu-xenial
+    parent: zuul-jobs-test-base-roles
+    # Note this is manually curated since xenial is not really
+    # supported on opendev, but we want the job to run until the last
+    # possible moment.
+    ansible-version: '8'
+    nodeset:
+      nodes:
+        - name: ubuntu-xenial
+          label: ubuntu-xenial
+
+- job:
     name: zuul-jobs-test-base-test-roles
     description: |
       Tests roles in the 'base-test' job
@@ -846,6 +859,7 @@
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
         - zuul-jobs-test-base-roles-ubuntu-noble
+        - zuul-jobs-test-base-roles-ubuntu-xenial
         - zuul-jobs-test-base-test-roles-centos-9-stream
         - zuul-jobs-test-base-test-roles-debian-bookworm
         - zuul-jobs-test-base-test-roles-debian-bullseye

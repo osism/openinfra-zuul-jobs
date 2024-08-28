@@ -33,27 +33,28 @@ except ImportError:
 
 def get_ssh_dest(args, dest):
     return (
-        f"git+ssh://{args['ansible_user']}"
-        f"@{args['ansible_host']}"
-        f":{args['ansible_port']}"
-        f"/{dest}"
+        "git+ssh://%s@%s:%s/%s" % (
+            args['ansible_user'],
+            args['ansible_host'],
+            args['ansible_port'],
+            dest)
     )
 
 
 def get_k8s_dest(args, dest):
     resources = args['zuul_resources'][args['inventory_hostname']]
     return (
-        f"\"ext::kubectl "
-        f"--context {resources['context']} "
-        f"-n {resources['namespace']} "
-        f"exec -i {resources['pod']} "
-        f"-- %S {dest}\""
+        "\"ext::kubectl --context %s -n %s exec -i %s -- %%S %s\"" % (
+            resources['context'],
+            resources['namespace'],
+            resources['pod'],
+            dest)
     )
 
 
 def sync_one_project(args, project, output):
-    cwd = f"{args['executor_work_root']}/{project['src_dir']}"
-    dest = f"{args['zuul_workspace_root']}/{project['src_dir']}"
+    cwd = "%s/%s" % (args['executor_work_root'], project['src_dir'])
+    dest = "%s/%s" % (args['zuul_workspace_root'], project['src_dir'])
     output['src'] = cwd
     output['dest'] = dest
     env = os.environ.copy()
@@ -70,7 +71,7 @@ def sync_one_project(args, project, output):
                 git_dest = get_k8s_dest(args, dest)
             else:
                 git_dest = get_ssh_dest(args, dest)
-            out = run(f"git push --quiet --mirror {git_dest}",
+            out = run("git push --quiet --mirror %s" % (git_dest,),
                       cwd=cwd, env=env)
             output['push'] = out.stdout.decode('utf8').strip()
             break
