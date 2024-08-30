@@ -114,7 +114,9 @@ class Uploader():
                                        CORSConfiguration=cors)
         except Exception as e:
             # MinIO (which we use in testing) doesn't implement this method
-            if 'MalformedXML' not in str(e):
+            minio_cors = "PutBucketCors operation: A header you provided " + \
+                "implies functionality that is not implemented"
+            if 'MalformedXML' not in str(e) and minio_cors not in str(e):
                 raise
 
     def upload(self, file_list):

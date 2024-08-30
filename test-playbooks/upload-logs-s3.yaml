@@ -11,6 +11,7 @@
   tasks:
     - name: Install boto
       pip:
+        extra_args: "--break-system-packages"
         name:
           - boto3
           - botocore
