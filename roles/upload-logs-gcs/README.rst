@@ -49,17 +49,6 @@ Google Cloud Application Default Credentials.
 
    Whether to create `index.html` files with directory indexes.
 
-.. zuul:rolevar:: zuul_log_path_shard_build
-   :default: false
-
-   This var is consumed by set-zuul-log-path-fact which
-   upload-logs-gcs calls into. If you set this you will get log paths
-   prefixed with the first three characters of the build uuid. This
-   will improve log file sharding.
-
-   More details can be found at
-   :zuul:rolevar:`set-zuul-log-path-fact.zuul_log_path_shard_build`.
-
 .. zuul:rolevar:: zuul_log_credentials_file
 
    This log upload role normally uses Google Cloud Application Default

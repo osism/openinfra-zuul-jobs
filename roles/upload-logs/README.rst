@@ -52,14 +52,3 @@ description of the site_logs secret in this example post-run playbook:
    when the job has failed.
 
    .. note:: Intended to be set by admins via site-variables.
-
-.. zuul:rolevar:: zuul_log_path_shard_build
-   :default: False
-
-   This var is consumed by set-zuul-log-path-fact which upload-logs
-   calls into. If you set this you will get log paths prefixed with the
-   first three characters of the build uuid. This will improve log file
-   sharding.
-
-   More details can be found at
-   :zuul:rolevar:`set-zuul-log-path-fact.zuul_log_path_shard_build`.
