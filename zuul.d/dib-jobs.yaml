@@ -58,5 +58,5 @@
          The number of seconds to wait between retries of the build-diskimage
          command.
 
-    pre-run: playbooks/dib-image/pre.yaml
-    run: playbooks/dib-image/run.yaml
+    pre-run: playbooks/build-diskimage/pre.yaml
+    run: playbooks/build-diskimage/run.yaml
