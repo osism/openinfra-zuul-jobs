@@ -9,7 +9,7 @@
       -o "{{ build_diskimage_image_root }}/{{ build_diskimage_image_name | mandatory }}"
       -t "{{ build_diskimage_formats | join(',') }}"
       --logfile "{{ build_diskimage_logs_dir }}/diskimage-{{ build_diskimage_image_name }}.log"
-      {{ build_diskimage_elements | mandatory | join(' ') }}
+      {{ build_diskimage_elements | mandatory | flatten | join(' ') }}
   args:
     chdir: "{{ build_diskimage_image_root }}"
   environment: "{{ build_diskimage_environment }}"

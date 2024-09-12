@@ -23,7 +23,7 @@ Example:
 .. zuul:rolevar:: build_diskimage_command
    :default: "{{ ensure_dib_command }}"
 
-   Path to the build-disk-image command. This defaults to 
+   Path to the build-disk-image command. This defaults to
    {{ ensure_dib_command }}. as being set by the ensure-dib role.
 
 .. zuul:rolevar:: build_diskimage_image_name
@@ -41,6 +41,9 @@ Example:
    :default: ['ubuntu', 'vm']
 
    List of elements that should be used when creating the disk image.
+
+   For ease of use with YAML anchors, this may be provided as a list
+   of lists which will be flattened automatically.
 
 .. zuul:rolevar:: build_diskimage_environment
    :type: dict

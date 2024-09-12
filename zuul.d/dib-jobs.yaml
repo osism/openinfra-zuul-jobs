@@ -26,6 +26,9 @@
 
          List of elements that should be used when creating the disk image.
 
+         For ease of use with YAML anchors, this may be provided as a list
+         of lists which will be flattened automatically.
+
       .. zuul:jobvar:: build_diskimage_environment
          :type: dict
 
