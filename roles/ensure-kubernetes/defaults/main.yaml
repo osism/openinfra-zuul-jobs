@@ -1,7 +1,5 @@
 ensure_kubernetes_type: minikube
-# Pin to 1.28 until https://github.com/canonical/microk8s/issues/4361
-# is fixed.
-ensure_kubernetes_microk8s_channel: '1.28/stable'
+ensure_kubernetes_microk8s_channel: '1.31/stable'
 # NOTE(ianw) : 2022-12-13
 #  - "storage" is deprecated and has become "hostpath-storage" in
 #     >1.24, but we still need to support 1.23.  If it really goes away

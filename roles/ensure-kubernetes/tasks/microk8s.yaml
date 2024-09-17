@@ -13,6 +13,10 @@
   become: yes
   command: 'snap install microk8s --classic --channel={{ ensure_kubernetes_microk8s_channel }}'
 
+- name: Wait for kubernetes to be ready before adding add-ons
+  become: yes
+  command: '/snap/bin/microk8s status --wait-ready'
+
 - name: Install add-ons
   become: yes
   command: '/snap/bin/microk8s enable {{ ensure_kubernetes_microk8s_addons | join(" ") }}'

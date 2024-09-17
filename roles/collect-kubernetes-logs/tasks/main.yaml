@@ -42,3 +42,19 @@
     dest: "{{ ansible_user_dir }}/zuul-output/logs/kubelet"
     mode: u=rwX,g=rX,o=rX
     recurse: yes
+
+- name: Collect microk8s inspect tarball
+  shell: |
+    set -x -o pipefail
+    # The microk8s snap isnt in path by default on debian (it is on ubuntu)
+    export PATH=/snap/bin:$PATH
+    if type -p microk8s ; then
+      mkdir {{ ansible_user_dir }}/zuul-output/logs/microk8s
+      INSPECT_TARBALL="$(microk8s inspect | tee {{ ansible_user_dir }}/zuul-output/logs/microk8s/inspect.log | grep '  Report tarball is at' | cut -d' ' -f7)"
+      if [[ -n "$INSPECT_TARBALL" ]] ; then
+        cp $INSPECT_TARBALL {{ ansible_user_dir }}/zuul-output/logs/microk8s/
+      fi
+    fi
+  args:
+    executable: /bin/bash
+  failed_when: false
