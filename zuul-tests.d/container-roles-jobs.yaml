@@ -385,6 +385,8 @@
     # Does not work under ubuntu-bionic
     abstract: true
     files:
+      - roles/collect-container-logs/.*
+      - roles/collect-kubernetes-logs/.*
       - roles/ensure-docker/.*
       - roles/ensure-kubernetes/.*
       - roles/ensure-package-repositories/.*
@@ -412,6 +414,8 @@
     # Requires at least ubuntu-noble
     abstract: true
     files:
+      - roles/collect-container-logs/.*
+      - roles/collect-kubernetes-logs/.*
       - roles/ensure-docker/.*
       - roles/ensure-kubernetes/.*
       - roles/ensure-package-repositories/.*
@@ -438,6 +442,8 @@
       roles in the zuul-jobs repo.
     abstract: true
     files:
+      - roles/collect-container-logs/.*
+      - roles/collect-kubernetes-logs/.*
       - roles/ensure-docker/.*
       - roles/ensure-kubernetes/.*
       - roles/ensure-package-repositories/.*
