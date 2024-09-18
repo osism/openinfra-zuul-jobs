@@ -42,7 +42,7 @@
         stestr run --test-path subunit_tests {{ item.value.test_pattern }}
       args:
         chdir: "{{ item.value.directory }}"
-      ignore_errors: yes
+      failed_when: false
       loop: "{{ tests_data|dict2items }}"
   roles:
     - role: fetch-subunit-output

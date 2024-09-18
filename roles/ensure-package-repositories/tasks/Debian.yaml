@@ -7,6 +7,7 @@
 
 - name: Add apt keys
   become: true
+  # noqa args[module] We're deciding at runtime which exclusive argument to pass
   apt_key:
     url: "{{ zj_item['url'] | default(omit) }}"
     data: "{{ zj_item['data'] | default(omit) }}"

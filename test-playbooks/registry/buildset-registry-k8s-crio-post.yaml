@@ -13,7 +13,7 @@
       failed_when: no
     - name: Describe dockertest pod
       command: kubectl describe pod/quaytest
-      ignore_errors: true
+      failed_when: false
     - name: Describe upstream-dockertest pod
       command: kubectl describe pod/upstream-dockertest
-      ignore_errors: true
+      failed_when: false
