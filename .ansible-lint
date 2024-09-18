@@ -9,6 +9,9 @@ skip_list:
   - fqcn  # similar to above
   - risky-file-permissions  # It would probably also good to enforce this if someone wants to look at them
   - schema  # This is a stricter form of schema per https://github.com/ansible/schemas.  might also be good if someone has motivation?
+  - key-order  # This suggests an arbitrary ordering of keys which means our developers would need to memorize someone's personal preference
+  - name[play]  # We have no objection to naming plays, but because of all of our short job playbooks, there are a *lot* of them that are pretty self-evident in the Zuul context, so it doesn't seem necessary.
+  - name[casing]  # We should use proper capitalization, but this is too nit-picky to waste time on
 
   # NOTE(ianw) After following the jinja formatting extensions in
   # ansible-lint for a few releases, this does not seem to be
