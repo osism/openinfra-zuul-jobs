@@ -5,6 +5,10 @@
     - name: Run bindep
       include_role:
         name: bindep
+      vars:
+        # We're building doc targets below so we need that bindep profile on
+        # top of the default compile and test profiles.
+        bindep_profile: 'compile test doc'
     - name: Run tox with constraints
       include_role:
         name: tox
