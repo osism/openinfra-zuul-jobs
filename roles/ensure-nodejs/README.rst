@@ -3,4 +3,5 @@ Install NodeJS from nodesource
 **Role Variables**
 
 .. zuul:rolevar:: node_version
-   :default: 6
+
+   Required. What version of Node to install.

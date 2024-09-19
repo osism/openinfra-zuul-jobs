@@ -1,3 +1,7 @@
+- name: Ensure we know what version of node to install
+  assert:
+    that: node_version is defined
+
 - name: Update apt cache
   apt:
     update_cache: yes
