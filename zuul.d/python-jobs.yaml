@@ -327,7 +327,7 @@
          Command to pass to npm.
 
       .. zuul:jobvar:: node_version
-         :default: 6
+         :default: 14
 
          The version of Node to use.
 

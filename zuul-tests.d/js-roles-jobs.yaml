@@ -7,6 +7,7 @@
     run: test-playbooks/simple-role-test.yaml
     vars:
       role_name: ensure-nodejs
+      node_version: 20
 
 - job:
     name: zuul-jobs-test-ensure-yarn
@@ -18,6 +19,7 @@
     run: test-playbooks/simple-role-test.yaml
     vars:
       role_name: ensure-yarn
+      node_version: 20
 
 - job:
     name: zuul-jobs-test-fetch-javascript-tarball
