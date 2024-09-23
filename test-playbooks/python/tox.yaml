@@ -60,7 +60,7 @@
       block:
         - name: Create tempfile to verify testenvs ran
           tempfile:
-          register: ALL_tempfile
+          register: all_tempfile
 
         - name: Run tox with ALL
           include_role:
@@ -68,7 +68,7 @@
           vars:
             zuul_work_dir: "{{ zuul.project.src_dir }}/test-playbooks/python/"
             tox_install_siblings: false
-            tox_extra_args: "-- {{ ALL_tempfile.path }}"
+            tox_extra_args: "-- {{ all_tempfile.path }}"
             tox_envlist: 'ALL'
       always:
         - name: Make sure magic lines are present
@@ -76,11 +76,11 @@
             - linters
             - non-default
           lineinfile:
-            path: "{{ ALL_tempfile.path }}"
+            path: "{{ all_tempfile.path }}"
             line: "{{ item }}"
           check_mode: true
-          register: ALL_status
-          failed_when: ALL_status is changed
+          register: all_status
+          failed_when: all_status is changed
 
     - name: Move test-playbooks/python/tox.ini to test-playbooks/python/foo.ini
       # Tox 4 appears to have trouble when there is a tox.ini in the current

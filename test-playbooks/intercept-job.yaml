@@ -14,6 +14,8 @@
       poll: 0
       register: touched_file
     - name: Set async status
+      # noqa args[module] see this bug
+      # https://github.com/ansible/ansible-lint/issues/2824
       async_status:
         jid: "{{ keygen.ansible_job_id }}"
       register: keygen_check
@@ -23,6 +25,8 @@
       include_role:
         name: intercept-job
     - name: Set async status
+      # noqa args[module] see this bug
+      # https://github.com/ansible/ansible-lint/issues/2824
       async_status:
         jid: "{{ touched_file.ansible_job_id }}"
       register: touched_file_check
