@@ -10,5 +10,5 @@ python-devel [test platform:rpm !platform:fedora !platform:centos-8 !platform:rh
 python-dev [test platform:dpkg platform:apk !platform:ubuntu-jammy !platform:ubuntu-noble !platform:debian-bookworm]
 python2-dev [test platform:ubuntu-jammy]
 
-# Required for sphinx testing on Noble for Pillow wheel builds
-libjpeg-dev [doc platform:ubuntu-noble]
+# Required for sphinx graphviz image generation
+graphviz [test doc]

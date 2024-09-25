@@ -253,24 +253,87 @@ another.
 With these concepts in mind, the jobs described above implement the
 following workflow for a single change:
 
+..
+   The below diagram was adapted from the TCP flow example here
+   https://stackoverflow.com/questions/32436856/using-graphviz-to-create-tcp-flow-diagrams
+
 .. _buildset_image_transfer:
 
-.. seqdiag::
+.. graphviz::
    :caption: Buildset registry image transfer
 
-   seqdiag image_transfer {
-     Ireg [label="Intermediate\nRegistry"];
-     Breg [label="Buildset\nRegistry"];
-     Bjob [label="Image Build Job"];
-     Djob [label="Deployment Test Job"];
+   digraph image_transfer {
+     splines=false
+     nodesep=1
 
-     Ireg -> Breg [label='Images from previous changes'];
-     Breg -> Bjob [label='Images from previous changes'];
-     Breg <- Bjob [label='Current image'];
-     Ireg <- Breg [noactivate, label='Current image'];
-     Breg -> Djob [label='Current and previous images'];
-     Breg <- Djob [style=none];
-     Ireg <- Breg [style=none];
+     // Set things up like a spreadsheet grid as I found that simplifies
+     // remembering which nodes have edges between them.
+     ir_start [label="Intermediate\nRegistry" shape="box"]
+     ir_end [style=invis]
+     ir_0 [label="" shape=point height=.005]
+     ir_1 [label="" shape=point height=.005]
+     ir_2 [label="" shape=point height=.005]
+     ir_3 [label="" shape=point height=.005]
+     ir_4 [label="" shape=point height=.005]
+     ir_5 [label="" shape=point height=.005]
+     ir_start -> ir_0 -> ir_1 -> ir_2 -> ir_3 -> ir_4 -> ir_5 -> ir_end [arrowhead="none" style="bold"]
+
+     br_start [label="Buildset\nRegistry" shape="box"]
+     br_end [style=invis]
+     br_0 [label="" shape=point height=.005]
+     br_1 [label="" shape=point height=.005]
+     br_2 [label="" shape=point height=.005]
+     br_3 [label="" shape=point height=.005]
+     br_4 [label="" shape=point height=.005]
+     br_5 [label="" shape=point height=.005]
+     br_start -> br_0 -> br_1 -> br_2 -> br_3 -> br_4 -> br_5 [arrowhead="none" style="bold"]
+     br_5 -> br_end [arrowhead="none" style="dashed"]
+
+     ij_start [label="Image\nBuild Job" shape="box"]
+     ij_end [style=invis]
+     ij_0 [label="" shape=point height=.005]
+     ij_1 [label="" shape=point height=.005]
+     ij_2 [label="" shape=point height=.005]
+     ij_3 [label="" shape=point height=.005]
+     ij_4 [label="" shape=point height=.005]
+     ij_5 [label="" shape=point height=.005]
+     ij_start -> ij_0 -> ij_1 [arrowhead="none" style="dashed"]
+     ij_1 -> ij_2 [arrowhead="none" style="bold"]
+     ij_2 -> ij_3 -> ij_4 -> ij_5 -> ij_end [arrowhead="none" style="dashed"]
+
+     tj_start [label="Deployment\nTest Job" shape="box"]
+     tj_end [style=invis]
+     tj_0 [label="" shape=point height=.005]
+     tj_1 [label="" shape=point height=.005]
+     tj_2 [label="" shape=point height=.005]
+     tj_3 [label="" shape=point height=.005]
+     tj_4 [label="" shape=point height=.005]
+     tj_5 [label="" shape=point height=.005]
+     tj_start -> tj_0 -> tj_1 -> tj_2 -> tj_3 -> tj_4 [arrowhead="none" style="dashed"]
+     tj_4 -> tj_5 [arrowhead="none" style="bold"]
+     tj_5 -> tj_end [arrowhead="none" style="dashed"]
+
+     {rank=same;ir_start;br_start;ij_start;tj_start}
+     {rank=same;ir_0;br_0;ij_0;tj_0}
+     {rank=same;ir_1;br_1;ij_1;tj_1}
+     {rank=same;ir_2;br_2;ij_2;tj_2}
+     {rank=same;ir_3;br_3;ij_3;tj_3}
+     {rank=same;ir_4;br_4;ij_4;tj_4}
+     {rank=same;ir_5;br_5;ij_5;tj_5}
+     {rank=same;ir_end;br_end;ij_end;tj_end}
+
+     // Flows between first and second column
+     ir_0 -> br_0 [weight=0 label="Images from previous changes"]
+     br_3 -> ir_3 [weight=0 label="Current image"]
+     ir_end -> br_end [weight=0 style=invis]
+
+     // Flows between second and third column
+     br_1 -> ij_1 [weight=0 label="Images from previous changes"]
+     ij_2 -> br_2 [weight=0 label="Current image"]
+     br_end -> ij_end [weight=0 style=invis]
+
+     // Flows between second and fourth column
+     br_4 -> tj_4 [weight=0 xlabel="Current and previous images" ]
    }
 
 The intermediate registry is always running and the buildset registry
@@ -293,14 +356,13 @@ image build job, and at least one job which uses that image (for
 example, by performing a test deployment of the image).  In this case
 we need to construct a job graph with dependencies as follows:
 
-.. blockdiag::
+.. graphviz::
 
-   blockdiag dependencies {
-     obr [label='yoursite-\nbuildset-registry'];
-     bi [label='build-image'];
-     ti [label='test-image'];
-
-     obr <- bi <- ti;
+   digraph dependencies {
+     rankdir="LR";
+     node [shape=box];
+     "yoursite-\nbuildset-registry" -> "build-image" [dir=back];
+     "build-image" -> "test-image" [dir=back];
    }
 
 The :ref:`yoursite-buildset-registry` job will run first and
@@ -366,19 +428,57 @@ Keeping in mind that everything described above in
 :ref:`yoursite-upload-docker-image` job, the following illustrates
 the additional tasks performed by the "upload" and "promote" jobs:
 
-.. seqdiag::
+..
+   The below diagram was adapted from the TCP flow example here
+   https://stackoverflow.com/questions/32436856/using-graphviz-to-create-tcp-flow-diagrams
 
-   seqdiag image_transfer {
-     DH [activated, label="Docker Hub"];
-     Ujob [label="upload-image"];
-     Pjob [label="promote-image"];
+.. graphviz::
 
-     DH -> Ujob [style=none];
-     DH <- Ujob [label='Current image with temporary tag'];
-     DH -> Pjob [label='Current image manifest with temporary tag',
-                 note='Only the manifest
-                       is transferred,
-                       not the actual
-                       image layers.'];
-     DH <- Pjob [label='Current image manifest with final tag'];
+   digraph image_transfer {
+     splines=false
+     nodesep=1
+
+     // Set things up like a spreadsheet grid as I found that simplifies
+     // remembering which nodes have edges between them.
+     dh_start [label="Docker Hub" shape="box"]
+     dh_end [style=invis]
+     dh_0 [label="" shape=point height=.005]
+     dh_1 [label="" shape=point height=.005]
+     dh_2 [label="" shape=point height=.005]
+     dh_start -> dh_0 -> dh_1 -> dh_2 -> dh_end [arrowhead="none" style="bold"]
+
+     ui_start [label="upload-image" shape="box"]
+     ui_end [style=invis]
+     ui_0 [label="" shape=point height=.005]
+     ui_1 [label="" shape=point height=.005]
+     ui_2 [label="" shape=point height=.005]
+     ui_start -> ui_0 [arrowhead="none" style="bold"]
+     ui_0 -> ui_1 -> ui_2 -> ui_end [arrowhead="none" style="dashed"]
+
+     pi_start [label="promote-image" shape="box"]
+     pi_end [style=invis]
+     pi_0 [label="" shape=point height=.005]
+     pi_1 [label="" shape=point height=.005]
+     pi_2 [label="" shape=point height=.005]
+     pi_start -> pi_0 -> pi_1 [arrowhead="none" style="dashed"]
+     pi_1 -> pi_2 [arrowhead="none" style="bold" xlabel="Only the manifest\nis transferred,\nnot the actual\nimage layers"]
+     pi_2 -> pi_end [arrowhead="none" style="dashed"]
+
+
+     {rank=same;dh_start;ui_start;pi_start}
+     {rank=same;dh_0;ui_0;pi_0}
+     {rank=same;dh_1;ui_1;pi_1}
+     {rank=same;dh_2;ui_2;pi_2}
+     {rank=same;dh_end;ui_end;pi_end}
+
+     // Flows between first and second column
+     ui_0 -> dh_0 [weight=0 label="Current Image with Temporary Tag"]
+     dh_end -> ui_end [weight=0 style=invis]
+
+     // Flows between first and third column
+     dh_1 -> ui_1 [weight=0 arrowhead="none"]
+     ui_1 -> pi_1 [weight=0 label="Current Image Manifest\nwith Temporary Tag"]
+     pi_2 -> ui_2 [weight=0 label="Current Image Manifest\nwith Final Tag" arrowhead="none"]
+     ui_2 -> dh_2 [weight=0]
+     dh_end -> pi_end [weight=0 style=invis]
    }
