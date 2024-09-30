@@ -1,5 +1,6 @@
 - name: Update qemu-static container settings
   command: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  when: ansible_architecture == 'x86_64'
 
 - name: Create builder
   command: "docker buildx create --name mybuilder --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %}"
