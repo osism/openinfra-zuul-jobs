@@ -85,6 +85,7 @@
       loop: "{{ docker_images }}"
       loop_control:
         loop_var: zj_image
+      when: inventory_hostname == ansible_play_hosts[0]
 
 - name: Cleanup sibling source directory
   file:

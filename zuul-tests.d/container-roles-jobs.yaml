@@ -125,6 +125,22 @@
       multiarch: true
 
 - job:
+    name: zuul-jobs-test-build-container-image-docker-release-multiarch-multinode
+    parent: zuul-jobs-test-build-container-image-docker-release-multiarch
+    description: |
+      Test building a multi-arch container image with docker in a release pipeline
+      across two nodes (native multiple architecture system).
+
+      NOTE(mnaser): Since OpenDev doesn't natively support a provider that has
+      both x86_64 and arm64 nodes, we're using the same architecture for both.
+    nodeset:
+      nodes:
+        - name: amd64
+          label: ubuntu-jammy
+        - name: arm64
+          label: ubuntu-jammy
+
+- job:
     name: zuul-jobs-test-build-container-image-podman-release
     parent: zuul-jobs-test-build-container-image-base
     description: |
@@ -580,6 +596,7 @@
         - zuul-jobs-test-ensure-docker-ubuntu-noble
         - zuul-jobs-test-build-container-image-docker-release
         - zuul-jobs-test-build-container-image-docker-release-multiarch
+        - zuul-jobs-test-build-container-image-docker-release-multiarch-multinode
         - zuul-jobs-test-build-container-image-podman-release
         - zuul-jobs-test-build-container-image-docker-promote
         - zuul-jobs-test-build-container-image-docker-promote-multiarch

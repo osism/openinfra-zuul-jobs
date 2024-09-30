@@ -27,4 +27,6 @@
       loop_control:
         loop_var: zj_image
       include_tasks: push.yaml
-  when: not upload_container_image_promote|default(true) or promote_container_image_method|default('tag') == 'tag'
+  when:
+    - inventory_hostname == ansible_play_hosts[0]
+    - not upload_container_image_promote|default(true) or promote_container_image_method|default('tag') == 'tag'

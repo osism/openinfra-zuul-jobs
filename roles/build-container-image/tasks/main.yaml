@@ -87,6 +87,7 @@
       loop: "{{ container_images }}"
       loop_control:
         loop_var: zj_image
+      when: inventory_hostname == ansible_play_hosts[0]
 
 - name: Multiarch podman block
   when:
