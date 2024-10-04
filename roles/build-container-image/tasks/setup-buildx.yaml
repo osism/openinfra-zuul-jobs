@@ -3,13 +3,26 @@
   when: ansible_architecture == 'x86_64'
 
 - name: Create builder
-  command: "docker buildx create --name mybuilder --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %}"
+  command: "docker buildx create --name mybuilder --node {{ inventory_hostname | replace('-', '_') }} --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %}"
+  when: inventory_hostname == ansible_play_hosts[0]
+
+- name: Add host key to known_hosts
+  shell: "ssh-keyscan -H {{ ansible_host }} >> ~/.ssh/known_hosts"
+  when: inventory_hostname != ansible_play_hosts[0]
+  delegate_to: "{{ ansible_play_hosts[0] }}"
+
+- name: Append builders from other nodes
+  command: "docker buildx create --append --name mybuilder --node {{ inventory_hostname | replace('-', '_') }} --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %} ssh://{{ ansible_user }}@{{ ansible_host }}"
+  when: inventory_hostname != ansible_play_hosts[0]
+  delegate_to: "{{ ansible_play_hosts[0] }}"
 
 - name: Use builder
   command: docker buildx use mybuilder
+  when: inventory_hostname == ansible_play_hosts[0]
 
 - name: Bootstrap builder
   command: docker buildx inspect --bootstrap
+  when: inventory_hostname == ansible_play_hosts[0]
 
 - name: Make tempfile for registry TLS certificate
   tempfile:
@@ -25,11 +38,11 @@
   when: buildset_registry is defined and buildset_registry.cert
 
 - name: Copy buildset registry TLS cert into worker container
-  command: "docker cp {{ buildkit_cert_tmp.path }} buildx_buildkit_mybuilder0:/usr/local/share/ca-certificates"
+  command: "docker cp {{ buildkit_cert_tmp.path }} buildx_buildkit_{{ inventory_hostname | replace('-', '_') }}:/usr/local/share/ca-certificates"
   when: buildset_registry is defined and buildset_registry.cert
 
 - name: Update CA certs in worker container
-  command: docker exec buildx_buildkit_mybuilder0 update-ca-certificates
+  command: "docker exec buildx_buildkit_{{ inventory_hostname | replace('-', '_') }} update-ca-certificates"
   when: buildset_registry is defined and buildset_registry.cert
 
 - name: Remove TLS cert tempfile
@@ -44,7 +57,7 @@
   register: etc_hosts_tmp
 
 - name: Copy /etc/hosts for editing
-  command: 'docker cp buildx_buildkit_mybuilder0:/etc/hosts {{ etc_hosts_tmp.path }}'
+  command: "docker cp buildx_buildkit_{{ inventory_hostname | replace('-', '_') }}:/etc/hosts {{ etc_hosts_tmp.path }}"
 
 # Docker buildx has its own /etc/hosts in the builder image.
 - name: Configure /etc/hosts for buildset_registry to workaround docker not understanding ipv6 addresses
@@ -58,16 +71,16 @@
   when: buildset_registry is defined and buildset_registry.host | ipaddr
 
 - name: Unmount the /etc/hosts mount
-  command: docker exec buildx_buildkit_mybuilder0 umount /etc/hosts
+  command: "docker exec buildx_buildkit_{{ inventory_hostname | replace('-', '_') }} umount /etc/hosts"
 
 # NOTE(mordred) This is done in two steps. Even though we've unmounted /etc/hosts
 # in the previous step, when we try to copy the file back directly, we get:
 #   unlinkat /etc/hosts: device or resource busy
 - name: Copy modified hosts file back in
-  command: 'docker cp {{ etc_hosts_tmp.path }} buildx_buildkit_mybuilder0:/etc/new-hosts'
+  command: "docker cp {{ etc_hosts_tmp.path }} buildx_buildkit_{{ inventory_hostname | replace('-', '_') }}:/etc/new-hosts"
 
 - name: Copy modified hosts file into place
-  command: docker exec buildx_buildkit_mybuilder0 cp /etc/new-hosts /etc/hosts
+  command: "docker exec buildx_buildkit_{{ inventory_hostname | replace('-', '_') }} cp /etc/new-hosts /etc/hosts"
 
 - name: Remove tempfile for /etc/hosts
   file:
