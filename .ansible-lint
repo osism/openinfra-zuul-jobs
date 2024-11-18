@@ -12,6 +12,7 @@ skip_list:
   - key-order  # This suggests an arbitrary ordering of keys which means our developers would need to memorize someone's personal preference
   - name[play]  # We have no objection to naming plays, but because of all of our short job playbooks, there are a *lot* of them that are pretty self-evident in the Zuul context, so it doesn't seem necessary.
   - name[casing]  # We should use proper capitalization, but this is too nit-picky to waste time on
+  - name[template]  # This is too simple of a check and does not allow for templates like "foo {{ bar }}-{{ baz }}", and is also fairly "personal preference"
 
   # NOTE(ianw) After following the jinja formatting extensions in
   # ansible-lint for a few releases, this does not seem to be

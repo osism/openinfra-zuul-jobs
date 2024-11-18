@@ -1,0 +1,59 @@
+# Run the intermediate registry on this host.
+
+- hosts: intermediate-registry
+  name: Set up the intermediate registry and add a build
+  tasks:
+    - name: Include intermediate registry vars
+      include_vars: vars/intermediate-registry-auth.yaml
+    - name: Run the intermediate registry
+      include_role:
+        name: run-test-intermediate-registry
+    - name: Install the intermediate registry cert
+      include_role:
+        name: ensure-registry-cert
+      vars:
+        registry_host: localhost
+        registry_port: 5000
+        registry_cert: "{{ intermediate_registry_tls_cert }}"
+    - name: Set up user credentials for the intermediate registry
+      include_role:
+        name: intermediate-registry-user-config
+
+- hosts: builder
+  name: Test the container mirror role
+  tasks:
+    - name: Include intermediate registry vars
+      include_vars: vars/intermediate-registry-auth.yaml
+    - name: Set registry credentials
+      set_fact:
+        container_registry_credentials:
+          "zuul-jobs.intermediate-registry:5000":
+            username: "{{ intermediate_registry.username }}"
+            password: "{{ intermediate_registry.password }}"
+    - name: Configure /etc/hosts for intermediate registry
+      become: true
+      lineinfile:
+        path: /etc/hosts
+        state: present
+        regex: "^{{ hostvars['intermediate-registry'].nodepool.private_ipv4 }}\t{{ intermediate_registry.host }}$"
+        line: "{{ hostvars['intermediate-registry'].nodepool.private_ipv4 }}\t{{ intermediate_registry.host }}"
+        insertafter: EOF
+    - name: Install the intermediate registry cert
+      include_role:
+        name: ensure-registry-cert
+      vars:
+        registry_host: "{{ intermediate_registry.host }}"
+        registry_port: "{{ intermediate_registry.port }}"
+        registry_cert: "{{ intermediate_registry_tls_cert }}"
+    # This begins the simulation of what we would expect to happen in a
+    # normal job.
+    - name: Test the mirror role
+      include_role:
+        name: mirror-container-images
+      vars:
+        mirror_container_images_images:
+          - src_repository: quay.io/zuul-ci/zuul-client
+            src_tag: latest
+            dest_repository: "{{ intermediate_registry.host }}:{{ intermediate_registry.port }}/org/repo"
+            dest_tag: tag
+            dest_registry: "{{ intermediate_registry.host }}:{{ intermediate_registry.port }}"

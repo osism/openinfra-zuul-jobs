@@ -29,3 +29,13 @@
     run: playbooks/container-image/promote.yaml
     nodeset:
       nodes: []
+
+- job:
+    name: mirror-container-images
+    description: |
+      Copy container images from one registry to another.
+
+      .. include:: ../../playbooks/container-image/README.rst
+      .. include:: ../../playbooks/container-image/credentials.rst
+    pre-run: playbooks/container-image/pre.yaml
+    run: playbooks/container-image/mirror.yaml
