@@ -1,10 +1,32 @@
-- name: Set mirror_fqdn fact
+- name: Set docker_mirror fact from mirror_info
   when:
-    - mirror_fqdn is not defined
-    - zuul_site_mirror_fqdn is defined
+    - docker_mirror is not defined
+    - mirror_info is defined
+    - dockerhub is in mirror_info
   set_fact:
-    mirror_fqdn: "{{ zuul_site_mirror_fqdn }}"
+    docker_mirror: mirror_info.dockerhub.url
 
+- name: Set docker_mirror fact from zuul_site_mirror_info
+  when:
+    - docker_mirror is not defined
+    - zuul_site_mirror_info is defined
+    - dockerhub is in zuul_site_mirror_info
+  set_fact:
+    docker_mirror: zuul_site_mirror_info.dockerhub.url
+
+# Backward compat fallback to old style mirror_fqdn based url derivation.
+- name: Set docker_mirror fact
+  when:
+    - docker_mirror is not defined
+    - mirror_info is not defined
+    - zuul_site_mirror_info is not defined
+    - mirror_fqdn is defined or zuul_site_mirror_fqdn is defined
+  set_fact:
+    docker_mirror: "http://{{ mirror_fqdn | default(zuul_site_mirror_fqdn) }}:8082"
+
+# Only run when new style mirror_info is defined or old style mirror
+# info is defined and not new style. This forces people using new
+# style to configure dockerhub mirroring there.
 - name: Set up docker mirrors
   include_tasks: mirror.yaml
-  when: mirror_fqdn is defined or docker_mirror is defined
+  when: docker_mirror is defined

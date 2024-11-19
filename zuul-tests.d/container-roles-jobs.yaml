@@ -4,6 +4,7 @@
     abstract: true
     files:
       - .*ensure-docker.*
+      - roles/use-docker-mirror/.*
       - roles/ensure-package-repositories/.*
       - test-requirements.txt
     run: test-playbooks/ensure-docker.yaml
