@@ -22,6 +22,7 @@
           register: ovs_running
 
         - name: bridge should exist
+          # TODO this ansible collection and module are removed in Ansible 11
           openvswitch_bridge:
             bridge: "{{ bridge_name }}"
           register: ovs_bridge

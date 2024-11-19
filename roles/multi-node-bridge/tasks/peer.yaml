@@ -47,6 +47,7 @@
 
 - name: Create bridge on peer node
   become: yes
+  # TODO Ansible 11 removes this module
   openvswitch_bridge:
     bridge: "{{ bridge_name }}"
 
