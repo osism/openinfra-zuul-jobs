@@ -2,7 +2,7 @@
   when:
     - docker_mirror is not defined
     - mirror_info is defined
-    - dockerhub is in mirror_info
+    - "'dockerhub' is in mirror_info"
   set_fact:
     docker_mirror: mirror_info.dockerhub.url
 
@@ -10,7 +10,7 @@
   when:
     - docker_mirror is not defined
     - zuul_site_mirror_info is defined
-    - dockerhub is in zuul_site_mirror_info
+    - "'dockerhub' is in zuul_site_mirror_info"
   set_fact:
     docker_mirror: zuul_site_mirror_info.dockerhub.url
 
