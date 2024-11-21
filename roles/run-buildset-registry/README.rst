@@ -6,6 +6,11 @@ single change can share the registry.
 
 **Role Variables**
 
+.. zuul:rolevar:: buildset_registry_image
+   :default: quay.io/zuul-ci/zuul-registry:latest
+
+   Container image used to launch the buildset registry.
+
 .. zuul:rolevar:: buildset_registry_root
    :default: {{ ansible_user_dir }}/buildset_registry
 
