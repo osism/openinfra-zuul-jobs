@@ -3,8 +3,10 @@
     host_addresses: >
       {% set hosts = {} -%}
       {% for host, vars in hostvars.items() -%}
+      {% if 'nodepool' in vars -%}
       {% set _ = hosts.update({host: vars['nodepool']['private_ipv4']}) -%}
       {% set _ = hosts.update({vars['ansible_hostname']: vars['nodepool']['private_ipv4']}) -%}
+      {% endif -%}
       {% endfor -%}
       {{- hosts -}}
 

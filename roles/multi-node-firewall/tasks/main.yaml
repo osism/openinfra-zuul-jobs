@@ -17,19 +17,23 @@
     ipv4_addresses: >
       {% set hosts = [] -%}
       {% for host, vars in hostvars.items() -%}
+      {% if 'nodepool' in vars -%}
       {% if vars['nodepool']['private_ipv4'] -%}
         {% set _ = hosts.append(vars['nodepool']['private_ipv4']) -%}
       {% endif -%}
       {% if vars['nodepool']['public_ipv4'] -%}
         {% set _ = hosts.append(vars['nodepool']['public_ipv4']) -%}
       {% endif -%}
+      {% endif -%}
       {% endfor -%}
       {{- hosts | sort | unique -}}
     ipv6_addresses: >
       {% set hosts = [] -%}
       {% for host, vars in hostvars.items() -%}
+      {% if 'nodepool' in vars -%}
       {% if vars['nodepool']['public_ipv6'] -%}
         {% set _ = hosts.append(vars['nodepool']['public_ipv6']) -%}
+      {% endif -%}
       {% endif -%}
       {% endfor -%}
       {{- hosts | sort | unique -}}
