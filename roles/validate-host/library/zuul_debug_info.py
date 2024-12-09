@@ -27,6 +27,7 @@ command_map = {
     'network_neighbors': 'ip neighbor show',
     'df_i': 'df -i',
     'df_m': 'df -m',
+    'proc_cpuinfo': 'cat /proc/cpuinfo',
 }
 
 
