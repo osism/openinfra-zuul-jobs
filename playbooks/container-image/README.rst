@@ -6,6 +6,10 @@ context:
   * :zuul:job:`upload-container-image`: Build and stage the images in a registry.
   * :zuul:job:`promote-container-image`: Promote previously uploaded images.
 
+The following utility job may also be useful:
+
+  * :zuul:job:`mirror-container-images`: Copy existing images from one registry to another.
+
 The jobs can work in multiple modes depending on your requirements.
 They all accept the same input data, principally a list of
 dictionaries representing the images to build.  YAML anchors_ can be

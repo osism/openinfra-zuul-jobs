@@ -1,0 +1,31 @@
+- name: Verify repository names
+  when: |
+    container_registry_credentials is defined
+    and zj_image.dest_registry not in container_registry_credentials
+  fail:
+    msg: "{{ zj_image.dest_registry }} credentials not found"
+
+- name: Verify repository permission
+  when: |
+    container_registry_credentials[zj_image.dest_registry].repository is defined and
+    not zj_image.dest_repository | regex_search(container_registry_credentials[zj_image.dest_registry].repository)
+  fail:
+    msg: "{{ zj_image.repository }} not permitted by {{ container_registry_credentials[zj_image.dest_registry].repository }}"
+
+- name: Log in to registry
+  command: "{{ container_command }} login -u {{ container_registry_credentials[zj_image.dest_registry].username }} -p {{ container_registry_credentials[zj_image.dest_registry].password }} {{ zj_image.dest_registry }}"
+  no_log: true
+
+- name: Push and pull image
+  block:
+    - name: "Pull image {{ zj_image.src_repository }}:{{ zj_image.src_tag }}"
+      command: "{{ container_command }} pull {{ zj_image.src_repository }}:{{ zj_image.src_tag }}"
+
+    - name: Retag image
+      command: "{{ container_command }} tag {{ zj_image.src_repository }}:{{ zj_image.src_tag }} {{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
+
+    - name: "Push image {{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
+      command: "{{ container_command }} push {{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
+  always:
+    - name: Log out of registry
+      command: "{{ container_command }} logout {{ zj_image.dest_registry }}"
