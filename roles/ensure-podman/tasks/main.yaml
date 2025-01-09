@@ -26,3 +26,7 @@
     podman info
     podman ps
   changed_when: false
+
+- name: Set up docker compatability socket
+  when: ensure_podman_socket
+  include_tasks: "root-socket.yaml"
