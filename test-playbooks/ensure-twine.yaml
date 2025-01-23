@@ -1,0 +1,35 @@
+- hosts: all
+  name: Test ensure-twine installs into user environment
+  tasks:
+    - name: Verify twine is not installed
+      command: "twine --version"
+      register: result
+      failed_when: result.rc == 0
+    - name: Run ensure-twine with twine not installed
+      include_role:
+        name: ensure-twine
+    - name: Verify pypi_twine_executable is set
+      assert:
+        that:
+          - pypi_twine_executable == ansible_user_dir + '/.local/twine/bin/twine'
+    - name: Verify twine is installed
+      command: "{{ pypi_twine_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+
+- hosts: all
+  name: Test ensure-twine when pypi_twine_executable is set to an already installed twine
+  tasks:
+    - name: Create a virtualenv
+      command: '{{ ensure_pip_virtualenv_command }} {{ ansible_user_dir }}/twine-venv'
+    - name: Install twine to local venv
+      command: '{{ ansible_user_dir }}/twine-venv/bin/pip install twine'
+    - name: Run ensure-twine pointing to an already installed twine
+      include_role:
+        name: ensure-twine
+      vars:
+        pypi_twine_executable: "{{ ansible_user_dir }}/twine-venv/bin/twine"
+    - name: Verify pypi_twine_executable is set to the virtualenv twine
+      assert:
+        that:
+          - pypi_twine_executable == ansible_user_dir + '/twine-venv/bin/twine'

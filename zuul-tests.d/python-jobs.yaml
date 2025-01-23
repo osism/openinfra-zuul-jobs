@@ -283,6 +283,75 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-twine
+    description: Test the ensure-twine role
+    files:
+      - roles/ensure-twine/.*
+      - test-playbooks/ensure-twine.yaml
+    run: test-playbooks/ensure-twine.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-twine-centos-9-stream
+    description: Test the ensure-twine role on centos-9-stream
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-twine-debian-bookworm
+    description: Test the ensure-twine role on debian-bookworm
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-twine-debian-bullseye
+    description: Test the ensure-twine role on debian-bullseye
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-twine-ubuntu-focal
+    description: Test the ensure-twine role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-twine-ubuntu-jammy
+    description: Test the ensure-twine role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-twine-ubuntu-noble
+    description: Test the ensure-twine role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-ensure-sphinx
     description: Test the ensure-sphinx role
     files:
@@ -570,6 +639,12 @@
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-focal
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-jammy
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-noble
+        - zuul-jobs-test-ensure-twine-centos-9-stream
+        - zuul-jobs-test-ensure-twine-debian-bookworm
+        - zuul-jobs-test-ensure-twine-debian-bullseye
+        - zuul-jobs-test-ensure-twine-ubuntu-focal
+        - zuul-jobs-test-ensure-twine-ubuntu-jammy
+        - zuul-jobs-test-ensure-twine-ubuntu-noble
         - zuul-jobs-test-ensure-sphinx
         - zuul-jobs-test-ensure-tox-centos-9-stream
         - zuul-jobs-test-ensure-tox-debian-bookworm
