@@ -28,10 +28,13 @@
 # NOTE(mnaser): python-build does not allow us to let it install Python from a specific
 #               series so we have to do some magic to find out what's the latest
 #               release from a series
+# NOTE(fungi): due to https://github.com/pyenv/pyenv/issues/3015 we need to
+#              filter out no-GIL/free-threading "t" suffixed versions, since
+#              they don't provide the expected vanilla executables
 - name: Determine Python version
   shell: |
     set -o pipefail
-    {{ ansible_user_dir }}/.pyenv/plugins/python-build/bin/python-build --definitions | grep ^{{ python_version }} | tail -1
+    {{ ansible_user_dir }}/.pyenv/plugins/python-build/bin/python-build --definitions | grep ^{{ python_version }} | grep -v t$ | tail -1
   args:
     executable: /bin/bash
   register: _python_version
