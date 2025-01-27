@@ -1,0 +1,4 @@
+ensure_uv_global_symlink: false
+ensure_uv_version: ""
+ensure_uv_executable: uv
+ensure_uv_venv_path: "{{ ansible_user_dir }}/.local/uv"

@@ -1,0 +1,44 @@
+- name: Install pip
+  include_role:
+    name: ensure-pip
+
+- name: Check if uv is installed
+  shell: |
+    command -v {{ ensure_uv_executable }} {{ ensure_uv_venv_path }}/bin/uv || exit 1
+  args:
+    executable: /bin/bash
+  register: uv_preinstalled
+  failed_when: false
+
+- name: Export preinstalled ensure_uv_executable
+  set_fact:
+    ensure_uv_executable: "{{ uv_preinstalled.stdout_lines[0] }}"
+    cacheable: true
+  when: uv_preinstalled.rc == 0
+
+- name: Install uv to local env
+  when: uv_preinstalled.rc != 0
+  block:
+    - name: Create local venv
+      command: "{{ ensure_pip_virtualenv_command }} {{ ensure_uv_venv_path }}"
+
+    - name: Install uv to local venv
+      command: "{{ ensure_uv_venv_path }}/bin/pip install uv{{ ensure_uv_version }}"
+
+    - name: Export installed ensure_uv_executable path
+      set_fact:
+        ensure_uv_executable: "{{ ensure_uv_venv_path }}/bin/uv"
+        cacheable: true
+
+- name: Output uv version
+  command: "{{ ensure_uv_executable }} --version"
+
+- name: Make global symlink
+  when:
+    - ensure_uv_global_symlink
+    - ensure_uv_executable != '/usr/local/bin/uv'
+  file:
+    state: link
+    src: "{{ ensure_uv_executable }}"
+    dest: /usr/local/bin/uv
+  become: yes

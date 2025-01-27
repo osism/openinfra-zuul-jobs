@@ -1,0 +1,35 @@
+- hosts: all
+  name: Test ensure-uv installs into user environment
+  tasks:
+    - name: Verify uv is not installed
+      command: "uv --version"
+      register: result
+      failed_when: result.rc == 0
+    - name: Run ensure-uv with uv not installed
+      include_role:
+        name: ensure-uv
+    - name: Verify ensure_uv_executable is set
+      assert:
+        that:
+          - ensure_uv_executable == ansible_user_dir + '/.local/uv/bin/uv'
+    - name: Verify uv is installed
+      command: "{{ ensure_uv_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+
+- hosts: all
+  name: Test ensure-uv when ensure_uv_executable is set to an already installed uv
+  tasks:
+    - name: Create a virtualenv
+      command: "{{ ensure_pip_virtualenv_command }} {{ ansible_user_dir }}/uv-venv"
+    - name: Install uv to local venv
+      command: "{{ ansible_user_dir }}/uv-venv/bin/pip install uv"
+    - name: Run ensure-uv pointing to an already installed uv
+      include_role:
+        name: ensure-uv
+      vars:
+        ensure_uv_executable: "{{ ansible_user_dir }}/uv-venv/bin/uv"
+    - name: Verify ensure_uv_executable is set to the virtualenv uv
+      assert:
+        that:
+          - ensure_uv_executable == ansible_user_dir + '/uv-venv/bin/uv'
