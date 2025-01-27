@@ -1,10 +1,32 @@
-- name: Build a tarball and wheel
-  command: "{{ release_python }} setup.py sdist bdist_wheel {{ bdist_wheel_xargs }}"
-  args:
-    chdir: "{{ zuul_work_dir }}"
-  when: build_wheel
-- name: Just build a tarball
-  command: "{{ release_python }} setup.py sdist"
-  args:
-    chdir: "{{ zuul_work_dir }}"
-  when: not build_wheel
+- name: Build sdist and wheel with setup.py
+  when: legacy_setup
+  block:
+
+  - name: Build a tarball and wheel
+    command: "{{ release_python }} setup.py sdist bdist_wheel {{ bdist_wheel_xargs }}"
+    args:
+      chdir: "{{ zuul_work_dir }}"
+    when: build_wheel
+  - name: Just build a tarball
+    command: "{{ release_python }} setup.py sdist"
+    args:
+      chdir: "{{ zuul_work_dir }}"
+    when: not build_wheel
+
+- name: Build sdist and wheel with pyproject-build
+  when: not legacy_setup
+  block:
+
+  - name: Make sure pyproject-build is available
+    include_role:
+      name: ensure-pyproject-build
+  - name: Build a tarball and wheel
+    command: "{{ ensure_pyproject_build_executable }}"
+    args:
+      chdir: "{{ zuul_work_dir }}"
+    when: build_wheel
+  - name: Just build a tarball
+    command: "{{ ensure_pyproject_build_executable }} --sdist"
+    args:
+      chdir: "{{ zuul_work_dir }}"
+    when: not build_wheel
