@@ -13,15 +13,31 @@
     _registry: "{{ (remove_registry_tag_repository | split('/', 1)).0 }}"
     _repopath: "{{ (remove_registry_tag_repository | split('/', 1)).1 }}"
 
+- name: Verify registry names
+  when: |
+    container_registry_credentials is defined
+    and _registry not in container_registry_credentials
+  fail:
+    msg: "{{ _registry }} credentials not found"
+
 - name: Autoprobe for quay.io
-  when: remove_registry_tag_api_type is not defined and "quay.io" in _registry
+  when:
+    - container_registry_credentials[_registry].type is not defined
+    - '"quay.io" in _registry'
   set_fact:
-    remove_registry_tag_api_type: "quay"
+    registry_type: "quay"
 
 - name: Autoprobe for docker
-  when: remove_registry_tag_api_type is not defined and "docker.io" in _registry
+  when:
+    - container_registry_credentials[_registry].type is not defined
+    - '"docker.io" in _registry'
   set_fact:
-    remove_registry_tag_api_type: "docker"
+    registry_type: "docker"
+
+- name: Use explicit registry type if set
+  when: container_registry_credentials[_registry].type is defined
+  set_fact:
+    registry_type: container_registry_credentials[_registry].type
 
 - name: Remove tags
-  include_tasks: '{{ remove_registry_tag_api_type }}.yaml'
+  include_tasks: '{{ registry_type }}.yaml'
