@@ -1,0 +1,35 @@
+- hosts: all
+  name: Test ensure-pyproject-build installs into user environment
+  tasks:
+    - name: Verify pyproject-build is not installed
+      command: "pyproject-build --version"
+      register: result
+      failed_when: result.rc == 0
+    - name: Run ensure-pyproject-build with pyproject-build not installed
+      include_role:
+        name: ensure-pyproject-build
+    - name: Verify ensure_pyproject_build_executable is set
+      assert:
+        that:
+          - ensure_pyproject_build_executable == ansible_user_dir + '/.local/pyproject-build/bin/pyproject-build'
+    - name: Verify pyproject-build is installed
+      command: "{{ ensure_pyproject_build_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+
+- hosts: all
+  name: Test ensure-pyproject-build when ensure_pyproject_build_executable is set to an already installed pyproject-build
+  tasks:
+    - name: Create a virtualenv
+      command: '{{ ensure_pip_virtualenv_command }} {{ ansible_user_dir }}/pyproject-build-venv'
+    - name: Install pyproject-build to local venv
+      command: '{{ ansible_user_dir }}/pyproject-build-venv/bin/pip install build'
+    - name: Run ensure-pyproject-build pointing to an already installed pyproject-build
+      include_role:
+        name: ensure-pyproject-build
+      vars:
+        ensure_pyproject_build_executable: "{{ ansible_user_dir }}/pyproject-build-venv/bin/pyproject-build"
+    - name: Verify ensure_pyproject_build_executable is set to the virtualenv pyproject-build
+      assert:
+        that:
+          - ensure_pyproject_build_executable == ansible_user_dir + '/pyproject-build-venv/bin/pyproject-build'
