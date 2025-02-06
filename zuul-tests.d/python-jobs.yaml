@@ -430,6 +430,75 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-uv
+    description: Test the ensure-uv role
+    files:
+      - roles/ensure-uv/.*
+      - test-playbooks/ensure-uv.yaml
+    run: test-playbooks/ensure-uv.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-uv-centos-9-stream
+    description: Test the ensure-uv role on centos-9-stream
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-uv-debian-bookworm
+    description: Test the ensure-uv role on debian-bookworm
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-uv-debian-bullseye
+    description: Test the ensure-uv role on debian-bullseye
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-uv-ubuntu-focal
+    description: Test the ensure-uv role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-uv-ubuntu-jammy
+    description: Test the ensure-uv role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-uv-ubuntu-noble
+    description: Test the ensure-uv role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-fetch-sphinx-tarball
     description: Test the fetch-sphinx-tarball role
     # parenting on tox-docs as we need builded docs first and also this is
@@ -652,6 +721,12 @@
         - zuul-jobs-test-ensure-tox-ubuntu-focal
         - zuul-jobs-test-ensure-tox-ubuntu-jammy
         - zuul-jobs-test-ensure-tox-ubuntu-noble
+        - zuul-jobs-test-ensure-uv-centos-9-stream
+        - zuul-jobs-test-ensure-uv-debian-bookworm
+        - zuul-jobs-test-ensure-uv-debian-bullseye
+        - zuul-jobs-test-ensure-uv-ubuntu-focal
+        - zuul-jobs-test-ensure-uv-ubuntu-jammy
+        - zuul-jobs-test-ensure-uv-ubuntu-noble
         - zuul-jobs-test-fetch-sphinx-tarball-centos-9-stream
         - zuul-jobs-test-fetch-sphinx-tarball-debian-bookworm
         - zuul-jobs-test-fetch-sphinx-tarball-debian-bullseye

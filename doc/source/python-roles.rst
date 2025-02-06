@@ -13,6 +13,7 @@ Python Roles
 .. zuul:autorole:: ensure-sphinx
 .. zuul:autorole:: ensure-tox
 .. zuul:autorole:: ensure-twine
+.. zuul:autorole:: ensure-uv
 .. zuul:autorole:: ensure-virtualenv
 .. zuul:autorole:: fetch-coverage-output
 .. zuul:autorole:: fetch-python-sdist-output
