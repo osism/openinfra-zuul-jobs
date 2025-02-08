@@ -1,0 +1,64 @@
+- name: Install pip
+  include_role:
+    name: ensure-pip
+
+- name: Check if the command name is set and non-empty
+  fail:
+    msg: Required variable ensure_python_command_name is not set or empty
+  when: ensure_python_command_name is not defined or not ensure_python_command_name.strip()
+
+# Part 1
+# Check if the command is already available. If not, pip-install it to a local venv.
+# Either way, save the command's full path to the output variable.
+
+- name: Check if {{ ensure_python_command_name }} is available
+  # 1. Full path optionally informed by the role caller
+  # 2. Ansible user $PATH (bare command name)
+  # 3. Local venv (installed from a previous run for this role)
+  shell: |
+    command -v \
+    {{ ensure_python_command_existing }} \
+    {{ ensure_python_command_name | quote }} \
+    {{ ensure_python_command_venv_executable | quote }} \
+    || exit 1
+  args:
+    executable: /bin/bash
+  register: ensure_python_command_preinstalled
+  failed_when: false
+
+- name: Export preinstalled ensure_python_command_executable
+  set_fact:
+    ensure_python_command_executable: "{{ ensure_python_command_preinstalled.stdout_lines[0] }}"
+    cacheable: true
+  when: ensure_python_command_preinstalled.rc == 0
+
+- name: Install {{ ensure_python_command_package }} to local env
+  when: ensure_python_command_preinstalled.rc != 0
+  block:
+    - name: Create local venv
+      command: "{{ ensure_pip_virtualenv_command }} {{ ensure_python_command_venv_path }}"
+
+    - name: Install {{ ensure_python_command_package }} to local venv
+      command: "{{ ensure_python_command_venv_path }}/bin/pip install {{ ensure_python_command_package }}{{ ensure_python_command_version }}"
+
+    - name: Export installed ensure_python_command_executable path
+      set_fact:
+        ensure_python_command_executable: "{{ ensure_python_command_venv_executable }}"
+        cacheable: true
+
+# Part 2
+# Try to show the command's version and maybe also create a symlink to it in /usr/local/bin
+
+- name: Output {{ ensure_python_command_name }} version
+  command: "{{ ensure_python_command_executable }} --version"
+  failed_when: false
+
+- name: Make global symlink
+  when:
+    - ensure_python_command_global_symlink
+    - ensure_python_command_executable != ensure_python_command_global_symlink_path
+  file:
+    state: link
+    src: "{{ ensure_python_command_executable }}"
+    dest: "{{ ensure_python_command_global_symlink_path }}"
+  become: yes

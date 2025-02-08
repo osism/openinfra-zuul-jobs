@@ -7,6 +7,7 @@ Python Roles
 .. zuul:autorole:: ensure-if-python
 .. zuul:autorole:: ensure-nox
 .. zuul:autorole:: ensure-pip
+.. zuul:autorole:: ensure-python-command
 .. zuul:autorole:: ensure-poetry
 .. zuul:autorole:: ensure-pyproject-build
 .. zuul:autorole:: ensure-python

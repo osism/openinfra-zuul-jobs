@@ -1,44 +1,15 @@
-- name: Install pip
+- name: Check and install pyproject-build if necessary
   include_role:
-    name: ensure-pip
+    name: ensure-python-command
+  vars:
+    ensure_python_command_name: pyproject-build
+    ensure_python_command_package: build
+    ensure_python_command_version: "{{ ensure_pyproject_build_version }}"
+    ensure_python_command_existing: "{{ ensure_pyproject_build_executable | default('') }}"
+    ensure_python_command_venv_path: "{{ ensure_pyproject_build_venv_path }}"
+    ensure_python_command_global_symlink: "{{ ensure_pyproject_build_global_symlink }}"
 
-- name: Check if pyproject-build is installed
-  shell: |
-    command -v {{ ensure_pyproject_build_executable }} {{ ensure_pyproject_build_venv_path }}/bin/pyproject-build || exit 1
-  args:
-    executable: /bin/bash
-  register: pyproject_build_preinstalled
-  failed_when: false
-
-- name: Export preinstalled ensure_pyproject_build_executable
+- name: Export ensure_pyproject_build_executable path
   set_fact:
-    ensure_pyproject_build_executable: "{{ pyproject_build_preinstalled.stdout_lines[0] }}"
+    ensure_pyproject_build_executable: "{{ ensure_python_command_executable }}"
     cacheable: true
-  when: pyproject_build_preinstalled.rc == 0
-
-- name: Install pyproject-build to local env
-  when: pyproject_build_preinstalled.rc != 0
-  block:
-    - name: Create local venv
-      command: "{{ ensure_pip_virtualenv_command }} {{ ensure_pyproject_build_venv_path }}"
-
-    - name: Install pyproject-build to local venv
-      command: "{{ ensure_pyproject_build_venv_path }}/bin/pip install build{{ ensure_pyproject_build_version }}"
-
-    - name: Export installed ensure_pyproject_build_executable path
-      set_fact:
-        ensure_pyproject_build_executable: "{{ ensure_pyproject_build_venv_path }}/bin/pyproject-build"
-        cacheable: true
-
-- name: Output pyproject-build version
-  command: "{{ ensure_pyproject_build_executable }} --version"
-
-- name: Make global symlink
-  when:
-    - ensure_pyproject_build_global_symlink
-    - ensure_pyproject_build_executable != '/usr/local/bin/pyproject-build'
-  file:
-    state: link
-    src: "{{ ensure_pyproject_build_executable }}"
-    dest: /usr/local/bin/pyproject-build
-  become: yes

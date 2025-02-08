@@ -1,4 +1,3 @@
 ensure_pyproject_build_global_symlink: false
 ensure_pyproject_build_version: ""
-ensure_pyproject_build_executable: pyproject-build
 ensure_pyproject_build_venv_path: "{{ ansible_user_dir }}/.local/pyproject-build"

@@ -3,6 +3,7 @@
     description: Test the ensure-nox role
     files:
       - roles/ensure-nox/.*
+      - roles/ensure-python-command/.*
       - test-playbooks/ensure-nox.yaml
     run: test-playbooks/ensure-nox.yaml
     tags: all-platforms
@@ -149,6 +150,7 @@
     description: Test the ensure-poetry role
     files:
       - roles/ensure-poetry/.*
+      - roles/ensure-python-command/.*
       - test-playbooks/ensure-poetry.yaml
     run: test-playbooks/ensure-poetry.yaml
     tags: all-platforms
@@ -218,6 +220,7 @@
     description: Test the ensure-pyproject-build role
     files:
       - roles/ensure-pyproject-build/.*
+      - roles/ensure-python-command/.*
       - test-playbooks/ensure-pyproject-build.yaml
     run: test-playbooks/ensure-pyproject-build.yaml
     tags: all-platforms
@@ -287,6 +290,7 @@
     description: Test the ensure-twine role
     files:
       - roles/ensure-twine/.*
+      - roles/ensure-python-command/.*
       - test-playbooks/ensure-twine.yaml
     run: test-playbooks/ensure-twine.yaml
     tags: all-platforms
@@ -434,6 +438,7 @@
     description: Test the ensure-uv role
     files:
       - roles/ensure-uv/.*
+      - roles/ensure-python-command/.*
       - test-playbooks/ensure-uv.yaml
     run: test-playbooks/ensure-uv.yaml
     tags: all-platforms
