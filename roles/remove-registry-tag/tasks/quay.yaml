@@ -4,9 +4,13 @@
   no_log: true
 
 - name: Set API base
-  when: remove_registry_tag_api_url is not defined
   set_fact:
-    remove_registry_tag_api_url: 'https://{{ _registry }}/api/v1'
+    _remove_registry_tag_api_url: 'https://{{ _registry }}/api/v1'
+
+- name: Override API base
+  when: remove_registry_tag_api_url is defined
+  set_fact:
+    _remove_registry_tag_api_url: '{{ remove_registry_tag_api_url }}'
 
 - name: Delete single tag
   when: remove_registry_tag_tag is defined
@@ -23,7 +27,7 @@
 
     - name: Get project tags
       uri:
-        url: '{{ remove_registry_tag_api_url }}/repository/{{ _repopath }}/tag/'
+        url: '{{ _remove_registry_tag_api_url }}/repository/{{ _repopath }}/tag/'
         status_code: 200
       register: _tags
 
@@ -45,7 +49,7 @@
 - name: Delete tag
   no_log: true
   uri:
-    url: '{{ remove_registry_tag_api_url }}/repository/{{ _repopath }}/tag/{{ zj_quay_tag }}'
+    url: '{{ _remove_registry_tag_api_url }}/repository/{{ _repopath }}/tag/{{ zj_quay_tag }}'
     method: DELETE
     status_code: [200, 204]
     headers:
