@@ -6,9 +6,13 @@
         (container_registry_credentials[_registry].password is defined)
 
 - name: Set API base
-  when: remove_registry_tag_api_url is not defined
   set_fact:
-    remove_registry_tag_api_url: 'https://hub.docker.com/v2'
+    _remove_registry_tag_api_url: 'https://hub.docker.com/v2'
+
+- name: Override API base
+  when: remove_registry_tag_api_url is defined
+  set_fact:
+    _remove_registry_tag_api_url: '{{ remove_registry_tag_api_url }}'
 
 - name: Delete single tag
   when: remove_registry_tag_tag is defined
@@ -25,7 +29,7 @@
 
     - name: Get project tags
       uri:
-        url: '{{ remove_registry_tag_api_url }}/repositories/{{ _repopath }}/tags?page_size=1000'
+        url: '{{ _remove_registry_tag_api_url }}/repositories/{{ _repopath }}/tags?page_size=1000'
         status_code: 200
       register: _tags
 
@@ -46,7 +50,7 @@
 - name: Get dockerhub JWT token
   no_log: true
   uri:
-    url: "{{ remove_registry_tag_api_url }}/users/login/"
+    url: "{{ _remove_registry_tag_api_url }}/users/login/"
     body_format: json
     body:
       username: "{{ container_registry_credentials[_registry].username }}"
@@ -59,7 +63,7 @@
 - name: Delete tag
   no_log: true
   uri:
-    url: '{{ remove_registry_tag_api_url }}/repositories/{{ _repopath }}/tags/{{ zj_docker_tag }}'
+    url: '{{ _remove_registry_tag_api_url }}/repositories/{{ _repopath }}/tags/{{ zj_docker_tag }}'
     method: DELETE
     status_code: [200, 204]
     headers:
