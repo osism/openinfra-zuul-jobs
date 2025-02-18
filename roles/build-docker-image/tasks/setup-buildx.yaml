@@ -1,5 +1,5 @@
 - name: Update qemu-static container settings
-  command: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  command: docker run --rm --privileged quay.io/opendevmirror/qemu-user-static --reset -p yes
   environment:
     DOCKER_CLI_EXPERIMENTAL: enabled
   when: ansible_architecture == 'x86_64'
