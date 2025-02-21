@@ -24,12 +24,12 @@
         executable: /bin/bash
 
     - name: Run a remote test pod
-      command: oc run --generator=run-pod/v1 --image=debian:testing upstream-dockertest --command -- /bin/bash -c 'echo Upstream; sleep infinity'
+      command: oc run --generator=run-pod/v1 --image=quay.io/opendevmirror/httpd:alpine upstream-quaytest --command -- /bin/sh -c 'echo Upstream; sleep infinity'
     - name: Wait for the pod to be ready
-      command: oc wait --for=condition=Ready pod/upstream-dockertest --timeout=60s
+      command: oc wait --for=condition=Ready pod/upstream-quaytest --timeout=60s
     - name: Check the output of the pod
       shell: |
         set -o pipefail
-        oc logs pod/upstream-dockertest | grep 'Upstream'
+        oc logs pod/upstream-quaytest | grep 'Upstream'
       args:
         executable: /bin/bash
