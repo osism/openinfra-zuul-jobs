@@ -47,4 +47,4 @@
     --env REGISTRY_AUTH_HTPASSWD_REALM="Registry Realm"
     --volume="/var/registry/certs:/certs"
     --volume="/var/registry/auth:/auth"
-    docker.io/library/registry:2
+    quay.io/opendevmirror/registry:2
