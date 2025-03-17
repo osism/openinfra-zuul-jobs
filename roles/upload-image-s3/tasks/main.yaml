@@ -1,0 +1,58 @@
+# Run the checksums in the background while we're uploading
+- name: Get sha256 hash
+  stat:
+    path: '{{ upload_image_s3_filename }}'
+    checksum_algorithm: sha256
+  async: 600
+  poll: 0
+  register: sha256_task
+
+- name: Get md5 hash
+  stat:
+    path: '{{ upload_image_s3_filename }}'
+    checksum_algorithm: md5
+  async: 600
+  poll: 0
+  register: md5_task
+
+- name: Upload image to S3
+  no_log: true
+  upload_image_s3:
+    endpoint: "{{ upload_image_s3_endpoint | default(omit) }}"
+    bucket: "{{ upload_image_s3_bucket }}"
+    aws_access_key: "{{ upload_image_s3_aws_access_key }}"
+    aws_secret_key: "{{ upload_image_s3_aws_secret_key }}"
+    filename: '{{ upload_image_s3_filename }}'
+    name: '{{ upload_image_s3_name }}'
+    delete_after: '{{ upload_image_s3_delete_after }}'
+  register: upload_results
+
+- name: Wait for sha256
+  async_status:
+    jid: "{{ sha256_task.ansible_job_id }}"
+  register: sha256
+  until: sha256.finished
+  retries: 1
+  delay: 10
+
+- name: Wait for md5
+  async_status:
+    jid: "{{ md5_task.ansible_job_id }}"
+  register: md5
+  until: md5.finished
+  retries: 1
+  delay: 10
+
+- name: Return artifact to Zuul
+  zuul_return:
+    data:
+      zuul:
+        artifacts:
+          - name: '{{ upload_image_s3_format }} image'
+            url: '{{ upload_results.url }}'
+            metadata:
+              type: 'zuul_image'
+              image_name: '{{ upload_image_s3_image_name }}'
+              format: '{{ upload_image_s3_format }}'
+              sha256: '{{ sha256.stat.checksum }}'
+              md5sum: '{{ md5.stat.checksum }}'

@@ -177,6 +177,14 @@
         - name: ubuntu-noble
           label: ubuntu-noble
 
+- job:
+    name: zuul-jobs-test-upload-image-s3
+    description: Test the upload-image-s3 role
+    files:
+      - roles/upload-image-s3/.*
+      - test-playbooks/upload-image-s3.yaml
+    run: test-playbooks/upload-image-s3.yaml
+
 - project:
     check:
       jobs: &id001
@@ -195,6 +203,7 @@
         - zuul-jobs-test-convert-diskimage-ubuntu-focal
         - zuul-jobs-test-convert-diskimage-ubuntu-jammy
         - zuul-jobs-test-convert-diskimage-ubuntu-noble
+        - zuul-jobs-test-upload-image-s3
     gate:
       jobs: *id001
     periodic-weekly:

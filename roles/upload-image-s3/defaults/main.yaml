@@ -1,0 +1,5 @@
+upload_image_s3_image_name: '{{ build_diskimage_image_name }}'
+upload_image_s3_delete_after: 0
+upload_image_s3_filename: '{{ build_diskimage_image_root }}/{{ build_diskimage_image_name }}.{{ upload_image_s3_extension }}'
+upload_image_s3_name: '{{ zuul.build }}-{{ build_diskimage_image_name }}.{{ upload_image_s3_extension }}'
+upload_image_s3_extension: '{{ upload_image_s3_format }}'
