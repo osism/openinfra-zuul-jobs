@@ -48,3 +48,8 @@
         name: ensure-skopeo
       vars:
         ensure_skopeo_install_from_upstream: true
+
+- hosts: builder
+  name: Provide skopeo for the builder
+  roles:
+    - ensure-skopeo

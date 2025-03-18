@@ -37,5 +37,5 @@
 
       .. include:: ../../playbooks/container-image/README.rst
       .. include:: ../../playbooks/container-image/credentials.rst
-    pre-run: playbooks/container-image/pre.yaml
+    pre-run: playbooks/container-image/mirror-pre.yaml
     run: playbooks/container-image/mirror.yaml
