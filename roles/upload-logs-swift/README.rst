@@ -65,14 +65,3 @@ This uploads logs to an OpenStack Object Store (Swift) container.
    Whether to create `index.html` files with directory indexes.  If set
    to false, Swift containers can be marked with a `Web-Listings=true`
    property to activate Swift's own directory indexing.
-
-.. zuul:rolevar:: zuul_log_path_shard_build
-   :default: False
-
-   This var is consumed by set-zuul-log-path-fact which upload-logs-swift
-   calls into. If you set this you will get log paths prefixed with the
-   first three characters of the build uuid. This will improve log file
-   sharding.
-
-   More details can be found at
-   :zuul:rolevar:`set-zuul-log-path-fact.zuul_log_path_shard_build`.
