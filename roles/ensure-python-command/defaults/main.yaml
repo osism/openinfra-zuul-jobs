@@ -2,4 +2,4 @@ ensure_python_command_global_symlink: false
 ensure_python_command_version: ""
 ensure_python_command_existing: ""
 ensure_python_command_package: "{{ ensure_python_command_name }}"
-ensure_python_command_venv_path: "{{ ansible_user_dir }}/.local/{{ ensure_python_command_package }}"
+ensure_python_command_venv_path: "{{ ansible_user_dir }}/.local/_zuul_venv/{{ ensure_python_command_package }}"
