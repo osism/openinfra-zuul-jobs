@@ -13,19 +13,13 @@
     msg: "{{ zj_image.repository }} not permitted by {{ container_registry_credentials[zj_image.dest_registry].repository }}"
 
 - name: Log in to registry
-  command: "{{ container_command }} login -u {{ container_registry_credentials[zj_image.dest_registry].username }} -p {{ container_registry_credentials[zj_image.dest_registry].password }} {{ zj_image.dest_registry }}"
+  command: "skopeo login -u {{ container_registry_credentials[zj_image.dest_registry].username }} -p {{ container_registry_credentials[zj_image.dest_registry].password }} {{ zj_image.dest_registry }}"
   no_log: true
 
-- name: Push and pull image
+- name: Copy image
   block:
-    - name: "Pull image {{ zj_image.src_repository }}:{{ zj_image.src_tag }}"
-      command: "{{ container_command }} pull {{ zj_image.src_repository }}:{{ zj_image.src_tag }}"
-
-    - name: Retag image
-      command: "{{ container_command }} tag {{ zj_image.src_repository }}:{{ zj_image.src_tag }} {{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
-
-    - name: "Push image {{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
-      command: "{{ container_command }} push {{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
+    - name: "Copy to {{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
+      command: "skopeo copy --all docker://{{ zj_image.src_repository }}:{{ zj_image.src_tag }} docker://{{ zj_image.dest_repository }}:{{ zj_image.dest_tag }}"
   always:
     - name: Log out of registry
-      command: "{{ container_command }} logout {{ zj_image.dest_registry }}"
+      command: "skopeo logout {{ zj_image.dest_registry }}"

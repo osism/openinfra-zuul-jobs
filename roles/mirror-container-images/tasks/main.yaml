@@ -1,4 +1,4 @@
-- name: Pull and push images
+- name: Copy images
   with_items: "{{ mirror_container_images_images }}"
   include_tasks: inner.yaml
   loop_control:
