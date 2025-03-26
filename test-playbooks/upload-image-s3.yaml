@@ -1,0 +1,89 @@
+- hosts: all
+  vars:
+    test_aws_access_key: minioadmin
+    test_aws_secret_key: minioadmin
+    test_bucket: zuul
+    test_image: "image"
+    test_filename: "/tmp/testfile"
+    test_objectname_old: "image-old.raw"
+    test_objectname: "image.raw"
+    test_ext: "raw"
+    test_content: "123abc"
+  roles:
+    - ensure-docker
+    - ensure-pip
+  tasks:
+    - name: Install boto
+      pip:
+        extra_args: "--break-system-packages"
+        name:
+          - boto3
+          - botocore
+
+    - name: Start minio server
+      command: >-
+        docker run -d -p 9000:9000
+        -e MINIO_ACCESS_KEY={{ test_aws_access_key }}
+        -e MINIO_SECRET_KEY={{ test_aws_secret_key }}
+        quay.io/minio/minio server /data
+
+    - name: Make sure bucket exists
+      s3_bucket:
+        name: "{{ test_bucket }}"
+        state: present
+        s3_url: 'http://localhost:9000'
+        aws_access_key: "{{ test_aws_access_key }}"
+        aws_secret_key: "{{ test_aws_secret_key }}"
+
+    - name: Add content to tempfile
+      copy:
+        content: "{{ test_content }}"
+        dest: "{{ test_filename }}"
+
+    - name: Upload file to s3
+      include_role:
+        name: upload-image-s3
+      vars:
+        upload_image_s3_endpoint: "http://localhost:9000"
+        upload_image_s3_aws_access_key: "{{ test_aws_access_key }}"
+        upload_image_s3_aws_secret_key: "{{ test_aws_secret_key }}"
+        upload_image_s3_bucket: "{{ test_bucket }}"
+        upload_image_s3_filename: "{{ test_filename }}"
+        upload_image_s3_name: "{{ test_objectname_old }}"
+        upload_image_s3_image_name: "{{ test_image }}"
+        upload_image_s3_format: "{{ test_ext }}"
+        upload_image_s3_delete_after: 1
+
+    - name: Delay for 5 seconds
+      wait_for:
+        timeout: 5
+
+    # This should delete the first object then replace it.
+    - name: Upload file to s3
+      include_role:
+        name: upload-image-s3
+      vars:
+        upload_image_s3_endpoint: "http://localhost:9000"
+        upload_image_s3_aws_access_key: "{{ test_aws_access_key }}"
+        upload_image_s3_aws_secret_key: "{{ test_aws_secret_key }}"
+        upload_image_s3_bucket: "{{ test_bucket }}"
+        upload_image_s3_filename: "{{ test_filename }}"
+        upload_image_s3_name: "{{ test_objectname }}"
+        upload_image_s3_image_name: "{{ test_image }}"
+        upload_image_s3_format: "{{ test_ext }}"
+        upload_image_s3_delete_after: 1
+
+    - name: Download mc
+      get_url:
+        url: https://dl.min.io/client/mc/release/linux-amd64/mc
+        dest: "{{ ansible_user_dir }}/mc"
+        mode: 0755
+
+    - name: Add localhost minio host
+      command: "{{ ansible_user_dir }}/mc config host add local http://localhost:9000 {{ test_aws_access_key }} {{ test_aws_secret_key }}"
+
+    - name: List files in minio bucket
+      command: "{{ ansible_user_dir }}/mc find local/zuul"
+
+    - name: Check for testfile in minio bucket
+      command: "{{ ansible_user_dir }}/mc find local/zuul/{{ test_objectname }}"
