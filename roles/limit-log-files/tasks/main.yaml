@@ -1,0 +1,64 @@
+- name: Run limit-log-files script
+  shell: |-
+    set -o pipefail
+
+    # File count limit
+    FILE_LIMIT={{ limit_log_files_file_limit }}
+
+    # Size rules
+    RULES=(
+        "{{ limit_log_files_file_rules | join('" "') }}"
+    )
+
+    TARGET_DIR="{{ limit_log_files_log_dir }}"
+    WORK_DIR="{{ zuul.executor.work_root }}"
+
+    if [[ ! -d "$TARGET_DIR" ]]; then
+        echo "Error: Directory '$TARGET_DIR' not found."
+        exit 1
+    fi
+
+    # Count files in target directory
+    TOTAL_FILES=$(find "$TARGET_DIR" -type f | wc -l)
+
+    if (( TOTAL_FILES > FILE_LIMIT )); then
+        echo "Total number of files in '$TARGET_DIR' exceed limit: $TOTAL_FILES > $FILE_LIMIT"
+        exit 2
+    fi
+
+    ERROR=0
+
+    # check for violations off each rule
+    for rule in "${RULES[@]}"; do
+        REGEX=$(echo "$rule" | awk '{print $1}')
+        LIMIT=$(echo "$rule" | awk '{print $2}')
+
+        echo "Rule: '$REGEX' (limit: $LIMIT):"
+        # find files and remove the working dir prefix
+        FILES=$(find "$TARGET_DIR" -type f -size +"$LIMIT" -regex "$REGEX" -exec ls -lh {} \; | \
+                awk '{ print $9 ": " $5 }' | \
+                sed "s|$WORK_DIR||")
+        echo "$FILES"
+        if [[ -n "$FILES" ]]; then
+            ERROR=1
+        fi
+
+    done
+
+    if [[ "$ERROR" -eq 1 ]]; then
+        echo "One or more files exceeded their size limit rule"
+        exit 3
+    fi
+  args:
+    executable: /bin/bash
+  delegate_to: localhost
+  register: limit_log_file_violations
+  failed_when: limit_log_files_fail and limit_log_file_violations.rc != 0
+
+- name: Report warnings to Zuul
+  zuul_return:
+    data:
+      zuul:
+        warnings:
+          - "{{ limit_log_file_violations.stdout }}"
+  when: limit_log_file_violations.rc != 0

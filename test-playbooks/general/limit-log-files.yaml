@@ -1,0 +1,64 @@
+- hosts: all
+  vars:
+    test_folder: "{{ zuul.executor.work_root }}/test_folder"
+  tasks:
+    # create files for test runs
+    - name: Create folder for test files
+      file:
+        path: "{{ test_folder }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+    - name: Create large file 501
+      community.general.filesize:
+        path: "{{ test_folder }}/file_501"
+        size: 501B
+      delegate_to: localhost
+    - name: Create large file 350
+      community.general.filesize:
+        path: "{{ test_folder }}/file_350"
+        size: 350B
+      delegate_to: localhost
+    - name: Create large file 100
+      community.general.filesize:
+        path: "{{ test_folder }}/file_100"
+        size: 100B
+      delegate_to: localhost
+    # execute role without issue, should not warn and not fail
+    - name: Execute role without issue
+      include_role:
+        name: limit-log-files
+      vars:
+        limit_log_files_fail: false
+        limit_log_files_log_dir: "{{ test_folder }}"
+        limit_log_files_file_rules:
+          - ".* 1M"
+          - ".* 2M"
+    # execute role with warning, should warn but not fail
+    - name: Execute role in warning mode
+      include_role:
+        name: limit-log-files
+      vars:
+        limit_log_files_fail: false
+        limit_log_files_log_dir: "{{ test_folder }}"
+        limit_log_files_file_rules:
+          - ".* 250c"
+          - ".* 150c"
+    # execute role with fail, should fail
+    - name: Block to rescue failing of role
+      block:
+        - name: Execute role in fail mode
+          include_role:
+            name: limit-log-files
+          vars:
+            limit_log_files_fail: true
+            limit_log_files_log_dir: "{{ test_folder }}"
+            limit_log_files_file_rules:
+              - ".* 500c"
+      rescue:
+        - name: Set fact for assertion
+          set_fact:
+            has_failed: true
+    - name: Assert that second run failed
+      assert:
+        that: has_failed is defined
