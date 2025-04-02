@@ -25,8 +25,10 @@ There are three ways to install the python interpreter:
    :type: str
 
    Optional version of python interpreter to install, such as ``3.7``.
-   Note that you should use a string value for this variable rather than
-   a float. This avoids problems with 3.10 being evaluated as 3.1.
+   Note that you should use a string value for this variable rather than a
+   float. This avoids problems with 3.10 being evaluated as 3.1. With the
+   pyenv backend it's not currently possible to select special-purpose
+   builds like the free-threading (no-GIL) variants.
 
 .. zuul:rolevar:: python_use_pyenv
    :type: bool
