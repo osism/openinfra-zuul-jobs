@@ -68,5 +68,5 @@
   become: true
 
 - name: Start Zookeeper
-  command: /opt/zookeeper/bin/zkServer.sh start
+  command: "{{ 'eatmydata' if zookeeper_use_eatmydata else '' }} /opt/zookeeper/bin/zkServer.sh start"
   become: true
