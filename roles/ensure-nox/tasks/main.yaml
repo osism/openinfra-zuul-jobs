@@ -1,34 +1,14 @@
-- name: Install pip
+- name: Check and install nox if necessary
   include_role:
-    name: ensure-pip
+    name: ensure-python-command
+  vars:
+    ensure_python_command_name: nox
+    ensure_python_command_version: "{{ ensure_nox_version }}"
+    ensure_python_command_existing: "{{ nox_executable | default('') }}"
+    ensure_python_command_venv_path: "{{ nox_venv_path }}"
+    ensure_python_command_global_symlink: false  # not supported
 
-- name: Check if nox is installed
-  shell: |
-    command -v {{ nox_executable }} {{ nox_venv_path }}/bin/nox || exit 1
-  args:
-    executable: /bin/bash
-  register: nox_preinstalled
-  failed_when: false
-
-- name: Export preinstalled nox_exectuable
+- name: Export nox_executable path
   set_fact:
-    nox_executable: '{{ nox_preinstalled.stdout_lines[0] }}'
+    nox_executable: "{{ ensure_python_command_executable }}"
     cacheable: true
-  when: nox_preinstalled.rc == 0
-
-- name: Install nox to local env
-  when: nox_preinstalled.rc != 0
-  block:
-    - name: Create local venv
-      command: '{{ ensure_pip_virtualenv_command }} {{ nox_venv_path }}'
-
-    - name: Install nox to local venv
-      command: '{{ nox_venv_path }}/bin/pip install nox{{ ensure_nox_version }}'
-
-    - name: Export installed nox_executable path
-      set_fact:
-        nox_executable: '{{ nox_venv_path }}/bin/nox'
-        cacheable: true
-
-- name: Output nox version
-  command: "{{ nox_executable }} --version"

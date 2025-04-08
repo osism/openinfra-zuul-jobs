@@ -1,0 +1,2 @@
+ensure_python_command_global_symlink_path: /usr/local/bin/{{ ensure_python_command_name }}
+ensure_python_command_venv_executable: "{{ ensure_python_command_venv_path }}/bin/{{ ensure_python_command_name }}"

@@ -1,3 +1,2 @@
-nox_executable: nox
 ensure_nox_version: ''
 nox_venv_path: '{{ ansible_user_dir }}/.local/nox'

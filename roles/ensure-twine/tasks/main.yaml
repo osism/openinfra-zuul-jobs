@@ -1,44 +1,14 @@
-- name: Install pip
+- name: Check and install twine if necessary
   include_role:
-    name: ensure-pip
+    name: ensure-python-command
+  vars:
+    ensure_python_command_name: twine
+    ensure_python_command_version: "{{ ensure_twine_version }}"
+    ensure_python_command_existing: "{{ pypi_twine_executable | default('') }}"
+    ensure_python_command_venv_path: "{{ ensure_twine_venv_path }}"
+    ensure_python_command_global_symlink: "{{ ensure_twine_global_symlink }}"
 
-- name: Check if twine is installed
-  shell: |
-    command -v {{ pypi_twine_executable }} {{ ensure_twine_venv_path }}/bin/twine || exit 1
-  args:
-    executable: /bin/bash
-  register: twine_preinstalled
-  failed_when: false
-
-- name: Export preinstalled pypi_twine_executable
+- name: Export pypi_twine_executable path
   set_fact:
-    pypi_twine_executable: "{{ twine_preinstalled.stdout_lines[0] }}"
+    pypi_twine_executable: "{{ ensure_python_command_executable }}"
     cacheable: true
-  when: twine_preinstalled.rc == 0
-
-- name: Install twine to local env
-  when: twine_preinstalled.rc != 0
-  block:
-    - name: Create local venv
-      command: "{{ ensure_pip_virtualenv_command }} {{ ensure_twine_venv_path }}"
-
-    - name: Install twine to local venv
-      command: "{{ ensure_twine_venv_path }}/bin/pip install twine{{ ensure_twine_version }}"
-
-    - name: Export installed pypi_twine_executable path
-      set_fact:
-        pypi_twine_executable: "{{ ensure_twine_venv_path }}/bin/twine"
-        cacheable: true
-
-- name: Output twine version
-  command: "{{ pypi_twine_executable }} --version"
-
-- name: Make global symlink
-  when:
-    - ensure_twine_global_symlink
-    - pypi_twine_executable != '/usr/local/bin/twine'
-  file:
-    state: link
-    src: "{{ pypi_twine_executable }}"
-    dest: /usr/local/bin/twine
-  become: yes
