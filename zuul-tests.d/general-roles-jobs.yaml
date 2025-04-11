@@ -708,7 +708,6 @@
       - roles/upload-artifactory/.*
       - test-playbooks/artifactory/.*
     run: test-playbooks/artifactory/run.yaml
-    cleanup-run: test-playbooks/artifactory/cleanup.yaml
 
 - job:
     name: zuul-jobs-test-upload-git-mirror
