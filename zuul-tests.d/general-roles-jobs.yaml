@@ -794,6 +794,122 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs
+    description: Test the ensure-zookeeper roles with tmpfs
+    parent: zuul-jobs-test-ensure-zookeeper
+    vars:
+      zookeeper_use_tmpfs: true
+    tags: debuntu-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bookworm
+    description: Test the ensure-zookeeper roles with tmpfs on debian-bookworm
+    parent: zuul-jobs-test-ensure-zookeeper-tmpfs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bullseye
+    description: Test the ensure-zookeeper roles with tmpfs on debian-bullseye
+    parent: zuul-jobs-test-ensure-zookeeper-tmpfs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-focal
+    description: Test the ensure-zookeeper roles with tmpfs on ubuntu-focal
+    parent: zuul-jobs-test-ensure-zookeeper-tmpfs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-jammy
+    description: Test the ensure-zookeeper roles with tmpfs on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-zookeeper-tmpfs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-noble
+    description: Test the ensure-zookeeper roles with tmpfs on ubuntu-noble
+    parent: zuul-jobs-test-ensure-zookeeper-tmpfs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata
+    description: Test the ensure-zookeeper roles with eatmydata
+    parent: zuul-jobs-test-ensure-zookeeper
+    vars:
+      zookeeper_use_eatmydata: true
+    tags: debuntu-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bookworm
+    description: Test the ensure-zookeeper roles with eatmydata on debian-bookworm
+    parent: zuul-jobs-test-ensure-zookeeper-eatmydata
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bullseye
+    description: Test the ensure-zookeeper roles with eatmydata on debian-bullseye
+    parent: zuul-jobs-test-ensure-zookeeper-eatmydata
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-focal
+    description: Test the ensure-zookeeper roles with eatmydata on ubuntu-focal
+    parent: zuul-jobs-test-ensure-zookeeper-eatmydata
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-jammy
+    description: Test the ensure-zookeeper roles with eatmydata on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-zookeeper-eatmydata
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-noble
+    description: Test the ensure-zookeeper roles with eatmydata on ubuntu-noble
+    parent: zuul-jobs-test-ensure-zookeeper-eatmydata
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-update-json-file
     description: Test the json edit role
     run: test-playbooks/update-json-file.yaml
@@ -903,6 +1019,16 @@
         - zuul-jobs-test-ensure-zookeeper-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bookworm
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-focal
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-jammy
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bookworm
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-focal
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-jammy
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-noble
         - zuul-jobs-test-update-json-file
         - zuul-jobs-test-stage-output
         - zuul-jobs-test-fetch-translation-output

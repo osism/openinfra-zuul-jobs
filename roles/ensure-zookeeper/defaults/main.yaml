@@ -4,4 +4,5 @@ _zookeeper_install_version: "{% if zookeeper_version == 'latest' %}{{ _zookeeper
 
 zookeeper_use_tls: false
 zookeeper_use_tmpfs: true
+zookeeper_use_eatmydata: false
 zookeeper_ca_dir: "/opt/zookeeper/ca"

@@ -18,3 +18,9 @@ Install and start zookeeper using the upsteam release.
    :default: true
 
    Setup a tmpfs for data directory.
+
+.. zuul:rolevar:: zookeeper_use_eatmydata
+   :default: false
+
+   Uses "eatmydata" so that fsync returns immediately.  May be useful
+   for testing, but never use this in production.

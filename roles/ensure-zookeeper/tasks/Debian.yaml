@@ -1,5 +1,10 @@
-- name: Install JDK
+- name: Set package list
+  set_fact:
+    packages:
+      - default-jdk-headless
+      - "{{ 'eatmydata' if zookeeper_use_eatmydata else False }}"
+- name: Install packages
   package:
-    name: default-jdk-headless
+    name: "{{ packages | select | list }}"
     state: present
   become: true

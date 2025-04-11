@@ -28,8 +28,13 @@
         filename: debian-testing
       become: true
 
-- name: Install JDK
-  apt:
-    name: default-jdk-headless
+- name: Set package list
+  set_fact:
+    packages:
+      - default-jdk-headless
+      - "{{ 'eatmydata' if zookeeper_use_eatmydata else False }}"
+- name: Install packages
+  package:
+    name: "{{ packages | select | list }}"
     state: present
   become: true
