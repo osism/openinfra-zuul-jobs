@@ -36,6 +36,7 @@
           Username: {{ hostvars[zj_item]['ansible_user'] | default('unknown') }}
           Distro: {{ hostvars[zj_item]['ansible_distribution'] | default('unknown') }} {{ hostvars[zj_item]['ansible_distribution_version'] | default('unknown') }}
           Provider: {{ hostvars[zj_item]['nodepool']['provider'] }}
+          Region: {{ hostvars[zj_item]['nodepool']['region'] | default('unknown') }}
           Label: {{ hostvars[zj_item]['nodepool']['label'] }}
           Product Name: {{ hostvars[zj_item]['ansible_product_name'] | default('unknown') }}
           {% if hostvars[zj_item]['nodepool']['interface_ip'] is defined %}
