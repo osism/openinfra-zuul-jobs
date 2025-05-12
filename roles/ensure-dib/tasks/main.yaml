@@ -48,11 +48,19 @@
       include_role:
         name: ensure-pip
     - name: Install latest diskimage-builder
-      when: not ensure_dib_version
+      when: (not ensure_dib_version) and zuul['projects']['opendev.org/openstack/diskimage-builder'] is not defined
       pip:
         name:
           - setuptools
           - diskimage-builder
+        virtualenv: "{{ ensure_dib_venv_dir }}"
+        virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
+    - name: Install diskimage-builder from source
+      when: (not ensure_dib_version) and zuul['projects']['opendev.org/openstack/diskimage-builder'] is defined
+      pip:
+        name:
+          - setuptools
+          - "{{ ansible_user_dir}}/{{ zuul['projects']['opendev.org/openstack/diskimage-builder']['src_dir'] }}"
         virtualenv: "{{ ensure_dib_venv_dir }}"
         virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
     - name: Install versioned diskimage-builder
