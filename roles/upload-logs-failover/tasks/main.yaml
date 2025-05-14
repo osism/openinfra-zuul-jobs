@@ -1,0 +1,15 @@
+- name: Initialize control vars
+  set_fact:
+    upload_succeeded: false
+
+- name: Perform log upload
+  include_tasks: upload.yaml
+  loop: "{{ zuul_log_targets }}"
+  loop_control:
+    loop_var: zj_upload_item
+  no_log: true
+
+- name: Fail if no successful upload
+  fail:
+    msg: "Upload to all targets failed"
+  when: not upload_succeeded
