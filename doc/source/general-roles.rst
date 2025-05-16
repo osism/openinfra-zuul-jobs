@@ -26,6 +26,7 @@ General Purpose Roles
 .. zuul:autorole:: fetch-markdownlint
 .. zuul:autorole:: git-prepare-nodecache
 .. zuul:autorole:: intercept-job
+.. zuul:autorole:: limit-log-files
 .. zuul:autorole:: log-inventory
 .. zuul:autorole:: markdownlint
 .. zuul:autorole:: multi-node-bridge
