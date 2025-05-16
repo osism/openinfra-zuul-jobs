@@ -1,9 +1,9 @@
-- name: Allow pushing to non-bare repo
-  git_config:
-    name: receive.denyCurrentBranch
-    value: ignore
-    scope: local
-    repo: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
+- name: Allow pushing to non-bare repo and deleting current branch
+  shell: |-
+    git config --local receive.denyCurrentBranch ignore
+    git config --local receive.denyDeleteCurrent ignore
+  args:
+    chdir: "{{ zuul_workspace_root }}/{{ zj_project.value.src_dir }}"
   with_dict: "{{ zuul.projects }}"
   loop_control:
     loop_var: zj_project
