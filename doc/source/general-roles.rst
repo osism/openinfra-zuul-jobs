@@ -34,10 +34,11 @@ General Purpose Roles
 .. zuul:autorole:: multi-node-hosts-file
 .. zuul:autorole:: multi-node-known-hosts
 .. zuul:autorole:: persistent-firewall
+.. zuul:autorole:: post-reboot-tasks
 .. zuul:autorole:: prepare-workspace
 .. zuul:autorole:: prepare-workspace-git
 .. zuul:autorole:: prepare-workspace-openshift
-.. zuul:autorole:: post-reboot-tasks
+.. zuul:autorole:: promote-artifact
 .. zuul:autorole:: remove-build-sshkey
 .. zuul:autorole:: remove-build-winrm-cert
 .. zuul:autorole:: remove-gpgkey

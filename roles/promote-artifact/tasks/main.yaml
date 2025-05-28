@@ -1,0 +1,14 @@
+- name: Query Zuul API for artifact information
+  uri:
+    url: "{{ promote_artifact_api }}/builds?{{ promote_artifact_query }}"
+  register: builds
+- name: Filter artifacts
+  vars:
+    query: "artifacts[?metadata.type=='{{ promote_artifact_type }}']"
+  set_fact:
+    artifacts: "{{ builds.json[0] | json_query(query) }}"
+- name: Return artifacts to Zuul
+  zuul_return:
+    data:
+      zuul:
+        artifacts: "{{ artifacts }}"

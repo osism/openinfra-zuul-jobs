@@ -1,0 +1,1 @@
+promote_artifact_query: "change={{ zuul.change }}&patchset={{ zuul.patchset }}&pipeline={{ promote_artifact_pipeline }}&job_name={{ promote_artifact_job }}"
