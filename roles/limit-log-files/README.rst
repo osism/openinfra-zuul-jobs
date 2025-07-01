@@ -14,9 +14,10 @@ and reports a warning to Zuul.
 
 .. zuul:rolevar:: limit_log_files_file_limit:
    :type: int
-   :default: 100
+   :default: 0
 
    Maximum number of files allowed in the logs directory.
+   If set to 0, no limit is enforced on the number of files.
 
 .. zuul:rolevar:: limit_log_files_file_rules:
    :type: string

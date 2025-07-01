@@ -44,10 +44,10 @@
         limit_log_files_file_rules:
           - ".* 250c"
           - ".* 150c"
-    # execute role with fail, should fail
+    # execute role with big file, should fail
     - name: Block to rescue failing of role
       block:
-        - name: Execute role in fail mode
+        - name: Execute role with big file
           include_role:
             name: limit-log-files
           vars:
@@ -59,6 +59,26 @@
         - name: Set fact for assertion
           set_fact:
             has_failed: true
-    - name: Assert that second run failed
+    - name: Assert that run failed
+      assert:
+        that: has_failed is defined
+
+    # execute too many files, should fail
+    - name: Block to rescue failing of role
+      block:
+        - name: Execute role with too many files
+          include_role:
+            name: limit-log-files
+          vars:
+            limit_log_files_fail: true
+            limit_log_files_file_limit: 1
+            limit_log_files_log_dir: "{{ test_folder }}"
+            limit_log_files_file_rules:
+              - ".* 500c"
+      rescue:
+        - name: Set fact for assertion
+          set_fact:
+            has_failed: true
+    - name: Assert that run failed
       assert:
         that: has_failed is defined

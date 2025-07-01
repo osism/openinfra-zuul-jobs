@@ -18,12 +18,16 @@
         exit 1
     fi
 
-    # Count files in target directory
-    TOTAL_FILES=$(find "$TARGET_DIR" -type f | wc -l)
+    # If FILE_LIMIT is 0 allow any number of files
+    if (( FILE_LIMIT != 0 )); then
+        # Count files in target directory
+        TOTAL_FILES=$(find "$TARGET_DIR" -type f | wc -l)
 
-    if (( TOTAL_FILES > FILE_LIMIT )); then
-        echo "Total number of files in '$TARGET_DIR' exceed limit: $TOTAL_FILES > $FILE_LIMIT"
-        exit 2
+        if (( TOTAL_FILES > FILE_LIMIT )); then
+            echo "Total number of files in '$TARGET_DIR' exceed limit: $TOTAL_FILES > $FILE_LIMIT"
+            exit 2
+        fi
+
     fi
 
     ERROR=0
