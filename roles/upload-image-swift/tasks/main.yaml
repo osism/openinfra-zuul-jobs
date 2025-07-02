@@ -16,7 +16,6 @@
   register: md5_task
 
 - name: Upload image to swift
-  no_log: true
   upload_image_swift:
     cloud: '{{ upload_image_swift_cloud_config }}'
     container: '{{ upload_image_swift_container }}'
