@@ -29,6 +29,7 @@
         repo: https://github.com/containers/skopeo
         dest: '{{ ansible_user_dir }}/skopeo'
         version: '{{ ensure_skopeo_install_from_upstream_version }}'
+        recursive: false
 
     - name: Build skopeo
       command: 'make'
