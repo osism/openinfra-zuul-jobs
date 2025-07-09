@@ -45,6 +45,7 @@
         repo: "{{ test_repo }}"
         dest: "{{ test_repo_path }}"
         bare: yes
+        recursive: false
       register: test_repo_clone
       tags:
         - skip_ansible_lint
