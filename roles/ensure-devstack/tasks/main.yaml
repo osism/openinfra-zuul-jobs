@@ -11,6 +11,7 @@
     repo: https://opendev.org/openstack/devstack
     dest: /opt/devstack
     version: master
+    recursive: false
 - name: Write local.conf
   template:
     dest: /opt/devstack/local.conf
