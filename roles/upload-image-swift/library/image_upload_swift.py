@@ -88,7 +88,7 @@ def run(cloud, container, filename, name, delete_after=None):
 def ansible_main():
     module = AnsibleModule(
         argument_spec=dict(
-            cloud=dict(required=True, type='raw'),
+            cloud=dict(required=True, type='raw', no_log=True),
             container=dict(required=True, type='str'),
             filename=dict(required=True, type='path'),
             name=dict(required=True, type='str'),
