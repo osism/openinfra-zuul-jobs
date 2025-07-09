@@ -24,6 +24,7 @@
     repo: https://github.com/pyenv/pyenv.git
     dest: "{{ ansible_user_dir }}/.pyenv"
     version: master
+    recursive: false
 
 # NOTE(mnaser): python-build does not allow us to let it install Python from a specific
 #               series so we have to do some magic to find out what's the latest
