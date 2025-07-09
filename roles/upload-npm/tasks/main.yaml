@@ -18,6 +18,7 @@
     repo: 'https://github.com/nvm-sh/nvm'
     dest: '~/.nvm'
     version: v0.37.2
+    recursive: false
 
 - name: Upload tarball to npm
   args:
