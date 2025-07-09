@@ -11,3 +11,4 @@
     repo: https://opendev.org/opendev/dstat_graph
     dest: "{{ dstat_graph_download_path }}"
     version: master
+    recursive: false
