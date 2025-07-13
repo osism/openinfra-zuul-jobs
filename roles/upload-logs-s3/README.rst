@@ -53,6 +53,17 @@ installed in the Ansible environment on the Zuul executor.
 
    Whether to create `index.html` files with directory indexes.
 
+.. zuul:rolevar:: upload_logs_s3_endpoint
+
+   The endpoint to use when uploading logs to an s3 compatible
+   service.  By default this will be automatically constructed by boto
+   but should be set when working with non-aws hosted s3 service.
+
+Conventional authentication
+
+To authenticate with a conventional AWS access key and secret, supply
+the following two variables:
+
 .. zuul:rolevar:: zuul_log_aws_access_key
 
    AWS access key to use.
@@ -61,7 +72,29 @@ installed in the Ansible environment on the Zuul executor.
 
    AWS secret key for the AWS access key.
 
-.. zuul:rolevar:: upload_logs_s3_endpoint
+OIDC federated authentication
 
-   The endpoint to use when uploading logs to an s3 compatible service.
-   By default this will be automatically constructed by boto but should be set when working with non-aws hosted s3 service.
+It is also possible to authenticate usinc OIDC, including using Zuul
+as an ID provider with Zuul's OIDC token secrets feature.  Use the
+following variables to do so:
+
+.. zuul:rolevar:: zuul_log_aws_idc_role_arn
+
+   The ARN of the AWS role to assume when authenticating.
+
+.. zuul:rolevar:: zuul_log_aws_oidc_token
+
+   The token issued by the federated IDP.  If the IDP is Zuul, this
+   should be the token secret.
+
+.. zuul:rolevar:: zuul_log_aws_oidc_session_name
+   :default: zuul
+
+   The AWS session name.  Defaults to "zuul".
+
+.. zuul:rolevar:: zuul_log_aws_oidc_token_duration
+   :default: 3600
+
+   This value is used when requeting the temporary token from AWS and
+   indicates the requested lifetime of that token.  Defaults to one
+   hour.
