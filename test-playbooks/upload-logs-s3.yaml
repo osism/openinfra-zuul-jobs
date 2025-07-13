@@ -59,7 +59,7 @@
         mode: 0755
 
     - name: Add localhost minio host
-      command: "{{ fake_zuul_logdir.path }}/mc config host add local http://localhost:9000 {{ zuul_log_aws_access_key }} {{ zuul_log_aws_secret_key }}"
+      command: "{{ fake_zuul_logdir.path }}/mc alias set local http://localhost:9000 {{ zuul_log_aws_access_key }} {{ zuul_log_aws_secret_key }}"
 
     - name: List files in minio bucket
       command: "{{ fake_zuul_logdir.path }}/mc find local/zuul"

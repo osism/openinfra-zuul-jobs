@@ -80,7 +80,7 @@
         mode: 0755
 
     - name: Add localhost minio host
-      command: "{{ ansible_user_dir }}/mc config host add local http://localhost:9000 {{ test_aws_access_key }} {{ test_aws_secret_key }}"
+      command: "{{ ansible_user_dir }}/mc alias set local http://localhost:9000 {{ test_aws_access_key }} {{ test_aws_secret_key }}"
 
     - name: List files in minio bucket
       command: "{{ ansible_user_dir }}/mc find local/zuul"
