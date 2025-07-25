@@ -194,19 +194,6 @@
           label: ubuntu-noble
 
 - job:
-    name: zuul-jobs-test-base-roles-ubuntu-xenial
-    description: Tests roles in the 'base' job on ubuntu-xenial
-    parent: zuul-jobs-test-base-roles
-    # Note this is manually curated since xenial is not really
-    # supported on opendev, but we want the job to run until the last
-    # possible moment.
-    ansible-version: '8'
-    nodeset:
-      nodes:
-        - name: ubuntu-xenial
-          label: ubuntu-xenial
-
-- job:
     name: zuul-jobs-test-base-test-roles
     description: |
       Tests roles in the 'base-test' job
@@ -298,19 +285,6 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
-
-- job:
-    name: zuul-jobs-test-base-test-roles-ubuntu-xenial
-    description: Tests roles in the 'base-test' job on ubuntu-xenial
-    parent: zuul-jobs-test-base-test-roles
-    # Note this is manually curated since xenial is not really
-    # supported on opendev, but we want the job to run until the last
-    # possible moment.
-    ansible-version: '8'
-    nodeset:
-      nodes:
-        - name: ubuntu-xenial
-          label: ubuntu-xenial
 
 - job:
     name: zuul-jobs-test-bindep
@@ -729,10 +703,11 @@
       - test-playbooks/shake/.*
     pre-run:
       - test-playbooks/shake/setup-project.yaml
+    voting: false
     nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
+      # This used to run on fedora-36; it needs a new nodeset defined
+      # and made voting.
+      nodes: []
 
 - job:
     name: zuul-jobs-test-ensure-zookeeper
@@ -972,7 +947,7 @@
 
 - project:
     check:
-      jobs: &id001
+      jobs:
         - zuul-jobs-test-add-authorized-keys
         - zuul-jobs-test-add-gpgkey
         - zuul-jobs-test-add-sshkey
@@ -983,14 +958,12 @@
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
         - zuul-jobs-test-base-roles-ubuntu-noble
-        - zuul-jobs-test-base-roles-ubuntu-xenial
         - zuul-jobs-test-base-test-roles-centos-9-stream
         - zuul-jobs-test-base-test-roles-debian-bookworm
         - zuul-jobs-test-base-test-roles-debian-bullseye
         - zuul-jobs-test-base-test-roles-ubuntu-focal
         - zuul-jobs-test-base-test-roles-ubuntu-jammy
         - zuul-jobs-test-base-test-roles-ubuntu-noble
-        - zuul-jobs-test-base-test-roles-ubuntu-xenial
         - zuul-jobs-test-bindep-centos-9-stream
         - zuul-jobs-test-bindep-debian-bookworm
         - zuul-jobs-test-bindep-debian-bullseye
@@ -1044,6 +1017,73 @@
         - zuul-jobs-test-zuul-tenant-conf-check
         - zuul-jobs-test-limit-log-files
     gate:
-      jobs: *id001
+      jobs: &id001
+        - zuul-jobs-test-add-authorized-keys
+        - zuul-jobs-test-add-gpgkey
+        - zuul-jobs-test-add-sshkey
+        - zuul-jobs-test-encrypt-file
+        - zuul-jobs-test-base-roles-centos-9-stream
+        - zuul-jobs-test-base-roles-debian-bookworm
+        - zuul-jobs-test-base-roles-debian-bullseye
+        - zuul-jobs-test-base-roles-ubuntu-focal
+        - zuul-jobs-test-base-roles-ubuntu-jammy
+        - zuul-jobs-test-base-roles-ubuntu-noble
+        - zuul-jobs-test-base-test-roles-centos-9-stream
+        - zuul-jobs-test-base-test-roles-debian-bookworm
+        - zuul-jobs-test-base-test-roles-debian-bullseye
+        - zuul-jobs-test-base-test-roles-ubuntu-focal
+        - zuul-jobs-test-base-test-roles-ubuntu-jammy
+        - zuul-jobs-test-base-test-roles-ubuntu-noble
+        - zuul-jobs-test-bindep-centos-9-stream
+        - zuul-jobs-test-bindep-debian-bookworm
+        - zuul-jobs-test-bindep-debian-bullseye
+        - zuul-jobs-test-bindep-ubuntu-focal
+        - zuul-jobs-test-bindep-ubuntu-jammy
+        - zuul-jobs-test-bindep-ubuntu-noble
+        - zuul-jobs-test-clear-firewall
+        - zuul-jobs-test-enable-fips
+        - zuul-jobs-test-ensure-bazelisk
+        - zuul-jobs-test-netconsole
+        - zuul-jobs-test-validate-zone-db-debian-bookworm
+        - zuul-jobs-test-validate-zone-db-debian-bullseye
+        - zuul-jobs-test-validate-zone-db-ubuntu-focal
+        - zuul-jobs-test-validate-zone-db-ubuntu-jammy
+        - zuul-jobs-test-validate-zone-db-ubuntu-noble
+        - zuul-jobs-test-dstat-graph-centos-9-stream
+        - zuul-jobs-test-dstat-graph-debian-bookworm
+        - zuul-jobs-test-dstat-graph-debian-bullseye
+        - zuul-jobs-test-dstat-graph-ubuntu-focal
+        - zuul-jobs-test-dstat-graph-ubuntu-jammy
+        - zuul-jobs-test-dstat-graph-ubuntu-noble
+        - zuul-jobs-test-multinode-roles-centos-9-stream
+        - zuul-jobs-test-multinode-roles-debian-bookworm
+        - zuul-jobs-test-multinode-roles-debian-bullseye
+        - zuul-jobs-test-multinode-roles-ubuntu-focal
+        - zuul-jobs-test-multinode-roles-ubuntu-jammy
+        - zuul-jobs-test-multinode-roles-ubuntu-noble
+        - zuul-jobs-test-generate-zuul-manifest
+        - zuul-jobs-test-upload-artifactory
+        - zuul-jobs-test-upload-git-mirror
+        - zuul-jobs-test-ensure-zookeeper-debian-bookworm
+        - zuul-jobs-test-ensure-zookeeper-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-focal
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bookworm
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-focal
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-jammy
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bookworm
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-focal
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-jammy
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-noble
+        - zuul-jobs-test-update-json-file
+        - zuul-jobs-test-stage-output
+        - zuul-jobs-test-fetch-translation-output
+        - zuul-jobs-test-fetch-translation-output-synchronize
+        - zuul-jobs-test-zuul-tenant-conf-check
+        - zuul-jobs-test-limit-log-files
     periodic-weekly:
       jobs: *id001
