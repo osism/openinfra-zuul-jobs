@@ -3,7 +3,7 @@ limit_log_files_log_dir: "{{ zuul.executor.log_root }}"
 
 limit_log_files_fail: false
 
-limit_log_files_file_limit: 100
+limit_log_files_file_limit: 0
 
 limit_log_files_file_rules:
   - ".*job-output.json$ 500k"
