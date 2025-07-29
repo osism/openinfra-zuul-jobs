@@ -9,10 +9,11 @@
       - roles/ensure-ghc/.*
       - roles/cabal-test/.*
     pre-run: test-playbooks/haskell/setup-project.yaml
+    voting: false
     nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
+      # This used to run on fedora-36; it needs a new nodeset defined
+      # and made voting.
+      nodes: []
 
 - job:
     name: zuul-jobs-test-haskell-stack-test
@@ -24,10 +25,11 @@
       - roles/ensure-haskell-stack/.*
       - roles/haskell-stack-test/.*
     pre-run: test-playbooks/haskell/setup-stack-project.yaml
+    voting: false
     nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
+      # This used to run on fedora-36; it needs a new nodeset defined
+      # and made voting.
+      nodes: []
 
 - job:
     name: zuul-jobs-test-hlint
@@ -41,18 +43,19 @@
     pre-run:
       - playbooks/haskell/pre.yaml
       - test-playbooks/haskell/setup-project.yaml
+    voting: false
     nodeset:
-      nodes:
-        - name: fedora-36
-          label: fedora-36
+      # This used to run on fedora-36; it needs a new nodeset defined
+      # and made voting.
+      nodes: []
 
 - project:
     check:
-      jobs: &id001
+      jobs:
         - zuul-jobs-test-cabal-test
         - zuul-jobs-test-haskell-stack-test
         - zuul-jobs-test-hlint
     gate:
-      jobs: *id001
+      jobs: &id001 []
     periodic-weekly:
       jobs: *id001
