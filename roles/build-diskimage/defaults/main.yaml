@@ -1,4 +1,7 @@
 build_diskimage_command: "{{ ensure_dib_command }}"
+# If used within a non-image-build context this variable needs to be explicitly
+# defined. The role uses a 'mandatory' filter to ensure it is set
+build_diskimage_image_name: "{{ zuul.image_build_name }}"
 
 build_diskimage_formats:
   - qcow2
