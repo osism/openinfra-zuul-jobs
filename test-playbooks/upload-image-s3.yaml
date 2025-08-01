@@ -13,6 +13,13 @@
     - ensure-docker
     - ensure-pip
   tasks:
+    - name: Install zstd
+      become: true
+      package:
+        state: present
+        name:
+          - zstd
+
     - name: Install boto
       pip:
         extra_args: "--break-system-packages"
@@ -58,6 +65,14 @@
       wait_for:
         timeout: 5
 
+    - name: Add content to tempfile
+      copy:
+        content: "{{ test_content }}"
+        dest: "{{ test_filename }}"
+
+    - name: Remove temp file so we can run the role again
+      command: rm -f /tmp/testfile.zst
+
     # This should delete the first object then replace it.
     - name: Upload file to s3
       include_role:
@@ -86,4 +101,4 @@
       command: "{{ ansible_user_dir }}/mc find local/zuul"
 
     - name: Check for testfile in minio bucket
-      command: "{{ ansible_user_dir }}/mc find local/zuul/{{ test_objectname }}"
+      command: "{{ ansible_user_dir }}/mc find local/zuul/{{ test_objectname }}.zst"

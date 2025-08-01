@@ -1,4 +1,4 @@
-# Run the checksums in the background while we're uploading
+# Run the checksums in the background while we're working
 - name: Get sha256 hash
   stat:
     path: '{{ upload_image_s3_filename }}'
@@ -15,6 +15,28 @@
   poll: 0
   register: md5_task
 
+- name: Check if zstd is installed
+  shell: "command -v zstd || exit 1"
+  register: zstd_installed
+  failed_when: false
+
+- name: Compress image
+  when:
+    - "zstd_installed.rc == 0"
+    - "upload_image_s3_format in ['raw', 'vhd']"
+  command: zstd '{{ upload_image_s3_filename }}'
+
+- name: Set extension
+  set_fact:
+    zj_upload_image_s3_extension: ''
+
+- name: Set extension
+  when:
+    - "zstd_installed.rc == 0"
+    - "upload_image_s3_format in ['raw', 'vhd']"
+  set_fact:
+    zj_upload_image_s3_extension: '.zst'
+
 - name: Upload image to S3
   no_log: true
   upload_image_s3:
@@ -22,10 +44,14 @@
     bucket: "{{ upload_image_s3_bucket }}"
     aws_access_key: "{{ upload_image_s3_aws_access_key }}"
     aws_secret_key: "{{ upload_image_s3_aws_secret_key }}"
-    filename: '{{ upload_image_s3_filename }}'
-    name: '{{ upload_image_s3_name }}'
+    filename: '{{ upload_image_s3_filename }}{{ zj_upload_image_s3_extension }}'
+    name: '{{ upload_image_s3_name }}{{ zj_upload_image_s3_extension }}'
     delete_after: '{{ upload_image_s3_delete_after }}'
   register: upload_results
+
+- name: Delete uncompressed image
+  when: "upload_image_s3_format in ['raw', 'vhd']"
+  command: rm '{{ upload_image_s3_filename }}'
 
 - name: Wait for sha256
   async_status:

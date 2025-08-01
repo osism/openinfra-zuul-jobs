@@ -4,6 +4,10 @@ This uploads a filesystem image (for example, one built by diskimage
 builder) to an S3 bucket.  The role returns an artifact to Zuul
 suitable for use by the zuul-launcher.
 
+If a `raw` or `vhd` image is provided and the `zstd` command is
+available, it will be compressed in the way that zuul-launcher
+expects.
+
 **Role Variables**
 
 .. zuul:rolevar:: upload_image_s3_endpoint
@@ -41,7 +45,7 @@ suitable for use by the zuul-launcher.
    automatic expiration of objects in this bucket.
 
 .. zuul:rolevar:: upload_image_s3_image_name
-   :default: `{{ build_diskimage_image_name }}`
+   :default: `{{ build_diskimage_image_name | default(zuul.image_build_name) }}`
 
    The Zuul image name for use by zuul-launcher (e.g., `debian-bookworm`).
 
