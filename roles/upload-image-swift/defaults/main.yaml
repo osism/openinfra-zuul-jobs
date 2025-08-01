@@ -1,4 +1,4 @@
-upload_image_swift_image_name: '{{ build_diskimage_image_name }}'
+upload_image_swift_image_name: '{{ build_diskimage_image_name | default(zuul.image_build_name) }}'
 upload_image_swift_delete_after: 0
 upload_image_swift_filename: '{{ build_diskimage_image_root }}/{{ build_diskimage_image_name }}.{{ upload_image_swift_extension }}'
 upload_image_swift_name: '{{ zuul.build }}-{{ build_diskimage_image_name }}.{{ upload_image_swift_extension }}'

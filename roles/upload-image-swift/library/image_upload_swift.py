@@ -23,6 +23,7 @@ import sys
 import traceback
 
 import openstack
+import requests.adapters
 import requests.exceptions
 import keystoneauth1.exceptions
 
@@ -34,13 +35,25 @@ SEGMENT_SIZE = 500000000  # 500MB
 def get_cloud(cloud):
     if isinstance(cloud, dict):
         config = openstack.config.loader.OpenStackConfig().get_one(**cloud)
-        return openstack.connection.Connection(
+        conn = openstack.connection.Connection(
             config=config,
             pool_executor=concurrent.futures.ThreadPoolExecutor(
                 max_workers=10
             ))
     else:
-        return openstack.connect(cloud=cloud)
+        conn = openstack.connect(cloud=cloud)
+    # This backoff configuration should produce this sequence of delays:
+    # 0 1 2 4 8 16 32 60 60...
+    retries = requests.adapters.Retry(
+        total=15,
+        backoff_factor=1,
+        backoff_max=60,
+    )
+    conn.session.mount(
+        'http://', requests.adapters.HTTPAdapter(max_retries=retries))
+    conn.session.mount(
+        'https://', requests.adapters.HTTPAdapter(max_retries=retries))
+    return conn
 
 
 def _add_etag_to_manifest(self, *args, **kw):

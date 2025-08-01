@@ -4,6 +4,10 @@ This uploads a filesystem image (for example, one built by diskimage
 builder) to an OpenStack Object Store (Swift) container.  The role
 returns an artifact to Zuul suitable for use by the zuul-launcher.
 
+If a `raw` or `vhd` image is provided and the `zstd` command is
+available, it will be compressed in the way that zuul-launcher
+expects.
+
 **Role Variables**
 
 .. zuul:rolevar:: upload_image_swift_cloud_config
@@ -33,7 +37,7 @@ returns an artifact to Zuul suitable for use by the zuul-launcher.
    any objects in the bucket older than this time.
 
 .. zuul:rolevar:: upload_image_swift_image_name
-   :default: `{{ build_diskimage_image_name }}`
+   :default: `{{ build_diskimage_image_name | default(zuul.image_build_name) }}`
 
    The Zuul image name for use by zuul-launcher (e.g., `debian-bookworm`).
 
