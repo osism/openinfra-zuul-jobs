@@ -1,3 +1,18 @@
+.. warning::
+   This role currently depends on openvswitch and the now deprecated by
+   Ansible openvswitch_bridge module. This transitively means this role is
+   effectively deprecated as well. In order to get around the deprecation
+   and removal of this Ansible module we have vendored it in this role. This
+   may not work with future versions of Ansible
+
+   Ideally we would rewrite the role to use Linux bridges instead of
+   openvswitch as this set of tooling is more readily available and common
+   on Linux machines. We could continue to use VXLAN with Linux bridge or
+   consider switching to GENEVE or maybe even Wireguard as alternative
+   overlay methods during that switch.
+
+   Help is very much appreciated to make this rewrite happen.
+
 Configures a VXLAN virtual network overlay through an openvswitch network
 bridge between a 'switch' node and 'peer' nodes.
 
