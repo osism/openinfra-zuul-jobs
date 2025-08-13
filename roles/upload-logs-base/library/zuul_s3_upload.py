@@ -38,6 +38,7 @@ import sys
 import threading
 
 import boto3
+import botocore
 from ansible.module_utils.basic import AnsibleModule
 
 try:
@@ -81,7 +82,13 @@ class Uploader():
             self.url = os.path.join(return_endpoint,
                                     self.prefix)
 
+        # The default for max_pool_connections is 10, which is easily
+        # exhausted if the upload threads overwhelm them.
+        client_config = botocore.config.Config(
+            max_pool_connections=MAX_UPLOAD_THREADS * 4)
+
         self.s3 = boto3.resource('s3',
+                                 config=client_config,
                                  endpoint_url=self.endpoint,
                                  aws_access_key_id=aws_access_key,
                                  aws_secret_access_key=aws_secret_key)
