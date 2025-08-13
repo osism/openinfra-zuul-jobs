@@ -19,7 +19,6 @@
          Command to use for running the package manager, such as npm or yarn.
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
          The version of Node to use.
 
@@ -37,7 +36,6 @@
     post-run: playbooks/javascript/post.yaml
     vars:
       js_build_command: build
-      node_version: 14
 
 - job:
     name: build-javascript-source-tarball
@@ -48,7 +46,6 @@
       Responds to these variables:
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
          The version of Node to use.
 
@@ -80,7 +77,6 @@
          Command to pass to npm.
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
          The version of Node to use.
 
@@ -114,7 +110,6 @@
          Command to use for running the package manager, such as npm or yarn.
 
       .. zuul:jobvar:: node_version
-         :default: 20
 
          The version of Node to use. Netlify CLI requires at least v18.
 
@@ -145,8 +140,6 @@
             a token can be found at
             https://docs.netlify.com/cli/get-started/#obtain-a-token-in-the-netlify-ui
     post-run: playbooks/javascript/netlify-publish.yaml
-    vars:
-      node_version: 20
 
 - job:
     name: nodejs-run-test
@@ -157,9 +150,8 @@
       Responds to these variables:
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
-        The version of Node to use.
+         The version of Node to use.
 
       .. zuul:jobvar:: zuul_work_dir
          :default: {{ zuul.project.src_dir }}
@@ -183,9 +175,8 @@
       Responds to these variables:
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
-        The version of Node to use.
+         The version of Node to use.
 
       .. zuul:jobvar:: zuul_work_dir
          :default: {{ zuul.project.src_dir }}
@@ -209,7 +200,6 @@
       Responds to these variables:
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
          The version of Node to use.
 
@@ -234,7 +224,6 @@
       Responds to these variables:
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
          The version of Node to use.
 
