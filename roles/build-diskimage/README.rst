@@ -27,6 +27,7 @@ Example:
    {{ ensure_dib_command }}. as being set by the ensure-dib role.
 
 .. zuul:rolevar:: build_diskimage_image_name
+   :default: "{{ zuul.image_build_name }}"
 
    Name of the image to build.
 

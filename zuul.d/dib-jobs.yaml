@@ -11,6 +11,7 @@
       or prepare it to be uploaded to log storage.
 
       .. zuul:jobvar:: build_diskimage_image_name
+         :default: "{{ zuul.image_build_name }}"
 
          Name of the image to build.
 
