@@ -1,4 +1,4 @@
-FROM docker.io/upstream/image as first
+FROM quay.io/opendevorg/imagedoesnotexist as first
 ARG ZUUL_SIBLINGS=""
 RUN echo "Zuul siblings: ${ZUUL_SIBLINGS}"
 RUN cp /test-nonce /test-nonce-is-there

@@ -24,7 +24,7 @@
       include_role:
         name: intermediate-registry-user-config
     - name: "Build a container image for the previous build with docker roles"
-      when: container_command == 'docker'
+      when: container_role == 'docker'
       include_role:
         name: "build-docker-image"
       vars:
@@ -32,7 +32,7 @@
           - context: test-playbooks/registry/docker
             repository: "{{ previous_build_repository }}"
     - name: "Build a container image for the previous build with container-image roles"
-      when: container_command != 'docker'
+      when: container_role != 'docker'
       include_role:
         name: "build-container-image"
       vars:
@@ -107,20 +107,28 @@
         zuul_artifacts: "{{ previous_build_zuul.artifacts }}"
 
 # This simulates a build actually using the previous build.
+# This only works for podman because docker cannot use speculative images
+# hosted outside of docker.io during normal operations. That only works
+# with buildkit and image building when using docker.
 
 - hosts: builder
   name: Test that the previous build is available
   tasks:
-    - name: Include intermediate registry vars
-      include_vars: vars/intermediate-registry-auth.yaml
-    - name: Include previous build vars
-      include_vars: vars/previous-build.yaml
-    - name: Pull the previous build from buildset registry to the builder host
-      command: "{{ container_command }} pull {{ previous_build_repository }}:latest"
-    - name: "Show local container images for debugging"
-      command: "{{ container_command }} image ls"
-    - name: Verify previously built image is in buildset registry
-      command: "{{ container_command }} image inspect {{ previous_build_repository }}:latest"
+    - name: Simple checks when using podman
+      when: container_command != 'docker'
+      block:
+        - name: Include intermediate registry vars
+          include_vars: vars/intermediate-registry-auth.yaml
+        - name: Include previous build vars
+          include_vars: vars/previous-build.yaml
+        - name: Pull the previous build from buildset registry to the builder host
+          command: "{{ container_command }} pull {{ previous_build_repository }}:latest"
+        - name: "Show local container images for debugging"
+          command: "{{ container_command }} image ls"
+        - name: Verify previously built image is in buildset registry
+          command: "{{ container_command }} image inspect {{ previous_build_repository }}:latest"
+        - name: Remove the image from local storage to force fetching from the buildset registry
+          command: "{{ container_command }} image prune --all --force"
 
 # Back to straightforward use of the roles under test.
 
@@ -137,7 +145,7 @@
 
     - name: Build docker image
       include_role:
-        name: "build-{{ (container_command == 'docker') | ternary('docker', 'container') }}-image"
+        name: "build-{{ (container_role == 'docker') | ternary('docker', 'container') }}-image"
       vars:
         _normal_docker_images:
           - context: test-playbooks/registry/docker-siblings

@@ -2,7 +2,7 @@
 # buildset via provides/requires.  This build should be copied from
 # the intermediate registry to the buildset registry.
 
-previous_build_repository: docker.io/upstream/image
+previous_build_repository: quay.io/opendevorg/imagedoesnotexist
 previous_build_uuid: 48a84fe22a744cb5b0310f396358d912
 previous_build_zuul:
   artifacts:
