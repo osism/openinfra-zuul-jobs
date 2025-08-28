@@ -31,8 +31,12 @@
         public: "{{ zuul_log_bucket_public }}"
         prefix: "{{ zuul_log_path }}"
         indexes: "{{ zuul_log_create_indexes }}"
-        aws_access_key: "{{ zuul_log_aws_access_key }}"
-        aws_secret_key: "{{ zuul_log_aws_secret_key }}"
+        aws_access_key: "{{ zuul_log_aws_access_key | default(omit) }}"
+        aws_secret_key: "{{ zuul_log_aws_secret_key | default(omit) }}"
+        aws_oidc_role_arn: "{{ zuul_log_aws_oidc_role_arn | default(omit) }}"
+        aws_oidc_session_name: "{{ zuul_log_aws_oidc_session_name | default(omit) }}"
+        aws_oidc_token: "{{ zuul_log_aws_oidc_token | default(omit) }}"
+        aws_oidc_token_duration: "{{ zuul_log_aws_oidc_token_duration | default(omit) }}"
         files:
           - "{{ zuul.executor.log_root }}/"
       register: upload_results

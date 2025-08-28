@@ -60,9 +60,41 @@ except ImportError:
 MAX_UPLOAD_THREADS = 24
 
 
+def get_creds_from_assumed_role(role_arn, session_name, token, duration):
+    client = boto3.client('sts')
+    if session_name is None:
+        session_name = 'zuul'
+    if duration is None:
+        duration = 3600
+    resp = client.assume_role_with_web_identity(
+        RoleArn=role_arn,
+        RoleSessionName=session_name,
+        WebIdentityToken=token,
+        DurationSeconds=duration,
+    )
+    return dict(
+        aws_access_key_id=resp['Credentials']['AccessKeyId'],
+        aws_secret_access_key=resp['Credentials']['SecretAccessKey'],
+        aws_session_token=resp['Credentials']['SessionToken'],
+    )
+
+
 class Uploader():
     def __init__(self, bucket, public, endpoint=None, prefix=None,
-                 dry_run=False, aws_access_key=None, aws_secret_key=None):
+                 dry_run=False, aws_access_key=None, aws_secret_key=None,
+                 aws_oidc_role_arn=None, aws_oidc_session_name=None,
+                 aws_oidc_token=None, aws_oidc_token_duration=None):
+
+        if aws_oidc_token:
+            credential_args = get_creds_from_assumed_role(
+                aws_oidc_role_arn, aws_oidc_session_name, aws_oidc_token,
+                aws_oidc_token_duration)
+        else:
+            credential_args = dict(
+                aws_access_key_id=aws_access_key,
+                aws_secret_access_key=aws_secret_key,
+            )
+
         self.dry_run = dry_run
         self.public = public
         if dry_run:
@@ -83,8 +115,7 @@ class Uploader():
 
         self.s3 = boto3.resource('s3',
                                  endpoint_url=self.endpoint,
-                                 aws_access_key_id=aws_access_key,
-                                 aws_secret_access_key=aws_secret_key)
+                                 **credential_args)
         self.bucket = self.s3.Bucket(bucket)
 
         cors = {
@@ -95,8 +126,7 @@ class Uploader():
         }
         client = boto3.client('s3',
                               endpoint_url=self.endpoint,
-                              aws_access_key_id=aws_access_key,
-                              aws_secret_access_key=aws_secret_key)
+                              **credential_args)
         try:
             current_cors = None
             try:
@@ -224,7 +254,9 @@ class Uploader():
 def run(bucket, public, files, endpoint=None,
         indexes=True, parent_links=True, topdir_parent_link=False,
         partition=False, footer='index_footer.html',
-        prefix=None, aws_access_key=None, aws_secret_key=None):
+        prefix=None, aws_access_key=None, aws_secret_key=None,
+        aws_oidc_role_arn=None, aws_oidc_session_name=None,
+        aws_oidc_token=None, aws_oidc_token_duration=None):
 
     if prefix:
         prefix = prefix.lstrip('/')
@@ -258,7 +290,12 @@ def run(bucket, public, files, endpoint=None,
                             endpoint,
                             prefix,
                             aws_access_key=aws_access_key,
-                            aws_secret_key=aws_secret_key)
+                            aws_secret_key=aws_secret_key,
+                            aws_oidc_role_arn=aws_oidc_role_arn,
+                            aws_oidc_session_name=aws_oidc_session_name,
+                            aws_oidc_token=aws_oidc_token,
+                            aws_oidc_token_duration=aws_oidc_token_duration)
+
         upload_failures = uploader.upload(file_list)
 
         return uploader.url, upload_failures
@@ -279,6 +316,10 @@ def ansible_main():
             endpoint=dict(type='str'),
             aws_access_key=dict(type='str'),
             aws_secret_key=dict(type='str', no_log=True),
+            aws_oidc_role_arn=dict(type='str'),
+            aws_oidc_session_name=dict(type='str'),
+            aws_oidc_token=dict(type='str', no_log=True),
+            aws_oidc_token_duration=dict(type='int'),
         )
     )
 
@@ -294,7 +335,13 @@ def ansible_main():
                         footer=p.get('footer'),
                         prefix=p.get('prefix'),
                         aws_access_key=p.get('aws_access_key'),
-                        aws_secret_key=p.get('aws_secret_key'))
+                        aws_secret_key=p.get('aws_secret_key'),
+                        aws_oidc_role_arn=p.get('aws_oidc_role_arn'),
+                        aws_oidc_session_name=p.get('aws_oidc_session_name'),
+                        aws_oidc_token=p.get('aws_oidc_token'),
+                        aws_oidc_token_duration=p.get(
+                            'aws_oidc_token_duration'),
+                        )
     if failures:
         failure_msg = pprint.pformat(failures)
         module.fail_json(msg=f"Failure(s) during log upload:\n{failure_msg}",
