@@ -1,4 +1,0 @@
-- hosts: all
-  tasks:
-    - name: Remove artifactory container
-      command: docker rm -f "{{ zuul.build }}"
