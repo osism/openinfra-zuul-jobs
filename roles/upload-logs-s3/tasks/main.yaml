@@ -15,14 +15,14 @@
         msg: "log_root {{ zuul.executor.log_root }}"
 
     - name: Ensure logs are readable before uploading
-      delegate_to: "{{ _undocumented_test_worker_node_ | default('localhost') }}"
+      delegate_to: "localhost"
       command: "chmod -R u=rwX,g=rX,o=rX {{ zuul.executor.log_root }}/"
       # ANSIBLE0007 chmod used in place of argument mode to file
       tags:
         - skip_ansible_lint
 
     - name: Upload logs to S3
-      delegate_to: "{{ _undocumented_test_worker_node_ | default('localhost') }}"
+      delegate_to: "localhost"
       no_log: true
       zuul_s3_upload:
         endpoint: "{{ upload_logs_s3_endpoint | default(omit) }}"

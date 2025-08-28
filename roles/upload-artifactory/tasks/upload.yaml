@@ -5,18 +5,16 @@
 
 - name: Make sure artifact exists on the executor
   stat:
-    path: "{{ _undocumented_test_work_dir_ | default(zuul.executor.work_root) }}\
-           /artifacts/{{ zj_artifact.src }}"
+    path: "{{ zuul.executor.work_root }}/artifacts/{{ zj_artifact.src }}"
   register: artifact
-  delegate_to: "{{ _undocumented_test_worker_node_ | default('localhost') }}"
+  delegate_to: "localhost"
   failed_when: not artifact.stat.exists
 
 - name: Get sha256 checksum
   stat:
-    path: "{{ _undocumented_test_work_dir_ | default(zuul.executor.work_root) }}\
-           /artifacts/{{ zj_artifact.src }}"
+    path: "{{ zuul.executor.work_root }}/artifacts/{{ zj_artifact.src }}"
     checksum_algorithm: sha256
-  delegate_to: "{{ _undocumented_test_worker_node_ | default('localhost') }}"
+  delegate_to: "localhost"
   register: artifact_sha256_checksum
 
 - name: Set request header fact
@@ -82,15 +80,14 @@
     user: "{{ upload_artifactory_instances[zj_artifact.instance].user }}"
     password: "{{ _artifactory_password | default(omit) }}"
     url: "{{ _artifactory_upload_url }}"
-    src: "{{ _undocumented_test_work_dir_ | default(zuul.executor.work_root) }}/\
-          artifacts/{{ zj_artifact.src }}"
+    src: "{{ zuul.executor.work_root }}/artifacts/{{ zj_artifact.src }}"
     headers: "{{ request_header }}"
     status_code: 201
     method: PUT
     force_basic_auth: "{{ upload_artifactory_instances[zj_artifact.instance].force_basic_auth |
                           default(false) | bool }}"
     remote_src: yes  # To not unecessarily copy artifact to a tempfile
-  delegate_to: "{{ _undocumented_test_worker_node_ | default('localhost') }}"
+  delegate_to: "localhost"
 
 - name: Add artifact link to build page
   zuul_return:
