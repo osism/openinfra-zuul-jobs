@@ -1,9 +1,8 @@
 - hosts: all
+  roles:
+    - clear-firewall
+    - ensure-docker
   tasks:
-    - name: Ensure docker is installed
-      include_role:
-        name: ensure-docker
-
     - name: Start artifactory in a container
       command: >-
         docker run -d
@@ -33,6 +32,9 @@
               type: generic
         headers:
           Content-Type: application/yaml
+      until: artifactory_status.status == 200
+      retries: 12
+      delay: 20
 
     - name: Create an api key for the admin user
       uri:
@@ -49,36 +51,35 @@
         cacheable: true
         upload_artifactory_instances:
           localhost_password:
-            fqdn: localhost:8081
+            fqdn: "{{ ansible_host }}:8081"
             transport: http
             user: admin
             password: password
             force_basic_auth: true
           localhost_api_key:
-            fqdn: localhost:8081
+            fqdn: "{{ ansible_host }}:8081"
             transport: http
             user: admin
             api_key: "{{ (artifactory_api_key.content | from_json)['apiKey'] }}"
           localhost_properties:
-            fqdn: localhost:8081
+            fqdn: "{{ ansible_host }}:8081"
             transport: http
             user: admin
             api_key: "{{ (artifactory_api_key.content | from_json)['apiKey'] }}"
 
 - hosts: all
-  vars:
-    # Since we're testing a role that normally requires a
-    # trusted context flip the delegate_to so we execute on the
-    # remote instead. Also set the working directory to something
-    # that is known to exist on the remote.
-    _undocumented_test_worker_node_: "{{ inventory_hostname }}"
-    _undocumented_test_work_dir_: "{{ ansible_user_dir }}/zuul-output"
   pre_tasks:
+    - name: Create artifacts directory
+      delegate_to: "localhost"
+      file:
+        path: "{{ zuul.executor.work_root }}/artifacts"
+        state: directory
     - name: Write a file with some content to artifacts directory
+      delegate_to: "localhost"
       copy:
         content: |
           First file
-        dest: "{{ ansible_user_dir }}/zuul-output/artifacts/test-file.txt"
+        dest: "{{ zuul.executor.work_root }}/artifacts/test-file.txt"
     - name: Set upload_artifactory_manifest_basic fact
       set_fact:
         upload_artifactory_manifest:
@@ -111,11 +112,11 @@
       set_fact:
         expected_artifacts:
           - name: test-properties.txt
-            url: http://localhost:8081/artifactory/generic-repository/path/to/dest/test-properties.txt
+            url: "http://{{ ansible_host }}:8081/artifactory/generic-repository/path/to/dest/test-properties.txt"
           - name: test-api-key.txt
-            url: http://localhost:8081/artifactory/generic-repository/path/to/dest/test-api-key.txt
+            url: "http://{{ ansible_host }}:8081/artifactory/generic-repository/path/to/dest/test-api-key.txt"
           - name: test-password.txt
-            url: http://localhost:8081/artifactory/generic-repository/path/to/dest/test-password.txt
+            url: "http://{{ ansible_host }}:8081/artifactory/generic-repository/path/to/dest/test-password.txt"
     - name: Assert artifact
       assert:
         that:

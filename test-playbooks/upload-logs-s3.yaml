@@ -4,8 +4,8 @@
     zuul_log_aws_secret_key: minioadmin
     zuul_log_bucket: zuul
     test_content: "123abc"
-    _undocumented_test_worker_node_: "{{ inventory_hostname }}"
   roles:
+    - clear-firewall
     - ensure-docker
     - ensure-pip
   tasks:
@@ -31,38 +31,29 @@
         aws_access_key: "{{ zuul_log_aws_access_key }}"
         aws_secret_key: "{{ zuul_log_aws_secret_key }}"
 
-    - name: Create Logdir
-      become: true
-      file:
-        state: directory
-        path: "{{ zuul.executor.log_root }}"
-        mode: "0755"
-        group: "zuul"
-        owner: "zuul"
-      register: fake_zuul_logdir
-
     - name: Add content to tempfile
+      delegate_to: localhost
       copy:
         content: "{{ test_content }}"
-        dest: "{{ fake_zuul_logdir.path }}/testfile"
+        dest: "{{ zuul.executor.log_root }}/testfile"
 
     - name: Upload file to s3
       include_role:
         name: upload-logs-s3
       vars:
-        upload_logs_s3_endpoint: 'http://localhost:9000'
+        upload_logs_s3_endpoint: 'http://{{ ansible_host }}:9000'
 
     - name: Download mc
       get_url:
         url: https://dl.min.io/client/mc/release/linux-amd64/mc
-        dest: "{{ fake_zuul_logdir.path }}/mc"
+        dest: "{{ ansible_user_dir }}/mc"
         mode: 0755
 
     - name: Add localhost minio host
-      command: "{{ fake_zuul_logdir.path }}/mc alias set local http://localhost:9000 {{ zuul_log_aws_access_key }} {{ zuul_log_aws_secret_key }}"
+      command: "{{ ansible_user_dir }}/mc alias set local http://localhost:9000 {{ zuul_log_aws_access_key }} {{ zuul_log_aws_secret_key }}"
 
     - name: List files in minio bucket
-      command: "{{ fake_zuul_logdir.path }}/mc find local/zuul"
+      command: "{{ ansible_user_dir }}/mc find local/zuul"
 
     - name: Check for testfile in minio bucket
-      command: "{{ fake_zuul_logdir.path }}/mc find local/zuul/{{ zuul_log_path }}/testfile"
+      command: "{{ ansible_user_dir }}/mc find local/zuul/{{ zuul_log_path }}/testfile"
