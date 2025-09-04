@@ -6,10 +6,10 @@
   vars:
     repositories_keys:
       - url: "https://pkgs.k8s.io/core:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/Release.key"
-      - url: "https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/Release.key"
+      - url: "https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/Release.key"
     repositories_list:
       - repo: "deb https://pkgs.k8s.io/core:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/ /"
-      - repo: "deb https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/ /"
+      - repo: "deb https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ ensure_kubernetes_kubectl_version }}/deb/ /"
 
 - name: Install packages
   package:

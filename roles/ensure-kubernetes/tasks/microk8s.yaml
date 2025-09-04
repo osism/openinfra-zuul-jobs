@@ -9,6 +9,15 @@
     name: snapd
     state: present
 
+# Snapd isn't installed as a snap on Debian (it is on Ubuntu). After the
+# base install we use snap to update itself so that we're running a modern
+# snapd
+# Otherwise some snaps complain about missing their dependencies.
+- name: Update snap on Debian
+  become: yes
+  command: snap install core snapd
+  when: ansible_distribution == "Debian"
+
 - name: Install microk8s snap
   become: yes
   command: 'snap install microk8s --classic --channel={{ ensure_kubernetes_microk8s_channel }}'
