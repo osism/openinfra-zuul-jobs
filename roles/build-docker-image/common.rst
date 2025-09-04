@@ -157,8 +157,7 @@ using this role.
       :type: list
       :default: []
 
-      A list of architectures to build on. When enabling this on any
-      image, all of them will be built with ``docker buildx``.
+      A list of architectures to build on.
 
       Valid values are ``linux/amd64``, ``linux/arm64``, ``linux/riscv64``,
       ``linux/ppc64le``, ``linux/s390x``, ``linux/386``,

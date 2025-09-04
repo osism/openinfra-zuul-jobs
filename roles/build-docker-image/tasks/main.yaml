@@ -37,30 +37,11 @@
     buildset_registry_alias: "{{ buildset_registry.host }}"
   when: buildset_registry is defined and not ( buildset_registry.host | ipaddr )
 
-- name: Determine if we need to use buildx or normal build
+- name: Determine if we are building multiarch or not
   set_fact:
-    use_buildx: "{{ docker_images | selectattr('arch', 'defined') | list }}"
+    _multiarch: "{{ docker_images | selectattr('arch', 'defined') | list }}"
 
-- name: Normal docker block
-  when: not use_buildx
-  block:
-
-    - name: Build docker images
-      include_tasks: build.yaml
-      loop: "{{ docker_images }}"
-      loop_control:
-        loop_var: zj_image
-
-    # Push each image.
-    - name: Push image to buildset registry
-      when: buildset_registry is defined
-      include_tasks: push.yaml
-      loop: "{{ docker_images }}"
-      loop_control:
-        loop_var: zj_image
-
-- name: Buildx block
-  when: use_buildx
+- name: Build image with custom buildx builder
   vars:
     temp_registry:
       host: "127.0.0.1"

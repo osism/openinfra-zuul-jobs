@@ -43,7 +43,7 @@
       --label "org.zuul-ci.change_url={{ zuul.change_url }}"
 
 - name: Build and push images for all arches
-  command: "{{ docker_buildx_command }} --platform={{ zj_image.arch | join(',') }} --push"
+  command: "{{ docker_buildx_command }} {% if _multiarch %}--platform={{ zj_image.arch | join(',') }}{% endif %} --push"
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
 

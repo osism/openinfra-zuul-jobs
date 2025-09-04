@@ -42,8 +42,17 @@
   set_fact:
     _multiarch: "{{ container_images | selectattr('arch', 'defined') | list }}"
 
-- name: Normal build block
-  when: not _multiarch
+- name: Multiarch podman block
+  when:
+    - _multiarch
+    - container_command == 'podman'
+  block:
+    - name: Unimplemented podman multiarch block
+      fail:
+        msg: "Multiarch podman is not yet implemented"
+
+- name: Normal podman build block
+  when: container_command == 'podman'
   block:
     - name: Build container images
       include_tasks: build.yaml
@@ -59,10 +68,11 @@
       loop_control:
         loop_var: zj_image
 
-- name: Multiarch docker block
-  when:
-    - _multiarch
-    - container_command == 'docker'
+# Docker multiarch and native arch all use buildx. This ensures that we are
+# able to take advantage of speculative container states through the custom
+# buildx builder.
+- name: Docker build block
+  when: container_command == 'docker'
   vars:
     temp_registry:
       host: "127.0.0.1"
@@ -88,12 +98,3 @@
       loop_control:
         loop_var: zj_image
       when: inventory_hostname == ansible_play_hosts[0]
-
-- name: Multiarch podman block
-  when:
-    - _multiarch
-    - container_command == 'podman'
-  block:
-    - name: Unimplemented podman multiarch block
-      fail:
-        msg: "Multiarch podman is not yet implemented"

@@ -31,25 +31,8 @@
       {% endif -%}
       --label "org.zuul-ci.change_url={{ zuul.change_url }}"
 
-- name: Build images for all arches
-  command: "{{ docker_buildx_command }} --platform={{ zj_image.arch | join(',') }}"
-  args:
-    chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
-
-- name: Push arch-specific layers one at a time
-  command: "{{ docker_buildx_command }} --platform={{ zj_arch }} --push"
-  args:
-    chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
-  environment:
-    DOCKER_CLI_EXPERIMENTAL: enabled
-  loop: '{{ zj_image.arch }}'
-  loop_control:
-    loop_var: zj_arch
-
-- name: Push final image manifest
-  command: "{{ docker_buildx_command }} --platform={{ zj_image.arch | join(',') }} --push"
+- name: Build and push images for all arches
+  command: "{{ docker_buildx_command }} {% if _multiarch %}--platform={{ zj_image.arch | join(',') }}{% endif %} --push"
   args:
     chdir: "{{ zuul_work_dir }}/{{ zj_image.context }}"
   environment:
