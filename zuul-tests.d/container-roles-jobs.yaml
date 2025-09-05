@@ -387,6 +387,7 @@
     run: test-playbooks/registry/buildset-registry-k8s-microk8s.yaml
     post-run:
       - test-playbooks/registry/test-registry-post.yaml
+    voting: false
 
 - job:
     name: zuul-jobs-test-registry-buildset-registry-k8s-crio
@@ -506,6 +507,7 @@
       nodes:
         - name: ubuntu-jammy
           label: ubuntu-jammy
+    voting: false
 
 - job:
     name: zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
@@ -515,6 +517,7 @@
       nodes:
         - name: debian-bookworm
           label: debian-bookworm
+    voting: false
 
 - job:
     name: zuul-jobs-test-ensure-podman
@@ -740,7 +743,7 @@
 
 - project:
     check:
-      jobs: &id001
+      jobs:
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bookworm
         - zuul-jobs-test-ensure-docker-debian-bullseye
@@ -784,6 +787,45 @@
         - zuul-jobs-test-ensure-podman-debian-bullseye
         - zuul-jobs-test-mirror-container-images
     gate:
-      jobs: *id001
+      jobs: &id001
+        - zuul-jobs-test-ensure-docker-centos-9-stream
+        - zuul-jobs-test-ensure-docker-debian-bookworm
+        - zuul-jobs-test-ensure-docker-debian-bullseye
+        - zuul-jobs-test-ensure-docker-ubuntu-focal
+        - zuul-jobs-test-ensure-docker-ubuntu-jammy
+        - zuul-jobs-test-ensure-docker-ubuntu-noble
+        - zuul-jobs-test-build-container-image-docker-release
+        - zuul-jobs-test-build-container-image-docker-release-multiarch
+        - zuul-jobs-test-build-container-image-docker-release-multiarch-multinode
+        - zuul-jobs-test-build-container-image-podman-release
+        - zuul-jobs-test-build-container-image-docker-promote
+        - zuul-jobs-test-build-container-image-docker-promote-multiarch
+        - zuul-jobs-test-build-container-image-podman-promote
+        - zuul-jobs-test-build-docker-image-release
+        - zuul-jobs-test-build-docker-image-release-multiarch
+        - zuul-jobs-test-registry-docker
+        - zuul-jobs-test-registry-docker-container-role
+        - zuul-jobs-test-registry-docker-multiarch
+        - zuul-jobs-test-registry-docker-container-role-multiarch
+        - zuul-jobs-test-registry-podman
+        - zuul-jobs-test-registry-buildset-registry
+        - zuul-jobs-test-registry-buildset-registry-k8s-crio
+        - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
+        - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-debian-bookworm
+        - zuul-jobs-test-ensure-podman-debian-bullseye
+        - zuul-jobs-test-ensure-podman-ubuntu-jammy
+        - zuul-jobs-test-ensure-podman-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-socket-debian-bookworm
+        - zuul-jobs-test-ensure-podman-socket-debian-bullseye
+        - zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
+        - zuul-jobs-test-ensure-podman-socket-ubuntu-noble
+        - zuul-jobs-test-ensure-skopeo-debian-bookworm
+        - zuul-jobs-test-ensure-skopeo-debian-bullseye
+        - zuul-jobs-test-ensure-skopeo-ubuntu-focal
+        - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
+        - zuul-jobs-test-ensure-skopeo-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-debian-bullseye
+        - zuul-jobs-test-mirror-container-images
     periodic-weekly:
       jobs: *id001
