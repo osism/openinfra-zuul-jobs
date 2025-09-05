@@ -8,6 +8,7 @@
   set_fact:
     docker_buildx_command: >-
       docker buildx build {{ zj_image.path | default('.') }} -f {{ zj_image.dockerfile | default(docker_dockerfile) }}
+      --network=host
       {% if zj_image.target | default(false) -%}
         --target {{ zj_image.target }}
       {% endif -%}

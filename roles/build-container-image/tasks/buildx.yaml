@@ -19,6 +19,7 @@
     docker_buildx_command: >-
       docker buildx build {{ zj_image.path | default('.') }}
       {% if containerfile %}-f {{ containerfile }}{% endif %}
+      --network=host
       {% if zj_image.target | default(false) -%}
         --target {{ zj_image.target }}
       {% endif -%}
