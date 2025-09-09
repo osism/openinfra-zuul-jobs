@@ -18,7 +18,7 @@
 
 - name: Get and extract Zookeeper
   unarchive:
-    src: https://archive.apache.org/dist/zookeeper/zookeeper-{{ _zookeeper_install_version }}/apache-zookeeper-{{ _zookeeper_install_version }}-bin.tar.gz
+    src: "{{ zookeeper_base_url }}/zookeeper-{{ _zookeeper_install_version }}/apache-zookeeper-{{ _zookeeper_install_version }}-bin.tar.gz"
     dest: /tmp/zookeeper
     remote_src: yes
   become: true
