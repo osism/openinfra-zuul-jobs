@@ -39,9 +39,9 @@ An ansible role to configure services to use mirrors.
    (not Ubuntu) installations.
 
 .. zuul:rolevar:: configure_mirrors_extra_repos
-   :default: True
+   :default: False
 
-   Set to False to opt-out of installing extra repositories such
+   Set to True to opt-in to installing extra repositories such
    as PowerTools and HighAvailability on centos-8-stream and
    backports for Debian/Ubuntu. The intent is to match the upstream
    distro state when this variable is set to False. Note that this

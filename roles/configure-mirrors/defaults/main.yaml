@@ -11,4 +11,4 @@ http_or_https: >-
 pypi_mirror: "{{ http_or_https }}://{{ pypi_fqdn }}/pypi/simple"
 wheel_mirror: "{{ http_or_https }}://{{ mirror_fqdn }}/wheel/{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}-{{ ansible_architecture | lower }}"
 enable_deb_src_repos: False
-configure_mirrors_extra_repos: True
+configure_mirrors_extra_repos: False
