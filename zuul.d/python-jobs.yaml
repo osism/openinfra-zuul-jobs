@@ -327,7 +327,6 @@
          Command to pass to npm.
 
       .. zuul:jobvar:: node_version
-         :default: 14
 
          The version of Node to use.
 
@@ -632,5 +631,3 @@
       `.markdownlint.json` that is configured according to
       https://github.com/DavidAnson/markdownlint#optionsconfig
       to control rule specifics.
-    vars:
-      node_version: 18
