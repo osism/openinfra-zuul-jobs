@@ -1,9 +1,0 @@
-- hosts: all
-  pre_tasks:
-    - name: Set node version if not set
-      set_fact:
-        node_version: '6'
-      when: node_version is not defined
-  roles:
-    - ensure-yarn
-    - ensure-javascript-packages
