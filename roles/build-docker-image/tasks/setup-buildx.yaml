@@ -11,7 +11,7 @@
 # step below. More info here:
 # https://docs.docker.com/reference/cli/docker/buildx/create/#buildkitd-config
 - name: Create builder
-  command: "docker buildx create --name mybuilder --node {{ inventory_hostname | replace('-', '_') }} --driver=docker-container --driver-opt image=quay.io/opendevmirror/buildkit:buildx-stable-1 --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %}"
+  command: "docker buildx create --name mybuilder --node {{ inventory_hostname | replace('-', '_') }} --driver=docker-container --driver-opt image={{ docker_builder_image }} --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %}"
   environment:
     DOCKER_CLI_EXPERIMENTAL: enabled
   when: inventory_hostname == ansible_play_hosts[0]
@@ -22,7 +22,7 @@
   delegate_to: "{{ ansible_play_hosts[0] }}"
 
 - name: Append builders from other nodes
-  command: "docker buildx create --append --name mybuilder --node {{ inventory_hostname | replace('-', '_') }} --driver=docker-container --driver-opt image=quay.io/opendevmirror/buildkit:buildx-stable-1 --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %} ssh://{{ ansible_user }}@{{ ansible_host }}"
+  command: "docker buildx create --append --name mybuilder --node {{ inventory_hostname | replace('-', '_') }} --driver=docker-container --driver-opt image={{ docker_builder_image }} --driver-opt network=host{% if buildset_registry is defined %} --config /etc/buildkit/buildkitd.toml {% endif %} ssh://{{ ansible_user }}@{{ ansible_host }}"
   environment:
     DOCKER_CLI_EXPERIMENTAL: enabled
   when: inventory_hostname != ansible_play_hosts[0]

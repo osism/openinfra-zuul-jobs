@@ -163,4 +163,9 @@ using this role.
       ``linux/ppc64le``, ``linux/s390x``, ``linux/386``,
       ``linux/arm/v7``, ``linux/arm/v6``.
 
+.. zuul:rolevar:: docker_builder_image
+   :default: quay.io/opendevmirror/buildkit:buildx-stable-1
+
+   The image used to create buildx builders from.
+
 .. _anchors: https://yaml.org/spec/1.2/spec.html#&%20anchor//

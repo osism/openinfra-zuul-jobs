@@ -223,4 +223,9 @@ entire container and upload it.
    A dictionary of key value pairs to add to the container build environment.
    This may be useful to enable buildkit with docker builds for example.
 
+.. zuul:jobvar:: container_builder_image
+   :default: quay.io/opendevmirror/buildkit:buildx-stable-1
+
+   The image used to create buildx builders from.
+
 .. _anchors: https://yaml.org/spec/1.2/spec.html#&%20anchor//

@@ -270,6 +270,11 @@ promote job assumes `skopeo` is available on the executor.
    A dictionary of key value pairs to add to the container build environment.
    This may be useful to enable buildkit with docker builds for example.
 
+.. zuul:rolevar:: container_builder_image
+   :default: quay.io/opendevmirror/buildkit:buildx-stable-1
+
+   The image used to create buildx builders from.
+
 .. zuul:rolevar:: promote_container_image_method
    :default: tag
 

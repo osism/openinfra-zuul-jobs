@@ -77,4 +77,9 @@ used to supply the same data to all three jobs.
 
       A list of tags to be added to the image when promoted.
 
+.. zuul:jobvar:: docker_builder_image
+   :default: quay.io/opendevmirror/buildkit:buildx-stable-1
+
+   The image used to create buildx builders from.
+
 .. _anchors: https://yaml.org/spec/1.2/spec.html#&%20anchor//

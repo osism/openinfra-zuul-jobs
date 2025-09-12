@@ -2,3 +2,5 @@ zuul_work_dir: "{{ zuul.project.src_dir }}"
 docker_dockerfile: "Dockerfile"
 docker_registry: ''
 docker_use_buildkit: false
+# synced with roles/build-container-image/defaults/main.yaml
+docker_builder_image: quay.io/opendevmirror/buildkit:buildx-stable-1
