@@ -3,9 +3,17 @@
     name:
       - python3-pip
       - python3-setuptools
+    state: present
+  become: yes
+
+- name: Install Python3-wheel on older CentOS
+  package:
+    name:
       - python3-wheel
     state: present
   become: yes
+  when:
+    - ansible_distribution_major_version|int < 10
 
 - name: Install pip
   become: yes

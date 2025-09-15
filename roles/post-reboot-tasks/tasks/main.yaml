@@ -8,3 +8,7 @@
 
 - name: Confirm that dns is up
   command: "nslookup -retry=60 {{ nslookup_target }}"
+  retries: 6
+  delay: 10
+  register: result
+  until: result.rc == 0

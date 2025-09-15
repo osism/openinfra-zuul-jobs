@@ -5,9 +5,17 @@
     name: crypto-policies-scripts
     state: present
 
-- name: Enable FIPS mode
+- name: Enable FIPS mode CentOS<10
   become: true
   command: fips-mode-setup --enable
+  when:
+    - ansible_distribution_major_version|int < 10
+
+- name: Enable FIPS mode CentOS>=10
+  become: true
+  command: update-crypto-policies --set FIPS
+  when:
+    - ansible_distribution_major_version|int >= 10
 
 - name: Check if GRUB_CMDLINE_LINUX_DEFAULT exists in /etc/default/grub
   become: true
@@ -48,9 +56,9 @@
 
 - name: Ensure FIPS mode is enabled
   become: true
-  command: fips-mode-setup --check
+  command: cat /proc/sys/crypto/fips_enabled
   register: _result
 
 - name: Assert FIPS is enabled
   assert:
-    that: _result.stdout == "FIPS mode is enabled."
+    that: _result.stdout == "1"

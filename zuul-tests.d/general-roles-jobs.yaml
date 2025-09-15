@@ -374,13 +374,28 @@
     files:
       - roles/enable-fips/.*
     run: test-playbooks/simple-role-test.yaml
+    abstract: true
     vars:
       role_name: enable-fips
       nslookup_target: opendev.org
+
+- job:
+    name: zuul-jobs-test-enable-fips-centos-9-stream
+    description: Test the enable-fips role on centos 9-stream
+    parent: zuul-jobs-test-enable-fips
     nodeset:
       nodes:
         - name: centos-9-stream
           label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-enable-fips-centos-10-stream
+    description: Test the enable-fips role on centos 10-stream
+    parent: zuul-jobs-test-enable-fips
+    nodeset:
+      nodes:
+        - name: centos-10-stream
+          label: centos-10-stream-4GB
 
 - job:
     name: zuul-jobs-test-ensure-bazelisk
@@ -970,7 +985,8 @@
         - zuul-jobs-test-bindep-ubuntu-jammy
         - zuul-jobs-test-bindep-ubuntu-noble
         - zuul-jobs-test-clear-firewall
-        - zuul-jobs-test-enable-fips
+        - zuul-jobs-test-enable-fips-centos-9-stream
+        - zuul-jobs-test-enable-fips-centos-10-stream
         - zuul-jobs-test-ensure-bazelisk
         - zuul-jobs-test-netconsole
         - zuul-jobs-test-validate-zone-db-debian-bookworm
@@ -1040,7 +1056,8 @@
         - zuul-jobs-test-bindep-ubuntu-jammy
         - zuul-jobs-test-bindep-ubuntu-noble
         - zuul-jobs-test-clear-firewall
-        - zuul-jobs-test-enable-fips
+        - zuul-jobs-test-enable-fips-centos-9-stream
+        - zuul-jobs-test-enable-fips-centos-10-stream
         - zuul-jobs-test-ensure-bazelisk
         - zuul-jobs-test-netconsole
         - zuul-jobs-test-validate-zone-db-debian-bookworm
