@@ -1,2 +1,23 @@
 ---
+# These are reasonable overrides for users of the role and are part of the
+# stable interface.
 helm_version: 2.17.0
+helm_release_repo_url: https://get.helm.sh
+helm_install_dir: /usr/local/bin
+
+# These defaults are not part of the stable interface for the role.
+helm_archive_url: "{{ helm_release_repo_url }}/{{ helm_archive_name }}"
+helm_arch: >-
+  {{ "amd64" if ansible_architecture == "x86_64"
+  else ansible_architecture }}
+helm_system: >-
+  {{ ansible_system | lower }}
+helm_download_version: >-
+  {{ helm_version if helm_version != "latest" else helm_latest_version }}
+helm_archive_name: >-
+  helm-v{{ helm_download_version }}-{{ helm_system }}-{{ helm_arch }}.tar.gz
+# We always need to lazy evaluate this value even if we don't use it.
+# This value won't make sense unless the query task has run.
+helm_latest_version: >-
+  {{ helm_latest_version_query.content | default("")
+  | regex_search("[0-9].*[0-9]") }}
