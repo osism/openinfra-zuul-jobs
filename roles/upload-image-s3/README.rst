@@ -68,3 +68,8 @@ expects.
    :default: `{{ zuul.build }}-{{ build_diskimage_image_name }}.{{ upload_image_s3_extension }}`
 
    The object name to use when uploading.
+
+.. zuul:rolevar:: upload_image_s3_hash_timeout
+   :default: 600
+
+   The async timeout for md5/sha256 image hash tasks.
