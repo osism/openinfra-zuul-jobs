@@ -3,7 +3,7 @@
   stat:
     path: '{{ upload_image_swift_filename }}'
     checksum_algorithm: sha256
-  async: 600
+  async: '{{ upload_image_swift_hash_timeout }}'
   poll: 0
   register: sha256_task
 
@@ -11,7 +11,7 @@
   stat:
     path: '{{ upload_image_swift_filename }}'
     checksum_algorithm: md5
-  async: 600
+  async: '{{ upload_image_swift_hash_timeout }}'
   poll: 0
   register: md5_task
 
@@ -55,7 +55,7 @@
     jid: "{{ sha256_task.ansible_job_id }}"
   register: sha256
   until: sha256.finished
-  retries: 1
+  retries: "{{ (upload_image_swift_hash_timeout > 10) | ternary(upload_image_swift_hash_timeout // 10, 10) }}"
   delay: 10
 
 - name: Wait for md5
@@ -63,7 +63,7 @@
     jid: "{{ md5_task.ansible_job_id }}"
   register: md5
   until: md5.finished
-  retries: 1
+  retries: "{{ (upload_image_swift_hash_timeout > 10) | ternary(upload_image_swift_hash_timeout // 10, 10) }}"
   delay: 10
 
 - name: Return artifact to Zuul
