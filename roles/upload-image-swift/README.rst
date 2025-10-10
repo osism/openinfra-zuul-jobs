@@ -4,7 +4,8 @@ This uploads a filesystem image (for example, one built by diskimage
 builder) to an OpenStack Object Store (Swift) container.  The role
 returns an artifact to Zuul suitable for use by the zuul-launcher.
 
-If a `raw` or `vhd` image is provided and the `zstd` command is
+If a `raw` or `vhd` image is provided,
+`upload_image_swift_compress_image` is true and the `zstd` command is
 available, it will be compressed in the way that zuul-launcher
 expects.
 
@@ -60,6 +61,15 @@ expects.
    :default: `{{ zuul.build }}-{{ build_diskimage_image_name }}.{{ upload_image_swift_extension }}`
 
    The object name to use when uploading.
+
+.. zuul:rolevar:: upload_image_swift_compress_image
+   :default: true
+
+   Whether to compress the image using zstd before upload.
+
+   Some providers may require the image to be in raw format when
+   importing directly from object storage. In those cases the flag
+   should be set to `false`.
 
 .. zuul:rolevar:: upload_image_swift_hash_timeout
     :default: 600

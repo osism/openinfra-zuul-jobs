@@ -15,27 +15,31 @@
   poll: 0
   register: md5_task
 
-- name: Check if zstd is installed
-  shell: "command -v zstd || exit 1"
-  register: zstd_installed
-  failed_when: false
-
-- name: Compress image
-  when:
-    - "zstd_installed.rc == 0"
-    - "upload_image_swift_format in ['raw', 'vhd']"
-  command: zstd '{{ upload_image_swift_filename }}'
-
 - name: Set extension
   set_fact:
     zj_upload_image_swift_extension: ''
 
-- name: Set extension
+- name: Compress image
   when:
-    - "zstd_installed.rc == 0"
-    - "upload_image_swift_format in ['raw', 'vhd']"
-  set_fact:
-    zj_upload_image_swift_extension: '.zst'
+    - "upload_image_swift_compress_image"
+  block:
+    - name: Check if zstd is installed
+      shell: "command -v zstd || exit 1"
+      register: zstd_installed
+      failed_when: false
+
+    - name: Compress image
+      when:
+        - "zstd_installed.rc == 0"
+        - "upload_image_swift_format in ['raw', 'vhd']"
+      command: zstd '{{ upload_image_swift_filename }}'
+
+    - name: Set extension
+      when:
+        - "zstd_installed.rc == 0"
+        - "upload_image_swift_format in ['raw', 'vhd']"
+      set_fact:
+        zj_upload_image_swift_extension: '.zst'
 
 - name: Upload image to swift
   upload_image_swift:
