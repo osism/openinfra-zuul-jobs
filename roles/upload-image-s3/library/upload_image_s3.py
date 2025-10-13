@@ -38,7 +38,7 @@ def prune(bucket, delete_after):
 
 
 def run(endpoint, bucket_name, aws_access_key, aws_secret_key,
-        filename, name, delete_after=None):
+        filename, name, delete_after=None, export_s3_url=False):
     endpoint = endpoint or 'https://s3.amazonaws.com/'
     s3 = boto3.resource('s3',
                         endpoint_url=endpoint,
@@ -50,7 +50,10 @@ def run(endpoint, bucket_name, aws_access_key, aws_secret_key,
 
     bucket.upload_file(filename, name)
 
-    url = os.path.join(endpoint, bucket_name, name)
+    if export_s3_url:
+        url = os.path.join("s3://", bucket_name, name)
+    else:
+        url = os.path.join(endpoint, bucket_name, name)
     return url
 
 
@@ -62,6 +65,7 @@ def ansible_main():
             filename=dict(required=True, type='path'),
             name=dict(required=True, type='str'),
             delete_after=dict(type='int'),
+            export_s3_url=dict(type='bool', default=False),
             aws_access_key=dict(type='str'),
             aws_secret_key=dict(type='str', no_log=True),
         )
@@ -78,6 +82,7 @@ def ansible_main():
             p.get('filename'),
             p.get('name'),
             delete_after=p.get('delete_after'),
+            export_s3_url=p.get('export_s3_url'),
         )
     except Exception:
         s = "Error uploading to S3"
@@ -110,6 +115,9 @@ def cli_main():
                              'upload. Default is 3 days (259200 seconds) '
                              'and if set to 0 X-Delete-After will not be set',
                         type=int)
+    parser.add_argument('--export-s3-url',
+                        help='Export the image location as s3:// URL',
+                        action='store_true')
 
     args = parser.parse_args()
 
@@ -125,6 +133,7 @@ def cli_main():
         args.filename,
         args.name,
         delete_after=args.delete_after,
+        export_s3_url=args.export_s3_url,
     )
     print(url)
 

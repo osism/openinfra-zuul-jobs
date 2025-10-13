@@ -5,3 +5,4 @@ upload_image_s3_name: '{{ zuul.build }}-{{ build_diskimage_image_name }}.{{ uplo
 upload_image_s3_extension: '{{ upload_image_s3_format }}'
 upload_image_s3_compress_image: true
 upload_image_s3_hash_timeout: 600
+upload_image_s3_export_s3_url: false

@@ -82,3 +82,8 @@ zuul-launcher expects.
    :default: 600
 
    The async timeout for md5/sha256 image hash tasks.
+
+.. zuul:rolevar:: upload_image_s3_export_s3_url
+   :default: false
+
+   Export the image location as s3:// URL.
