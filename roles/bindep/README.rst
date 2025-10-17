@@ -31,3 +31,10 @@ then install the missing packages.
 
    Path to a bindep fallback file to be used if no bindep file can be
    found in :zuul:rolevar:`bindep.bindep_dir`.
+
+.. zuul:rolevar:: bindep_install_opts
+
+   A mapping containing additional options for the package manager
+   to be used during installation of packages requested in the bindep profile.
+   Example: `bindep_install_opts: {'allowerasing': true}`.
+   Default: empty mapping (`{}`).

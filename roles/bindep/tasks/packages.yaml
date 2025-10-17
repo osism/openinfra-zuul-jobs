@@ -12,6 +12,7 @@
   package:
     name: "{{ bindep_output.stdout_lines }}"
     state: present
+  args: "{{ bindep_install_opts }}"
   become: true
   when: bindep_output.stdout_lines
   changed_when: true
