@@ -58,6 +58,7 @@ except ImportError:
 
 import os
 import ast
+import re
 import subprocess
 import tempfile
 import traceback
@@ -141,13 +142,20 @@ def get_installed_packages(tox_python):
     return installed_packages
 
 
+def normalize(name):
+    # From
+    # https://packaging.python.org/en/latest/specifications/name-normalization/#name-normalization
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
 def write_new_constraints_file(constraints, packages):
+    norm_packages = [normalize(p) for p in packages]
     with tempfile.NamedTemporaryFile(mode='w', delete=False) \
             as constraints_file:
         constraints_lines = open(constraints, 'r').read().split('\n')
         for line in constraints_lines:
             package_name = line.split('===')[0]
-            if package_name in packages:
+            if normalize(package_name) in norm_packages:
                 continue
             constraints_file.write(line)
             constraints_file.write('\n')

@@ -60,4 +60,5 @@ class TestToxInstallSiblingPackages(testtools.TestCase):
         with open(constraints) as f:
             s = f.read()
             self.assertNotIn("requests", s)
+            self.assertNotIn("ibm_cos-sdk", s)
             self.assertIn("doesnotexistonpypi", s)
