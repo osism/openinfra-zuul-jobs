@@ -82,6 +82,7 @@ _docker_upstream_distro_packages:
   - docker-ce
   - docker-ce-cli
   - docker-buildx-plugin
+  - docker-compose-plugin
   - containerd.io
 
 _docker_upstream_distro_remove_packages:
