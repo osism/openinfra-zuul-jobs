@@ -1,7 +1,7 @@
 upload_image_s3_image_name: '{{ build_diskimage_image_name | default(zuul.image_build_name) }}'
 upload_image_s3_delete_after: 0
-upload_image_s3_filename: '{{ build_diskimage_image_root }}/{{ build_diskimage_image_name }}.{{ upload_image_s3_extension }}'
-upload_image_s3_name: '{{ zuul.build }}-{{ build_diskimage_image_name }}.{{ upload_image_s3_extension }}'
+upload_image_s3_filename: '{{ build_diskimage_image_root }}/{{ build_diskimage_image_name | default(zuul.image_build_name) }}.{{ upload_image_s3_extension }}'
+upload_image_s3_name: '{{ zuul.build }}-{{ build_diskimage_image_name | default(zuul.image_build_name) }}.{{ upload_image_s3_extension }}'
 upload_image_s3_extension: '{{ upload_image_s3_format }}'
 upload_image_s3_compress_image: true
 upload_image_s3_hash_timeout: 600
