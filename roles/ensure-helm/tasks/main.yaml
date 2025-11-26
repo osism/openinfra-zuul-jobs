@@ -1,23 +1,58 @@
 ---
-- name: Download Helm
-  unarchive:
-    remote_src: true
-    src: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
-    dest: /tmp
+- name: Create a temporary directory for downloading helm
+  ansible.builtin.tempfile:
+    state: directory
+  register: helm_download_dir
 
-- name: Install Helm
-  become: true
-  copy:
-    remote_src: true
-    src: /tmp/linux-amd64/helm
-    dest: /usr/local/bin/helm
-    mode: '0755'
+- name: Fetch the latest helm version (if needed)
+  ansible.builtin.uri:
+    url: "{{ helm_release_repo_url }}/helm-latest-version"
+    return_content: true
+  retries: 2
+  delay: 15
+  register: helm_latest_version_query
+  until: helm_latest_version_query is not failed
+  when: helm_version == "latest"
+
+- name: Download and extract the helm binary
+  vars:
+    helm_archive_path: >-
+      {{ [helm_download_dir.path, helm_archive_name]
+      | ansible.builtin.path_join }}
+  block:
+    - name: Fetch the helm binary archive
+      ansible.builtin.uri:
+        url: "{{ helm_archive_url }}"
+        dest: "{{ helm_archive_path }}"
+        mode: "0644"
+      retries: 2
+      delay: 15
+      register: result
+      until: result is not failed
+
+    - name: Extract the helm binary from the archive
+      ansible.builtin.unarchive:
+        src: "{{ helm_archive_path }}"
+        dest: "{{ helm_install_dir }}"
+        mode: "0755"
+        remote_src: true
+        extra_opts:
+          - --strip=1
+          - --wildcards
+          - "*/helm"
+      become: true
+
+- name: Remove the temporary helm download dir
+  ansible.builtin.file:
+    path: "{{ helm_download_dir.path }}"
+    state: absent
+  when: helm_download_dir.path is defined
 
 - name: Initialize Helm
-  shell: helm init --client-only
+  ansible.builtin.shell: helm init --client-only
   # NOTE(b.schanzel): The init command was removed with helm v3 and no
   #                   initialization is needed anymore
-  when: helm_version is version('3', '<')
+  when: helm_download_version is version('3', '<')
   tags:
     # NOTE(mnaser): The `helm` module does not support running init only.
     - skip_ansible_lint
