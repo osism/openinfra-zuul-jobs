@@ -72,6 +72,6 @@ expects.
    should be set to `false`.
 
 .. zuul:rolevar:: upload_image_swift_hash_timeout
-    :default: 600
+    :default: 86400
 
     The async timeout for md5/sha256 image hash tasks.

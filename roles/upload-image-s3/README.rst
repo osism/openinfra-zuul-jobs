@@ -79,7 +79,7 @@ zuul-launcher expects.
    `false`.
 
 .. zuul:rolevar:: upload_image_s3_hash_timeout
-   :default: 600
+   :default: 86400
 
    The async timeout for md5/sha256 image hash tasks.
 
