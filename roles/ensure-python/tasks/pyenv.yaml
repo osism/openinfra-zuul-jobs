@@ -35,7 +35,7 @@
 - name: Determine Python version
   shell: |
     set -o pipefail
-    {{ ansible_user_dir }}/.pyenv/plugins/python-build/bin/python-build --definitions | grep ^{{ python_version }} | grep -v t$ | tail -1
+    {{ ansible_user_dir }}/.pyenv/plugins/python-build/bin/python-build --definitions | grep ^{{ python_version }} | grep -v -e t$ -e t-dev$ | tail -1
   args:
     executable: /bin/bash
   register: _python_version
