@@ -215,6 +215,17 @@
       python_version: "3.12"
 
 - job:
+    name: tox-py313
+    parent: tox
+    description: |
+      Run unit tests for a Python project under cPython version 3.13.
+
+      Uses tox with the ``py313`` environment.
+    vars:
+      tox_envlist: py313
+      python_version: "3.13"
+
+- job:
     name: tox-docs
     # This is not parented to tox since we do not need
     # the roles from its parent unittests.
@@ -489,6 +500,18 @@
       nox_keyword: tests
       nox_force_python: "3.12"
       python_version: "3.12"
+
+- job:
+    name: nox-py313
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.13.
+
+      Uses nox with the ``test`` keyword forcing python 3.13.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.13"
+      python_version: "3.13"
 
 - job:
     name: nox-cover

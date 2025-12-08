@@ -6,7 +6,7 @@ python3-dev [test platform:dpkg platform:apk]
 
 # Required for subprocess32
 python-devel [test platform:rpm !platform:fedora !platform:centos-8 !platform:rhel-8]
-python-dev [test platform:dpkg platform:apk !platform:ubuntu-jammy !platform:ubuntu-noble !platform:debian-bookworm]
+python-dev [test platform:apk platform:ubuntu-bionic platform:ubuntu-focal platform:debian-bullseye]
 python2-dev [test platform:ubuntu-jammy]
 
 # Required for sphinx graphviz image generation

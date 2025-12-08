@@ -14,6 +14,8 @@
             nodeset: ubuntu-jammy
         - tox-py312:
             nodeset: ubuntu-noble
+        - tox-py313:
+            nodeset: debian-trixie-8GB
     gate:
       jobs:
         - zuul-tox-docs
@@ -25,6 +27,8 @@
             nodeset: ubuntu-jammy
         - tox-py312:
             nodeset: ubuntu-noble
+        - tox-py313:
+            nodeset: debian-trixie-8GB
     promote:
       jobs:
         - zuul-promote-docs
