@@ -547,6 +547,7 @@
       Requires a variable ``pypi_info`` be set which is a dict
       containing authentication values.  See
       `<https://zuul-ci.org/docs/zuul-jobs/python-roles.html#role-upload-pypi>`__
+    pre-run: playbooks/python/pre-upload.yaml
     post-run: playbooks/python/upload-pypi.yaml
 
 - job:
