@@ -1,5 +1,19 @@
 - hosts: all
+  vars:
+    venv_dir: "{{ ansible_user_dir }}/.venv"
+    _devpi_port: 3141
+    _devpi_url: "http://localhost:{{ _devpi_port }}"
+    _devpi_user: "zuul"
+    _devpi_index: "test"
+    _package_name: "sandbox"
+    _package_version: "{{ ansible_date_time.epoch }}"
+
   tasks:
+    - name: Generate random password
+      no_log: true
+      set_fact:
+        _devpi_password: "{{ lookup('password', '/dev/null length=16') }}"
+
     - name: Ensure pip works for ensure-twine
       include_role:
         name: ensure-pip
@@ -8,61 +22,119 @@
       include_role:
         name: ensure-twine
 
-    - name: Setup role failure var
-      set_fact:
-        _role_failed: false
+    # Install and configure devpi as a local PyPI server
+    - name: Install devpi-server
+      pip:
+        name:
+          - devpi-server
+          - devpi-client
+        virtualenv: "{{ venv_dir }}"
+        virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
+        state: present
 
-    - name: Wrap arg failure
-      block:
-        - name: Check for argument failure
-          include_role:
-            name: upload-pypi
-          vars:
-            pypi_info:
-              username: a_user
-              api_token: a_token
+    - name: Create devpi server directory
+      file:
+        path: "{{ ansible_user_dir }}/.devpi"
+        state: directory
+        mode: '0755'
 
-      rescue:
-        - name: Mark role as failed
-          set_fact:
-            _role_failed: true
-
-    - name: Check role failed
-      fail:
-        msg: 'upload-pypi did not fail as it should'
-      when: _role_failed is not true
-
-    # We tag this with the unix timestamp so that the upload always
-    # has an increasing version number.
-    - name: Import sandbox project  # noqa command-instead-of-module
-      shell: |
-        git clone https://opendev.org/opendev/sandbox
-        pushd sandbox
-        git tag $(date '+%s')
-        python3 setup.py bdist_wheel
+    - name: Initialize devpi server
+      command: "{{ venv_dir }}/bin/devpi-init --serverdir {{ ansible_user_dir }}/.devpi"
       args:
-        executable: '/bin/bash'
-      tags:
-        - skip_ansible_lint
+        creates: "{{ ansible_user_dir }}/.devpi/.nodeinfo"
 
-    # This value is restricted to uploading the sandbox package to
-    # test.pypi.org; it is not kept in plain text to avoid things that
-    # grep for accidentally committed tokens finding it, but it is not
-    # particularly secret.  OpenDev admins can revoke it from the
-    # "openstackci" test.pypi.org user if there is an issue.
-    - name: Set API token
-      set_fact:
-        _api_token: |
-            cHlwaS1BZ0VOZEdWemRDNXdlWEJwTG05eVp3SWtOMk0wTmpBMU9HSXRORGszTVMwME9ERTRMV0kx
-            Tm1NdFpEUTNNalJsWmpneE16TTRBQUk0ZXlKd1pYSnRhWE56YVc5dWN5STZJSHNpY0hKdmFtVmpk
-            SE1pT2lCYkluTmhibVJpYjNnaVhYMHNJQ0oyWlhKemFXOXVJam9nTVgwQUFBWWdmTGN1cHNaeWw3
-            NkI0Ri1Bd3FDR19VZHlNSWVMQzRHWHZTUjhSalEyQlJnCg==
+    - name: Start devpi server  # noqa command-instead-of-shell
+      shell: |
+        nohup {{ venv_dir }}/bin/devpi-server --serverdir {{ ansible_user_dir }}/.devpi \
+          --host 127.0.0.1 --port {{ _devpi_port }} \
+          > {{ ansible_user_dir }}/devpi-server.log 2>&1 &
+        echo $!
+      register: _devpi_pid
 
-    - name: Upload sandbox
+    - name: Wait for devpi server to start
+      uri:
+        url: "{{ _devpi_url }}"
+        status_code: 200
+      register: _devpi_status
+      until: _devpi_status.status == 200
+      retries: 30
+      delay: 1
+
+    - name: Create a test user and an index
+      block:
+        - name: Log in as root user
+          command: "{{ item }}"
+          loop:
+            - "{{ venv_dir }}/bin/devpi use {{ _devpi_url }}"
+            - "{{ venv_dir }}/bin/devpi login root --password=''"
+
+        - name: Create and login into test user
+          no_log: true
+          command: "{{ item }}"
+          loop:
+            - "{{ venv_dir }}/bin/devpi user -c {{ _devpi_user }} password='{{ _devpi_password }}'"
+            - "{{ venv_dir }}/bin/devpi login {{ _devpi_user }} --password='{{ _devpi_password }}'"
+
+        - name: Create the test index
+          command: "{{ venv_dir }}/bin/devpi index -c {{ _devpi_index }} bases=root/pypi"
+
+    - name: Create package directory
+      file:
+        path: "{{ ansible_user_dir }}/{{ _package_name }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create setup.py
+      copy:
+        dest: "{{ ansible_user_dir }}/{{ _package_name }}/setup.py"
+        mode: '0644'
+        content: |
+          import setuptools
+          setuptools.setup(
+              name='{{ _package_name }}',
+              version='{{ _package_version }}',
+              author='Zuul',
+              author_email='author@example.com',
+              description='A test package for upload-pypi role testing',
+              py_modules=['{{ _package_name }}'],
+          )
+
+    - name: Create package module
+      copy:
+        dest: "{{ ansible_user_dir }}/{{ _package_name }}/{{ _package_name }}.py"
+        mode: '0644'
+        content: |
+          """A simple test module."""
+
+          def hello():
+              return "Hello from {{ _package_name }}!"
+
+    - name: Install build tools for wheel creation
+      pip:
+        name:
+          - wheel
+          - setuptools
+        virtualenv: "{{ venv_dir }}"
+        virtualenv_command: "{{ ensure_pip_virtualenv_command }}"
+        state: present
+
+    - name: Build package wheel
+      command: "{{ venv_dir }}/bin/python3 -m pip wheel . --no-deps -w dist"
+      args:
+        chdir: "{{ ansible_user_dir }}/{{ _package_name }}"
+
+    - name: Upload package to devpi
       include_role:
         name: upload-pypi
       vars:
         pypi_info:
-          api_token: '{{ _api_token | b64decode }}'
-          repository: testpypi
-        pypi_path: '{{ ansible_user_dir }}/sandbox/dist'
+          username: "{{ _devpi_user }}"
+          password: "{{ _devpi_password }}"
+          repository: devpi
+          repository_url: "{{ _devpi_url }}/{{ _devpi_user }}/{{ _devpi_index }}"
+        pypi_path: "{{ ansible_user_dir }}/{{ _package_name }}/dist"
+
+    # Cleanup
+    - name: Stop devpi server
+      command: kill {{ _devpi_pid.stdout }}
+      failed_when: false
