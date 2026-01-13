@@ -1,10 +1,6 @@
 # {{ ansible_managed }}
 [global]
 timeout = 60
-{% if pypi_mirror | length > 0 %}
 index-url = {{ pypi_mirror }}
-trusted-host = {{ pypi_mirror | ansible.builtin.urlsplit("hostname") }}
-{% endif %}
-{% if wheel_mirror | length > 0 %}
+trusted-host = {{ pypi_fqdn }}
 extra-index-url = {{ wheel_mirror }}
-{% endif %}
