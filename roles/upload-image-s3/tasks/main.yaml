@@ -87,3 +87,4 @@
               format: '{{ upload_image_s3_format }}'
               sha256: '{{ sha256.stat.checksum }}'
               md5sum: '{{ md5.stat.checksum }}'
+              crc32: '{{ upload_results.checksum }}'
