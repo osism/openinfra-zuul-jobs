@@ -47,9 +47,3 @@ Upload python packages to PyPI
    :default: false
 
    Skip uploading any file which already exists, rather than failing.
-
-.. zuul:rolevar:: pypi_register_first
-  :default: false
-
-  Whether the role should register the package before uploading it. This may
-  be required when uploading for the first time to a devPI instance.
