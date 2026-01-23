@@ -15,15 +15,29 @@
 # under the License.
 
 import argparse
+import base64
 import datetime
 import logging
+import multiprocessing
 import os
 import sys
 import traceback
+import zlib
 
 import boto3
 
 from ansible.module_utils.basic import AnsibleModule
+
+
+def calculate_crc32(queue, filename):
+    ret = 0
+    with open(filename, 'rb') as f:
+        while True:
+            data = f.read(4096)
+            if not data:
+                break
+            ret = zlib.crc32(data, ret)
+    queue.put(ret)
 
 
 def prune(bucket, delete_after):
@@ -44,17 +58,48 @@ def run(endpoint, bucket_name, aws_access_key, aws_secret_key,
                         endpoint_url=endpoint,
                         aws_access_key_id=aws_access_key,
                         aws_secret_access_key=aws_secret_key)
+    s3_client = boto3.client('s3',
+                             endpoint_url=endpoint,
+                             aws_access_key_id=aws_access_key,
+                             aws_secret_access_key=aws_secret_key)
     bucket = s3.Bucket(bucket_name)
 
+    # Immediately start the background crc32 calculation
+    queue = multiprocessing.Queue()
+    crc32_proc = multiprocessing.Process(target=calculate_crc32,
+                                         args=(queue, filename))
+    crc32_proc.start()
+
+    # Prune any lingering uploads
     prune(bucket, delete_after)
 
-    bucket.upload_file(filename, name)
+    # Start the upload
+    bucket.upload_file(
+        filename, name,
+        ExtraArgs={
+            'ChecksumType': 'FULL_OBJECT',
+        },
+    )
+
+    resp = s3_client.head_object(
+        Bucket=bucket_name,
+        Key=name,
+        ChecksumMode='ENABLED',
+    )
+    aws_checksum = resp.get('ChecksumCRC32')
+    if aws_checksum:
+        aws_checksum = base64.b64decode(aws_checksum).hex()
+        crc32_proc.join()
+        local_checksum = '%08x' % queue.get()
+        if aws_checksum != local_checksum:
+            raise Exception(f"AWS checksum {aws_checksum} does not match "
+                            f"local checksum {local_checksum}")
 
     if export_s3_url:
         url = os.path.join("s3://", bucket_name, name)
     else:
         url = os.path.join(endpoint, bucket_name, name)
-    return url
+    return url, aws_checksum
 
 
 def ansible_main():
@@ -74,7 +119,7 @@ def ansible_main():
     p = module.params
 
     try:
-        url = run(
+        url, checksum = run(
             p.get('endpoint'),
             p.get('bucket'),
             p.get('aws_access_key'),
@@ -93,6 +138,7 @@ def ansible_main():
     module.exit_json(
         changed=True,
         url=url,
+        checksum=checksum,
     )
 
 
@@ -125,7 +171,7 @@ def cli_main():
         logging.basicConfig(level=logging.DEBUG)
         logging.captureWarnings(True)
 
-    url = run(
+    url, checksum = run(
         args.endpoint,
         args.bucket,
         None,
@@ -135,6 +181,7 @@ def cli_main():
         delete_after=args.delete_after,
         export_s3_url=args.export_s3_url,
     )
+    print(checksum)
     print(url)
 
 
