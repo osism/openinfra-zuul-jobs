@@ -22,7 +22,7 @@
       include_role:
         name: "ensure-skopeo"
 
-    - name: Enable insecure registries
+    - name: Enable insecure registries for podman
       block:
         - name: Create podman configration directory
           become: true
@@ -40,6 +40,46 @@
               registries = ['localhost']
             mode: 0644
       when: container_command == 'podman'
+
+    - name: Enable insecure registries for docker
+      block:
+        - name: Setup insecure registries for docker
+          include_role:
+            name: update-json-file
+          vars:
+            update_json_file_name: /etc/docker/daemon.json
+            update_json_file_combine:
+              insecure-registries:
+                - localhost
+            update_json_dir_mode: 0755
+            update_json_file_mode: 0644
+            update_json_file_owner: root
+            update_json_file_group: root
+            update_json_file_become: true
+
+        - name: Stop docker.socket to avoid any conflict
+          become: true
+          service:
+            name: docker.socket
+            enabled: yes
+            state: stopped
+          failed_when: false
+
+        - name: Assure docker service is restarted
+          become: true
+          service:
+            name: docker
+            enabled: yes
+            state: restarted
+
+        - name: Assure docker.socket service is running
+          become: true
+          service:
+            name: docker.socket
+            enabled: yes
+            state: started
+          failed_when: false
+      when: container_command == 'docker'
 
     - name: Set up a publication registry to stand in for Docker Hub
       import_tasks: ../../util-tasks/run-docker-registry.yaml
