@@ -12,11 +12,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import cgi
-html_escape = getattr(cgi, 'escape', None)
-if not html_escape:
+try:
     import html
     html_escape = html.escape
+except ImportError:
+    import cgi
+    html_escape = cgi.escape
 
 import argparse
 import gzip

@@ -14,7 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import cgi
+try:
+    import html  # noqa: F401
+    escaped_by = 'html'
+except ImportError:
+    import cgi  # noqa: F401
+    escaped_by = 'cgi'
+
 import gzip
 import os
 
@@ -31,10 +37,10 @@ class TestHTMLify(testtools.TestCase):
 
     def _test_file(self, fn, ref_fn):
         in_path = os.path.join(FIXTURE_DIR, 'in', fn)
-        if getattr(cgi, 'escape', None):
-            ref_path = os.path.join(FIXTURE_DIR, 'reference-cgi', ref_fn)
-        else:
+        if escaped_by == 'html':
             ref_path = os.path.join(FIXTURE_DIR, 'reference-html', ref_fn)
+        else:
+            ref_path = os.path.join(FIXTURE_DIR, 'reference-cgi', ref_fn)
         out_root = self.useFixture(fixtures.TempDir()).path
         out_path = os.path.join(out_root, fn)
         run(in_path, out_path)
