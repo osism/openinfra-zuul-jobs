@@ -19,13 +19,24 @@
   tempfile:
   register: _tox_show_config_tempfile
 
+- name: Detect tox version
+  command: "{{ tox_executable }} --version --quiet"
+  args:
+    chdir: "{{ zuul_work_dir }}"
+  environment: "{{ tox_environment | combine(tox_constraints_env | default({})) }}"
+  register: _tox_version
+
 - name: Get tox envlist config
   shell: >-
     {{ tox_executable }}
     {% if tox_config_file is defined and tox_config_file %}
     -c{{ tox_config_file }}
     {% endif %}
+    {% if _tox_version.stdout | split(' ') | first is version('4', '<') %}
     --showconfig
+    {% else %}
+    config
+    {% endif %}
     {% if tox_envlist is defined and tox_envlist %}
     -e{{ tox_envlist }}
     {% endif %}
