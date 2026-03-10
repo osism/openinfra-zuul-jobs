@@ -23,6 +23,7 @@ Utility to upload files to swift
 """
 
 import argparse
+import collections
 import gzip
 import io
 import logging
@@ -44,13 +45,13 @@ try:
 except ImportError:
     import urllib as urlparse
 import zlib
-import collections
+import warnings
 
+import keystoneauth1.exceptions
 import openstack
 import requests
 import requests.exceptions
-import requestsexceptions
-import keystoneauth1.exceptions
+import urllib3.exceptions
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -942,8 +943,10 @@ def cli_main():
 
 if __name__ == '__main__':
     # Avoid unactionable warnings
-    requestsexceptions.squelch_warnings(
-        requestsexceptions.InsecureRequestWarning)
+    warnings.filterwarnings(
+        'ignore', category=urllib3.exceptions.InsecurePlatformWarning)
+    warnings.filterwarnings(
+        'ignore', category=urllib3.exceptions.InsecureRequestWarning)
 
     # The zip/ansible/modules check is required for Ansible 5 because
     # stdin may be a tty, but does not work in ansible 2.8.  The tty

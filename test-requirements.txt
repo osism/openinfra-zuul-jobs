@@ -32,7 +32,6 @@ keystoneauth1>=3.18.0,<4.1.0;python_version<'3.6'
 # when we drop it in zuul-jobs as well.
 cachetools>=2.0.0,<4.0;python_version<'3.5'
 requests
-requestsexceptions
 bs4
 # For upload-logs-google
 google-cloud-storage
