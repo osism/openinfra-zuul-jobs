@@ -286,6 +286,76 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-validate-pyproject
+    description: Test the ensure-validate-pyproject role
+    files:
+      - roles/ensure-validate-pyproject/.*
+      - roles/ensure-python-command/.*
+      - test-playbooks/ensure-validate-pyproject.yaml
+    run: test-playbooks/ensure-validate-pyproject.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-centos-9-stream
+    description: Test the ensure-validate-pyproject role on centos-9-stream
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-debian-bookworm
+    description: Test the ensure-validate-pyproject role on debian-bookworm
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-debian-bullseye
+    description: Test the ensure-validate-pyproject role on debian-bullseye
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-ubuntu-focal
+    description: Test the ensure-validate-pyproject role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-ubuntu-jammy
+    description: Test the ensure-validate-pyproject role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-ubuntu-noble
+    description: Test the ensure-validate-pyproject role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
     name: zuul-jobs-test-ensure-twine
     description: Test the ensure-twine role
     files:
@@ -713,6 +783,12 @@
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-focal
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-jammy
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-noble
+        - zuul-jobs-test-ensure-validate-pyproject-centos-9-stream
+        - zuul-jobs-test-ensure-validate-pyproject-debian-bookworm
+        - zuul-jobs-test-ensure-validate-pyproject-debian-bullseye
+        - zuul-jobs-test-ensure-validate-pyproject-ubuntu-focal
+        - zuul-jobs-test-ensure-validate-pyproject-ubuntu-jammy
+        - zuul-jobs-test-ensure-validate-pyproject-ubuntu-noble
         - zuul-jobs-test-ensure-twine-centos-9-stream
         - zuul-jobs-test-ensure-twine-debian-bookworm
         - zuul-jobs-test-ensure-twine-debian-bullseye
