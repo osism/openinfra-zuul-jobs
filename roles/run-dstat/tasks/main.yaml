@@ -9,7 +9,7 @@
   loop_control:
     loop_var: zj_distro_os
 - name: Run dstat
-  shell: "dstat -tcmndrylpg --tcp --fs --output {{ dstat_data_path }} >& /dev/null &"
+  shell: "dstat -tcmndrylpg --tcp --fs --freespace --output {{ dstat_data_path }} >& /dev/null &"
   args:
     executable: /bin/bash
   failed_when: false
