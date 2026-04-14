@@ -13,9 +13,9 @@ then install the missing packages.
    The directory to look for bindep files in.
 
 .. zuul:rolevar:: bindep_profile
-   :default: test
+   :default: compile test
 
-   A specific bindep profile to request.
+   A space-separated list of specific bindep profiles to request.
 
 .. zuul:rolevar:: bindep_file
 
