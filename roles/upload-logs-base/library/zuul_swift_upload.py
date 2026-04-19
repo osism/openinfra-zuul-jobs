@@ -36,12 +36,13 @@ except ImportError:
 import sys
 import threading
 import traceback
+import warnings
 
+import keystoneauth1.exceptions
 import openstack
 import requests
 import requests.exceptions
-import requestsexceptions
-import keystoneauth1.exceptions
+import urllib3.exceptions
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -413,8 +414,10 @@ def cli_main():
 
 if __name__ == '__main__':
     # Avoid unactionable warnings
-    requestsexceptions.squelch_warnings(
-        requestsexceptions.InsecureRequestWarning)
+    warnings.filterwarnings(
+        'ignore', category=urllib3.exceptions.InsecurePlatformWarning)
+    warnings.filterwarnings(
+        'ignore', category=urllib3.exceptions.InsecureRequestWarning)
 
     # The zip/ansible/modules check is required for Ansible 5 because
     # stdin may be a tty, but does not work in ansible 2.8.  The tty
