@@ -36,39 +36,12 @@
       become: yes
 
     - name: Install specified version of python interpreter and development files (RPM)
-      # NOTE(jan.gutter): this section has many pitfalls, and lacks test
-      # coverage. Rather than rewrite the logic to be more pleasing, and risk
-      # changing the behavior for folks who depend on edge cases, it has been
-      # preferrable to amend this with special cases, for the time being.
-      #
-      # RPM distros have diverged in behavior: packages and aliases are not
-      # consistent. The following example illustrates some known behavior for
-      # python_version "3.12"
-      #
-      # Fedora/EL9/EL10 (manually tested):
-      #   working:
-      #     - python312
-      #     - python3.12
-      #     - python3.12-devel
-      #   not working:
-      #     - python312-devel
-      #
-      # OpenSuSE (inferred from rpmfind.net):
-      #   working:
-      #     - python312
-      #     - python312-devel
-      #   not working:
-      #     - python3.12
-      #     - python3.12-devel
       when:
         - ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
       block:
         - name: Set default RPM package name
-          # NOTE(jan.gutter): this is likely faulty - but, without testing,
-          # touching it would taunt Hyrum's law. EL9/EL10 paths override the
-          # exception below this task for system python versions.
           set_fact:
-            rpm_python_pkg_name: python{{ python_version | replace('.', '') }}-devel
+            rpm_python_pkg_name: python{{ python_version }}-devel
         - name: Set RPM package name for CentOS/RHEL 9/10
           # Special case when the default system python is being used.
           set_fact:
