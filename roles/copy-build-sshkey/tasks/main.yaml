@@ -21,7 +21,7 @@
   - name: Install the build private key
     copy:
       src: "{{ zuul_temp_ssh_key }}"
-      dest: "{{ target_user_registered.home }}/.ssh/id_rsa"
+      dest: "{{ target_user_registered.home }}/.ssh/{{ zuul_ssh_key_dest }}"
       mode: 0600
       owner: "{{ copy_sshkey_target_user }}"
       force: no
@@ -29,7 +29,7 @@
   - name: Install the build public key
     copy:
       src: "{{ zuul_temp_ssh_key }}.pub"
-      dest: "{{ target_user_registered.home }}/.ssh/id_rsa.pub"
+      dest: "{{ target_user_registered.home }}/.ssh/{{ zuul_ssh_key_dest }}.pub"
       mode: 0644
       owner: "{{ copy_sshkey_target_user }}"
       force: no

@@ -11,7 +11,7 @@ newly generated private key.
 **Role Variables**
 
 .. zuul:rolevar:: zuul_temp_ssh_key
-   :default: ``{{ zuul.executor.work_root }}/{{ zuul.build }}_id_rsa``
+   :default: ``{{ zuul.executor.work_root }}/{{ zuul.build }}_id_{{ zuul_ssh_key_algorithm }}``
 
    Where to put the newly-generated SSH private key.
 
