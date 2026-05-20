@@ -1,0 +1,16 @@
+- name: Check and install validate-pyproject if necessary
+  include_role:
+    name: ensure-python-command
+  vars:
+    ensure_python_command_name: validate-pyproject
+    # the "all" extra includes optional dependencies
+    ensure_python_command_package: "validate_pyproject[all]"
+    ensure_python_command_version: "{{ ensure_validate_pyproject_version }}"
+    ensure_python_command_existing: "{{ validate_pyproject_executable | default('') }}"
+    ensure_python_command_venv_path: "{{ ensure_validate_pyproject_venv_path }}"
+    ensure_python_command_global_symlink: "{{ ensure_validate_pyproject_global_symlink }}"
+
+- name: Export validate_pyproject_executable path
+  set_fact:
+    validate_pyproject_executable: "{{ ensure_python_command_executable }}"
+    cacheable: true

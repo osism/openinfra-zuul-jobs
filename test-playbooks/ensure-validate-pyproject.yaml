@@ -1,0 +1,35 @@
+- hosts: all
+  name: Test ensure-validate-pyproject installs into user environment
+  tasks:
+    - name: Verify validate-pyproject is not installed
+      command: "validate-pyproject --version"
+      register: result
+      failed_when: result.rc == 0
+    - name: Run ensure-validate-pyproject with validate-pyproject not installed
+      include_role:
+        name: ensure-validate-pyproject
+    - name: Verify validate_pyproject_executable is set
+      assert:
+        that:
+          - validate_pyproject_executable == ansible_user_dir + '/.local/validate_pyproject/bin/validate-pyproject'
+    - name: Verify validate-pyproject is installed
+      command: "{{ validate_pyproject_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+
+- hosts: all
+  name: Test ensure-validate-pyproject when validate_pyproject_executable is set to an already installed validate-pyproject
+  tasks:
+    - name: Create a virtualenv
+      command: '{{ ensure_pip_virtualenv_command }} {{ ansible_user_dir }}/validate-pyproject-venv'
+    - name: Install validate-pyproject to local venv
+      command: '{{ ansible_user_dir }}/validate-pyproject-venv/bin/pip install validate-pyproject'
+    - name: Run ensure-validate-pyproject pointing to an already installed validate-pyproject
+      include_role:
+        name: ensure-validate-pyproject
+      vars:
+        validate_pyproject_executable: "{{ ansible_user_dir }}/validate-pyproject-venv/bin/validate-pyproject"
+    - name: Verify validate_pyproject_executable is set to the virtualenv validate-pyproject
+      assert:
+        that:
+          - validate_pyproject_executable == ansible_user_dir + '/validate-pyproject-venv/bin/validate-pyproject'
