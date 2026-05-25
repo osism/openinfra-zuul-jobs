@@ -105,7 +105,7 @@
       Responds to these variables:
 
       .. zuul:jobvar:: zone_files
-         :default: {{ ansible_user_dir }}/{{ zuul.project.src_dir }}
+         :default: {{ zuul_user_dir }}/{{ zuul.project.src_dir }}
 
          Search for zone.db files recursively in this directory.
          Format should be domain.xyz/zone.db, where the parent
