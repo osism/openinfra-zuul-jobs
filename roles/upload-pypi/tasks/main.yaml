@@ -40,7 +40,7 @@
   when: found_tarballs.files == []
 
 - name: Upload wheels and sdist tarballs with twine
-  command: "{{ pypi_twine_executable }} upload --config-file {{ _pypirc_tmp.path }} {% if pypi_twine_skip_existing %}--skip-existing{% endif %} -r {{ pypi_repository }} {{ found_wheels.files | map(attribute='path') | join(' ') }} {{ found_tarballs.files | map(attribute='path') | join(' ') }}"
+  command: "{{ pypi_twine_executable }} upload --config-file {{ _pypirc_tmp.path }} {% if pypi_twine_skip_existing %}--skip-existing{% endif %} {% if pypi_twine_cert %}--cert {{ pypi_twine_cert }}{% endif %} -r {{ pypi_repository }} {{ found_wheels.files | map(attribute='path') | join(' ') }} {{ found_tarballs.files | map(attribute='path') | join(' ') }}"
 
 - name: Delete .pypirc configuration file
   file:
