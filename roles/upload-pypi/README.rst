@@ -38,6 +38,11 @@ Upload python packages to PyPI
 
    Path containing artifacts to upload.
 
+.. zuul:rolevar:: pypi_twine_cert
+   :default: ''
+
+   Path to alternate CA bundle.
+
 .. zuul:rolevar:: pypi_twine_executable
    :default: twine
 
