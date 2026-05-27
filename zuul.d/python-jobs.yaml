@@ -514,6 +514,18 @@
       python_version: "3.13"
 
 - job:
+    name: nox-py314
+    parent: nox
+    description: |
+      Run unit tests for a Python project under cPython version 3.14.
+
+      Uses nox with the ``test`` keyword forcing python 3.14.
+    vars:
+      nox_keyword: tests
+      nox_force_python: "3.14"
+      python_version: "3.14"
+
+- job:
     name: nox-cover
     parent: nox
     description: |
