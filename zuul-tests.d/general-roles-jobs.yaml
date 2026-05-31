@@ -165,6 +165,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-base-roles-debian-trixie-8GB
+    description: Tests roles in the 'base' job on debian-trixie-8GB
+    parent: zuul-jobs-test-base-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-base-roles-ubuntu-focal
     description: Tests roles in the 'base' job on ubuntu-focal
     parent: zuul-jobs-test-base-roles
@@ -193,6 +203,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-base-roles-ubuntu-resolute-8GB
+    description: Tests roles in the 'base' job on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-base-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-base-test-roles
@@ -258,6 +278,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-base-test-roles-debian-trixie-8GB
+    description: Tests roles in the 'base-test' job on debian-trixie-8GB
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-base-test-roles-ubuntu-focal
     description: Tests roles in the 'base-test' job on ubuntu-focal
     parent: zuul-jobs-test-base-test-roles
@@ -286,6 +316,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-base-test-roles-ubuntu-resolute-8GB
+    description: Tests roles in the 'base-test' job on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-base-test-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-bindep
@@ -331,6 +371,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-bindep-debian-trixie-8GB
+    description: Test the bindep role on debian-trixie-8GB
+    parent: zuul-jobs-test-bindep
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-bindep-ubuntu-focal
     description: Test the bindep role on ubuntu-focal
     parent: zuul-jobs-test-bindep
@@ -359,6 +409,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-bindep-ubuntu-resolute-8GB
+    description: Test the bindep role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-bindep
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-clear-firewall
@@ -451,6 +511,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-validate-zone-db-debian-trixie-8GB
+    description: Test the validate-zone-db role on debian-trixie-8GB
+    parent: zuul-jobs-test-validate-zone-db
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-validate-zone-db-ubuntu-focal
     description: Test the validate-zone-db role on ubuntu-focal
     parent: zuul-jobs-test-validate-zone-db
@@ -479,6 +549,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-validate-zone-db-ubuntu-resolute-8GB
+    description: Test the validate-zone-db role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-validate-zone-db
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-dstat-graph
@@ -522,6 +602,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-dstat-graph-debian-trixie-8GB
+    description: Test the dstat-graph roles on debian-trixie-8GB
+    parent: zuul-jobs-test-dstat-graph
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-dstat-graph-ubuntu-focal
     description: Test the dstat-graph roles on ubuntu-focal
     parent: zuul-jobs-test-dstat-graph
@@ -550,6 +640,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-dstat-graph-ubuntu-resolute-8GB
+    description: Test the dstat-graph roles on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-dstat-graph
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-multinode-roles
@@ -627,6 +727,25 @@
             - secondary
 
 - job:
+    name: zuul-jobs-test-multinode-roles-debian-trixie-8GB
+    description: Tests multinode setup roles on debian-trixie-8GB
+    parent: zuul-jobs-test-multinode-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: primary
+          label: debian-trixie-8GB
+        - name: secondary
+          label: debian-trixie-8GB
+      groups:
+        - name: switch
+          nodes:
+            - primary
+        - name: peers
+          nodes:
+            - secondary
+
+- job:
     name: zuul-jobs-test-multinode-roles-ubuntu-focal
     description: Tests multinode setup roles on ubuntu-focal
     parent: zuul-jobs-test-multinode-roles
@@ -675,6 +794,25 @@
           label: ubuntu-noble
         - name: secondary
           label: ubuntu-noble
+      groups:
+        - name: switch
+          nodes:
+            - primary
+        - name: peers
+          nodes:
+            - secondary
+
+- job:
+    name: zuul-jobs-test-multinode-roles-ubuntu-resolute-8GB
+    description: Tests multinode setup roles on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-multinode-roles
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: primary
+          label: ubuntu-resolute-8GB
+        - name: secondary
+          label: ubuntu-resolute-8GB
       groups:
         - name: switch
           nodes:
@@ -754,6 +892,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-zookeeper-debian-trixie-8GB
+    description: Test the ensure-zookeeper roles on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-zookeeper-ubuntu-focal
     description: Test the ensure-zookeeper roles on ubuntu-focal
     parent: zuul-jobs-test-ensure-zookeeper
@@ -784,6 +932,16 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-zookeeper-ubuntu-resolute-8GB
+    description: Test the ensure-zookeeper roles on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-zookeeper
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-ensure-zookeeper-tmpfs
     description: Test the ensure-zookeeper roles with tmpfs
     parent: zuul-jobs-test-ensure-zookeeper
@@ -810,6 +968,16 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs-debian-trixie-8GB
+    description: Test the ensure-zookeeper roles with tmpfs on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-zookeeper-tmpfs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
 
 - job:
     name: zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-focal
@@ -842,6 +1010,16 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-resolute-8GB
+    description: Test the ensure-zookeeper roles with tmpfs on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-zookeeper-tmpfs
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-ensure-zookeeper-eatmydata
     description: Test the ensure-zookeeper roles with eatmydata
     parent: zuul-jobs-test-ensure-zookeeper
@@ -868,6 +1046,16 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata-debian-trixie-8GB
+    description: Test the ensure-zookeeper roles with eatmydata on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-zookeeper-eatmydata
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
 
 - job:
     name: zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-focal
@@ -898,6 +1086,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-resolute-8GB
+    description: Test the ensure-zookeeper roles with eatmydata on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-zookeeper-eatmydata
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-update-json-file
@@ -970,21 +1168,27 @@
         - zuul-jobs-test-base-roles-centos-9-stream
         - zuul-jobs-test-base-roles-debian-bookworm
         - zuul-jobs-test-base-roles-debian-bullseye
+        - zuul-jobs-test-base-roles-debian-trixie-8GB
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
         - zuul-jobs-test-base-roles-ubuntu-noble
+        - zuul-jobs-test-base-roles-ubuntu-resolute-8GB
         - zuul-jobs-test-base-test-roles-centos-9-stream
         - zuul-jobs-test-base-test-roles-debian-bookworm
         - zuul-jobs-test-base-test-roles-debian-bullseye
+        - zuul-jobs-test-base-test-roles-debian-trixie-8GB
         - zuul-jobs-test-base-test-roles-ubuntu-focal
         - zuul-jobs-test-base-test-roles-ubuntu-jammy
         - zuul-jobs-test-base-test-roles-ubuntu-noble
+        - zuul-jobs-test-base-test-roles-ubuntu-resolute-8GB
         - zuul-jobs-test-bindep-centos-9-stream
         - zuul-jobs-test-bindep-debian-bookworm
         - zuul-jobs-test-bindep-debian-bullseye
+        - zuul-jobs-test-bindep-debian-trixie-8GB
         - zuul-jobs-test-bindep-ubuntu-focal
         - zuul-jobs-test-bindep-ubuntu-jammy
         - zuul-jobs-test-bindep-ubuntu-noble
+        - zuul-jobs-test-bindep-ubuntu-resolute-8GB
         - zuul-jobs-test-clear-firewall
         - zuul-jobs-test-enable-fips-centos-9-stream
         - zuul-jobs-test-enable-fips-centos-10-stream
@@ -992,40 +1196,52 @@
         - zuul-jobs-test-netconsole
         - zuul-jobs-test-validate-zone-db-debian-bookworm
         - zuul-jobs-test-validate-zone-db-debian-bullseye
+        - zuul-jobs-test-validate-zone-db-debian-trixie-8GB
         - zuul-jobs-test-validate-zone-db-ubuntu-focal
         - zuul-jobs-test-validate-zone-db-ubuntu-jammy
         - zuul-jobs-test-validate-zone-db-ubuntu-noble
+        - zuul-jobs-test-validate-zone-db-ubuntu-resolute-8GB
         - zuul-jobs-test-dstat-graph-centos-9-stream
         - zuul-jobs-test-dstat-graph-debian-bookworm
         - zuul-jobs-test-dstat-graph-debian-bullseye
+        - zuul-jobs-test-dstat-graph-debian-trixie-8GB
         - zuul-jobs-test-dstat-graph-ubuntu-focal
         - zuul-jobs-test-dstat-graph-ubuntu-jammy
         - zuul-jobs-test-dstat-graph-ubuntu-noble
+        - zuul-jobs-test-dstat-graph-ubuntu-resolute-8GB
         - zuul-jobs-test-multinode-roles-centos-9-stream
         - zuul-jobs-test-multinode-roles-debian-bookworm
         - zuul-jobs-test-multinode-roles-debian-bullseye
+        - zuul-jobs-test-multinode-roles-debian-trixie-8GB
         - zuul-jobs-test-multinode-roles-ubuntu-focal
         - zuul-jobs-test-multinode-roles-ubuntu-jammy
         - zuul-jobs-test-multinode-roles-ubuntu-noble
+        - zuul-jobs-test-multinode-roles-ubuntu-resolute-8GB
         - zuul-jobs-test-generate-zuul-manifest
         - zuul-jobs-test-upload-artifactory
         - zuul-jobs-test-upload-git-mirror
         - zuul-jobs-test-shake-build
         - zuul-jobs-test-ensure-zookeeper-debian-bookworm
         - zuul-jobs-test-ensure-zookeeper-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-debian-trixie-8GB
         - zuul-jobs-test-ensure-zookeeper-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bookworm
         - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-trixie-8GB
         - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bookworm
         - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-trixie-8GB
         - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-resolute-8GB
         - zuul-jobs-test-update-json-file
         - zuul-jobs-test-stage-output
         - zuul-jobs-test-fetch-translation-output
@@ -1041,21 +1257,27 @@
         - zuul-jobs-test-base-roles-centos-9-stream
         - zuul-jobs-test-base-roles-debian-bookworm
         - zuul-jobs-test-base-roles-debian-bullseye
+        - zuul-jobs-test-base-roles-debian-trixie-8GB
         - zuul-jobs-test-base-roles-ubuntu-focal
         - zuul-jobs-test-base-roles-ubuntu-jammy
         - zuul-jobs-test-base-roles-ubuntu-noble
+        - zuul-jobs-test-base-roles-ubuntu-resolute-8GB
         - zuul-jobs-test-base-test-roles-centos-9-stream
         - zuul-jobs-test-base-test-roles-debian-bookworm
         - zuul-jobs-test-base-test-roles-debian-bullseye
+        - zuul-jobs-test-base-test-roles-debian-trixie-8GB
         - zuul-jobs-test-base-test-roles-ubuntu-focal
         - zuul-jobs-test-base-test-roles-ubuntu-jammy
         - zuul-jobs-test-base-test-roles-ubuntu-noble
+        - zuul-jobs-test-base-test-roles-ubuntu-resolute-8GB
         - zuul-jobs-test-bindep-centos-9-stream
         - zuul-jobs-test-bindep-debian-bookworm
         - zuul-jobs-test-bindep-debian-bullseye
+        - zuul-jobs-test-bindep-debian-trixie-8GB
         - zuul-jobs-test-bindep-ubuntu-focal
         - zuul-jobs-test-bindep-ubuntu-jammy
         - zuul-jobs-test-bindep-ubuntu-noble
+        - zuul-jobs-test-bindep-ubuntu-resolute-8GB
         - zuul-jobs-test-clear-firewall
         - zuul-jobs-test-enable-fips-centos-9-stream
         - zuul-jobs-test-enable-fips-centos-10-stream
@@ -1063,39 +1285,51 @@
         - zuul-jobs-test-netconsole
         - zuul-jobs-test-validate-zone-db-debian-bookworm
         - zuul-jobs-test-validate-zone-db-debian-bullseye
+        - zuul-jobs-test-validate-zone-db-debian-trixie-8GB
         - zuul-jobs-test-validate-zone-db-ubuntu-focal
         - zuul-jobs-test-validate-zone-db-ubuntu-jammy
         - zuul-jobs-test-validate-zone-db-ubuntu-noble
+        - zuul-jobs-test-validate-zone-db-ubuntu-resolute-8GB
         - zuul-jobs-test-dstat-graph-centos-9-stream
         - zuul-jobs-test-dstat-graph-debian-bookworm
         - zuul-jobs-test-dstat-graph-debian-bullseye
+        - zuul-jobs-test-dstat-graph-debian-trixie-8GB
         - zuul-jobs-test-dstat-graph-ubuntu-focal
         - zuul-jobs-test-dstat-graph-ubuntu-jammy
         - zuul-jobs-test-dstat-graph-ubuntu-noble
+        - zuul-jobs-test-dstat-graph-ubuntu-resolute-8GB
         - zuul-jobs-test-multinode-roles-centos-9-stream
         - zuul-jobs-test-multinode-roles-debian-bookworm
         - zuul-jobs-test-multinode-roles-debian-bullseye
+        - zuul-jobs-test-multinode-roles-debian-trixie-8GB
         - zuul-jobs-test-multinode-roles-ubuntu-focal
         - zuul-jobs-test-multinode-roles-ubuntu-jammy
         - zuul-jobs-test-multinode-roles-ubuntu-noble
+        - zuul-jobs-test-multinode-roles-ubuntu-resolute-8GB
         - zuul-jobs-test-generate-zuul-manifest
         - zuul-jobs-test-upload-artifactory
         - zuul-jobs-test-upload-git-mirror
         - zuul-jobs-test-ensure-zookeeper-debian-bookworm
         - zuul-jobs-test-ensure-zookeeper-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-debian-trixie-8GB
         - zuul-jobs-test-ensure-zookeeper-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bookworm
         - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-debian-trixie-8GB
         - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-tmpfs-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bookworm
         - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-bullseye
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-debian-trixie-8GB
         - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-focal
         - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-jammy
         - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-noble
+        - zuul-jobs-test-ensure-zookeeper-eatmydata-ubuntu-resolute-8GB
         - zuul-jobs-test-update-json-file
         - zuul-jobs-test-stage-output
         - zuul-jobs-test-fetch-translation-output
