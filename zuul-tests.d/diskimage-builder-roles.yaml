@@ -28,6 +28,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-dib-debian-trixie-8GB
+    description: Test the ensure-dib role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-dib
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-dib-ubuntu-focal
     description: Test the ensure-dib role on ubuntu-focal
     parent: zuul-jobs-test-ensure-dib
@@ -58,13 +68,26 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-dib-ubuntu-resolute-8GB
+    description: Test the ensure-dib role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-dib
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-build-diskimage
     description: Test the build-diskimage role
     files:
       - roles/build-diskimage/.*
       - test-playbooks/diskimage-builder/.*
     run: test-playbooks/diskimage-builder/build-diskimage.yaml
-    tags: debuntu-platforms
+    tags:
+      - debuntu-platforms
+      # TODO: dib has unbound variable issues on resolute
+      - exclude-ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-build-diskimage-debian-bookworm
@@ -85,6 +108,16 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-build-diskimage-debian-trixie-8GB
+    description: Test the build-diskimage role on debian-trixie-8GB
+    parent: zuul-jobs-test-build-diskimage
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
 
 - job:
     name: zuul-jobs-test-build-diskimage-ubuntu-focal
@@ -125,7 +158,11 @@
     run: test-playbooks/diskimage-builder/convert-diskimage.yaml
     required-projects:
       - openstack/diskimage-builder
-    tags: debuntu-platforms
+    tags:
+      - debuntu-platforms
+      # Same dib-side failures as build-diskimage on these platforms:
+      # IMAGE_NAME unbound variable from dib's manifests element on resolute.
+      - exclude-ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-convert-diskimage-debian-bookworm
@@ -146,6 +183,16 @@
       nodes:
         - name: debian-bullseye
           label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-convert-diskimage-debian-trixie-8GB
+    description: Test the convert-diskimage role on debian-trixie-8GB
+    parent: zuul-jobs-test-convert-diskimage
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
 
 - job:
     name: zuul-jobs-test-convert-diskimage-ubuntu-focal
@@ -190,16 +237,20 @@
       jobs: &id001
         - zuul-jobs-test-ensure-dib-debian-bookworm
         - zuul-jobs-test-ensure-dib-debian-bullseye
+        - zuul-jobs-test-ensure-dib-debian-trixie-8GB
         - zuul-jobs-test-ensure-dib-ubuntu-focal
         - zuul-jobs-test-ensure-dib-ubuntu-jammy
         - zuul-jobs-test-ensure-dib-ubuntu-noble
+        - zuul-jobs-test-ensure-dib-ubuntu-resolute-8GB
         - zuul-jobs-test-build-diskimage-debian-bookworm
         - zuul-jobs-test-build-diskimage-debian-bullseye
+        - zuul-jobs-test-build-diskimage-debian-trixie-8GB
         - zuul-jobs-test-build-diskimage-ubuntu-focal
         - zuul-jobs-test-build-diskimage-ubuntu-jammy
         - zuul-jobs-test-build-diskimage-ubuntu-noble
         - zuul-jobs-test-convert-diskimage-debian-bookworm
         - zuul-jobs-test-convert-diskimage-debian-bullseye
+        - zuul-jobs-test-convert-diskimage-debian-trixie-8GB
         - zuul-jobs-test-convert-diskimage-ubuntu-focal
         - zuul-jobs-test-convert-diskimage-ubuntu-jammy
         - zuul-jobs-test-convert-diskimage-ubuntu-noble

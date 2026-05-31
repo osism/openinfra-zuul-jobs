@@ -1,12 +1,29 @@
-- name: Install GnuPG for apt-key
+- name: Install GnuPG for key management
   become: true
   when: repositories_keys | length > 0
   apt:
     name: gnupg
     state: present
 
-- name: Add apt keys
+# apt-key was removed in Debian Trixie and Ubuntu Resolute.
+# Detect if it is present. If it is, use it. If it isn't, manually
+# inject the keys into /etc/apt/trusted.gpg.d/
+# This gets us working without reworking the interface too deeply.
+# TODO: The new format associates a key with a repository. We should update
+# our interface to support that, but currently we have parallel lists.
+- name: Check for apt-key
+  when: repositories_keys | length > 0
+  stat:
+    path: /usr/bin/apt-key
+  register: apt_key_path
+
+- name: Set apt key install method
+  set_fact:
+    have_apt_key: "{{ apt_key_path.stat.exists }}"
+
+- name: Add apt keys using apt-key
   become: true
+  when: have_apt_key | bool
   # noqa args[module] We're deciding at runtime which exclusive argument to pass
   apt_key:
     url: "{{ zj_item['url'] | default(omit) }}"
@@ -14,6 +31,35 @@
   loop: "{{ repositories_keys }}"
   loop_control:
     loop_var: zj_item
+
+- name: Add apt keys using trusted keyring
+  when: not have_apt_key | bool
+  become: true
+  block:
+    - name: Ensure apt trusted keyring directory exists
+      file:
+        path: /etc/apt/trusted.gpg.d
+        state: directory
+        mode: "0755"
+
+    - name: Download apt keys
+      get_url:
+        url: "{{ zj_item['url'] }}"
+        dest: "/etc/apt/trusted.gpg.d/zuul-{{ zj_item['url'] | hash('sha1') }}.asc"
+        mode: "0644"
+        force: true
+      loop: "{{ repositories_keys | selectattr('url', 'defined') | list }}"
+      loop_control:
+        loop_var: zj_item
+
+    - name: Write inline apt keys
+      copy:
+        content: "{{ zj_item['data'] }}"
+        dest: "/etc/apt/trusted.gpg.d/zuul-{{ zj_item['data'] | hash('sha1') }}.asc"
+        mode: "0644"
+      loop: "{{ repositories_keys | selectattr('data', 'defined') | list }}"
+      loop_control:
+        loop_var: zj_item
 
 - name: Add apt repositories
   become: true

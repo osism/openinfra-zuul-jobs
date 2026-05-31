@@ -48,6 +48,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-packer-debian-trixie-8GB
+    description: Test packer job on debian-trixie-8GB
+    parent: zuul-jobs-test-packer
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-packer-ubuntu-focal
     description: Test packer job on ubuntu-focal
     parent: zuul-jobs-test-packer
@@ -77,15 +87,27 @@
         - name: ubuntu-noble
           label: ubuntu-noble
 
+- job:
+    name: zuul-jobs-test-packer-ubuntu-resolute-8GB
+    description: Test packer job on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-packer
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
 - project:
     check:
       jobs: &id001
         - zuul-jobs-test-packer-centos-9-stream
         - zuul-jobs-test-packer-debian-bookworm
         - zuul-jobs-test-packer-debian-bullseye
+        - zuul-jobs-test-packer-debian-trixie-8GB
         - zuul-jobs-test-packer-ubuntu-focal
         - zuul-jobs-test-packer-ubuntu-jammy
         - zuul-jobs-test-packer-ubuntu-noble
+        - zuul-jobs-test-packer-ubuntu-resolute-8GB
     gate:
       jobs: *id001
     periodic-weekly:
