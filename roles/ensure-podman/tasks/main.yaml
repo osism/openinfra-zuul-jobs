@@ -1,3 +1,20 @@
+- name: Check rootless podman support
+  set_fact:
+    ensure_podman_rootless_not_supported: >-
+      {{
+        (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 24) or
+        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int < 12)
+      }}
+
+- name: Validate rootless podman support
+  fail:
+    msg: >-
+      ensure_podman_rootless is only supported starting with Ubuntu 24.04 and
+      Debian 12 (Bookworm)
+  when:
+    - ensure_podman_rootless | bool
+    - ensure_podman_rootless_not_supported | bool
+
 - name: Find distribution installation
   include_tasks: "{{ zj_distro_os }}"
   with_first_found:
@@ -8,6 +25,22 @@
     - "default.yaml"
   loop_control:
     loop_var: zj_distro_os
+
+- name: Configure rootless podman
+  include_tasks: rootless.yaml
+  when: ensure_podman_rootless | bool
+
+- name: Install podman-compose
+  become: yes
+  package:
+    name: podman-compose
+    state: present
+  when: podman_compose_install | bool
+
+- name: Configure user containers settings
+  include_tasks: user-config.yaml
+  when:
+    - ensure_podman_rootless | bool or ensure_podman_cgroup_manager is defined
 
 - name: Fetch podman version
   command: podman version

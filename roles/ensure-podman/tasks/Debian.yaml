@@ -1,9 +1,19 @@
 - name: Install podman
   package:
-    name:
+    name: "{{ ensure_podman_rootless | bool | ternary(_ensure_podman_rootless_packages, _ensure_podman_packages) }}"
+    state: present
+  become: yes
+  vars:
+    _ensure_podman_packages:
       - podman
       - uidmap
       - slirp4netns
       - containernetworking-plugins
-    state: present
-  become: yes
+    _ensure_podman_rootless_packages:
+      - podman
+      - passt
+      - uidmap
+      - netavark
+      - aardvark-dns
+      - crun
+      - runc
