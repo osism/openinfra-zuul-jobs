@@ -28,17 +28,29 @@
       include_role:
         name: "build-docker-image"
       vars:
-        docker_images:
+        _normal_previous_build_images:
           - context: test-playbooks/registry/docker
             repository: "{{ previous_build_repository }}"
+        _arch_previous_build_images:
+          - context: test-playbooks/registry/docker
+            repository: "{{ previous_build_repository }}"
+            # arch being present at all, rather than empty, triggers the multiarch path
+            arch: ['linux/amd64', 'linux/arm64']
+        docker_images: "{{ multiarch | ternary(_arch_previous_build_images, _normal_previous_build_images) }}"
     - name: "Build a container image for the previous build with container-image roles"
       when: container_role != 'docker'
       include_role:
         name: "build-container-image"
       vars:
-        container_images:
+        _normal_previous_build_images:
           - context: test-playbooks/registry/docker
             repository: "{{ previous_build_repository }}"
+        _arch_previous_build_images:
+          - context: test-playbooks/registry/docker
+            repository: "{{ previous_build_repository }}"
+            # arch being present at all, rather than empty, triggers the multiarch path
+            arch: ['linux/amd64', 'linux/arm64']
+        container_images: "{{ multiarch | ternary(_arch_previous_build_images, _normal_previous_build_images) }}"
     - name: Tag the previous build
       command: "{{ container_command }} tag {{ previous_build_repository }}:latest localhost:5000/{{ previous_build_repository }}:{{ previous_build_uuid }}_latest"
     - name: Push the previous build to the intermediate registry
