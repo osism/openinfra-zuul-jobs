@@ -14,3 +14,26 @@
     - name: Debug output
       debug:
         msg: '{{ output.stdout }}'
+
+    - name: Check containers.conf
+      when: ensure_podman_rootless | default(false) | bool
+      slurp:
+        path: "{{ ansible_user_dir }}/.config/containers/containers.conf"
+      register: containers_conf
+
+    - name: Verify rootless podman configuration
+      when: ensure_podman_rootless | default(false) | bool
+      assert:
+        that:
+          - "'default_rootless_network_cmd = \"pasta\"' in (containers_conf.content | b64decode)"
+          - "'network_backend = \"netavark\"' in (containers_conf.content | b64decode)"
+
+    - name: Verify modern cgroups v2 platforms do not force cgroupfs
+      when:
+        - ensure_podman_rootless | default(false) | bool
+        - >-
+          (ansible_distribution == 'Ubuntu' and ansible_distribution_version in ['24.04', '26.04']) or
+          (ansible_distribution == 'Debian' and ansible_distribution_major_version == '13')
+      assert:
+        that:
+          - "'cgroup_manager = \"cgroupfs\"' not in (containers_conf.content | b64decode)"

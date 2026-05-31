@@ -1,0 +1,14 @@
+{% if ensure_podman_rootless | bool %}
+[network]
+default_rootless_network_cmd = "pasta"
+
+{% endif %}
+{% if ensure_podman_cgroup_manager is defined or ensure_podman_rootless | bool %}
+[engine]
+{% if ensure_podman_cgroup_manager is defined %}
+cgroup_manager = "{{ ensure_podman_cgroup_manager }}"
+{% endif %}
+{% if ensure_podman_rootless | bool %}
+network_backend = "netavark"
+{% endif %}
+{% endif %}

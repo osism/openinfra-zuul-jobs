@@ -641,6 +641,56 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-podman-rootless
+    description: |
+      Test the ensure-podman role with rootless podman configuration
+    abstract: true
+    files:
+      - roles/ensure-podman/.*
+      - roles/ensure-package-repositories/.*
+      - test-playbooks/ensure-podman/.*
+    run: test-playbooks/ensure-podman/main.yaml
+    vars:
+      ensure_podman_validate: true
+      ensure_podman_rootless: true
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-debian-bookworm
+    description: Test the ensure-podman role with rootless mode on debian-bookworm
+    parent: zuul-jobs-test-ensure-podman-rootless
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-debian-trixie-4GB
+    description: Test the ensure-podman role with rootless mode on debian-trixie-4GB
+    parent: zuul-jobs-test-ensure-podman-rootless
+    nodeset:
+      nodes:
+        - name: debian-trixie-4GB
+          label: debian-trixie-4GB
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-ubuntu-noble
+    description: Test the ensure-podman role with rootless mode on ubuntu-noble
+    parent: zuul-jobs-test-ensure-podman-rootless
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-ubuntu-resolute-4GB
+    description: Test the ensure-podman role with rootless mode on ubuntu-resolute-4GB
+    parent: zuul-jobs-test-ensure-podman-rootless
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-4GB
+          label: ubuntu-resolute-4GB
+
+- job:
     name: zuul-jobs-test-ensure-skopeo
     description: |
       Test the ensure-skopeo role
@@ -779,6 +829,10 @@
         - zuul-jobs-test-ensure-podman-socket-debian-bullseye
         - zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
         - zuul-jobs-test-ensure-podman-socket-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-rootless-debian-bookworm
+        - zuul-jobs-test-ensure-podman-rootless-debian-trixie-4GB
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-resolute-4GB
         - zuul-jobs-test-ensure-skopeo-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bullseye
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
@@ -820,6 +874,10 @@
         - zuul-jobs-test-ensure-podman-socket-debian-bullseye
         - zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
         - zuul-jobs-test-ensure-podman-socket-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-rootless-debian-bookworm
+        - zuul-jobs-test-ensure-podman-rootless-debian-trixie-4GB
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-resolute-4GB
         - zuul-jobs-test-ensure-skopeo-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bullseye
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal

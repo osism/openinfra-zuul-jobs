@@ -1,6 +1,10 @@
 - name: Install podman
   package:
-    name:
+    name: "{{ ensure_podman_rootless | bool | ternary(_ensure_podman_rootless_packages, _ensure_podman_packages) }}"
+    state: present
+  become: yes
+  vars:
+    _ensure_podman_packages:
       - 'podman=3.4.4+ds1-1ubuntu1'
       - uidmap
       - slirp4netns
@@ -8,16 +12,15 @@
       - containernetworking-plugins
       # This enables container network dns resolution:
       - golang-github-containernetworking-plugin-dnsname
-    state: present
-  become: yes
+    _ensure_podman_rootless_packages:
+      - podman
+      - passt
+      - uidmap
+      - netavark
+      - aardvark-dns
+      - crun
+      - runc
 
-- name: Create containers config dir
-  file:
-    path: '{{ ansible_user_dir }}/.config/containers'
-    state: directory
 - name: Force cgroup manager to cgroupfs for Ubuntu
-  copy:
-    content: |
-      [engine]
-      cgroup_manager = "cgroupfs"
-    dest: '{{ ansible_user_dir }}/.config/containers/containers.conf'
+  set_fact:
+    ensure_podman_cgroup_manager: cgroupfs

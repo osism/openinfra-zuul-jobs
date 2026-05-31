@@ -1,3 +1,10 @@
 ensure_podman_validate: false
 ensure_podman_socket: false
 ensure_podman_group: podman
+ensure_podman_rootless: false
+ensure_podman_rootless_unprivileged_port_start:
+ensure_podman_rootless_subuid_start: 100000
+ensure_podman_rootless_subuid_count: 65536
+ensure_podman_rootless_subgid_start: 100000
+ensure_podman_rootless_subgid_count: 65536
+podman_compose_install: false
