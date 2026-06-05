@@ -186,6 +186,96 @@
       nodes: []
 
 - job:
+    name: zuul-jobs-test-ensure-pipx
+    description: Test the ensure-pipx role
+    files:
+      - roles/ensure-pipx/.*
+      - roles/ensure-python-command/.*
+      - test-playbooks/ensure-pipx.yaml
+    run: test-playbooks/ensure-pipx.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-centos-9-stream
+    description: Test the ensure-pipx role on centos-9-stream
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-debian-bookworm
+    description: Test the ensure-pipx role on debian-bookworm
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-debian-bullseye
+    description: Test the ensure-pipx role on debian-bullseye
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-debian-trixie-8GB
+    description: Test the ensure-pipx role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-focal
+    description: Test the ensure-pipx role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-jammy
+    description: Test the ensure-pipx role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-noble
+    description: Test the ensure-pipx role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-resolute-8GB
+    description: Test the ensure-pipx role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-ensure-poetry
     description: Test the ensure-poetry role
     files:
@@ -955,6 +1045,14 @@
         - zuul-jobs-test-ensure-pip-ubuntu-noble
         - zuul-jobs-test-ensure-pip-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-pip-localhost
+        - zuul-jobs-test-ensure-pipx-centos-9-stream
+        - zuul-jobs-test-ensure-pipx-debian-bookworm
+        - zuul-jobs-test-ensure-pipx-debian-bullseye
+        - zuul-jobs-test-ensure-pipx-debian-trixie-8GB
+        - zuul-jobs-test-ensure-pipx-ubuntu-focal
+        - zuul-jobs-test-ensure-pipx-ubuntu-jammy
+        - zuul-jobs-test-ensure-pipx-ubuntu-noble
+        - zuul-jobs-test-ensure-pipx-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-poetry-centos-9-stream
         - zuul-jobs-test-ensure-poetry-debian-bookworm
         - zuul-jobs-test-ensure-poetry-debian-bullseye

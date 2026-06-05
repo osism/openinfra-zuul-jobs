@@ -1,0 +1,35 @@
+- hosts: all
+  name: Test ensure-pipx installs into user environment
+  tasks:
+    - name: Verify pipx is not installed
+      command: "pipx --version"
+      register: result
+      failed_when: result.rc == 0
+    - name: Run ensure-pipx with pipx not installed
+      include_role:
+        name: ensure-pipx
+    - name: Verify ensure_pipx_executable is set
+      assert:
+        that:
+          - ensure_pipx_executable == ansible_user_dir + '/.local/pipx/bin/pipx'
+    - name: Verify pipx is installed
+      command: "{{ ensure_pipx_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+
+- hosts: all
+  name: Test ensure-pipx when ensure_pipx_executable is set to an already installed pipx
+  tasks:
+    - name: Create a virtualenv
+      command: "{{ ensure_pip_virtualenv_command }} {{ ansible_user_dir }}/pipx-venv"
+    - name: Install pipx to local venv
+      command: "{{ ansible_user_dir }}/pipx-venv/bin/pip install pipx"
+    - name: Run ensure-pipx pointing to an already installed pipx
+      include_role:
+        name: ensure-pipx
+      vars:
+        ensure_pipx_executable: "{{ ansible_user_dir }}/pipx-venv/bin/pipx"
+    - name: Verify ensure_pipx_executable is set to the virtualenv pipx
+      assert:
+        that:
+          - ensure_pipx_executable == ansible_user_dir + '/pipx-venv/bin/pipx'
