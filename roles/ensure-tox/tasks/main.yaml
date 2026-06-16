@@ -12,7 +12,7 @@
   register: tox_preinstalled
   failed_when: false
 
-- name: Export preinstalled tox_exectuable
+- name: Export preinstalled tox_executable
   set_fact:
     tox_executable: '{{ tox_preinstalled.stdout_lines[0] }}'
     cacheable: true
