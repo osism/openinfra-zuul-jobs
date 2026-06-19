@@ -1,0 +1,17 @@
+- name: Add all repositories
+  include_role:
+    name: ensure-package-repositories
+  vars:
+    repositories_keys:
+      - url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ansible_distribution_version }}/Release.key"
+    repositories_list:
+      - repo: ppa:projectatomic/ppa
+      - repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ ansible_distribution_version }}/ /"
+
+- name: Install skopeo
+  package:
+    name:
+      - skopeo
+      - uidmap
+    state: present
+  become: yes
