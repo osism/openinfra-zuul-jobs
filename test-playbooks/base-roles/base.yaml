@@ -8,6 +8,7 @@
 - import_playbook: ensure-output-dirs.yaml
 - import_playbook: prepare-workspace-git-required-projects-only.yaml
 - import_playbook: prepare-workspace-git.yaml
+- import_playbook: prepare-repos.yaml
 - import_playbook: configure-mirrors.yaml
 - import_playbook: fetch-zuul-cloner.yaml
 - import_playbook: validate-host.yaml

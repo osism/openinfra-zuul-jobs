@@ -1,0 +1,6 @@
+- name: Test the prepare-repos role
+  hosts: all
+  roles:
+    - role: prepare-repos
+      vars:
+        prepare_repos_sync_required_projects_only: true

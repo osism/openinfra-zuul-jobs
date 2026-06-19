@@ -35,6 +35,7 @@ General Purpose Roles
 .. zuul:autorole:: multi-node-known-hosts
 .. zuul:autorole:: persistent-firewall
 .. zuul:autorole:: post-reboot-tasks
+.. zuul:autorole:: prepare-repos
 .. zuul:autorole:: prepare-workspace
 .. zuul:autorole:: prepare-workspace-git
 .. zuul:autorole:: prepare-workspace-openshift
