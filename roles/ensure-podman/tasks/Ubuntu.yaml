@@ -17,3 +17,5 @@
       - crun
       - passt
       - uidmap
+      - aardvark-dns
+      - nftables
