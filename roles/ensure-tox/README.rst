@@ -35,6 +35,19 @@ virtual environment for the current user.
    Setting this requires root access, so should only be done in
    circumstances where root access is available.
 
+.. zuul:rolevar:: ensure_tox_pip_version
+   :default: False
+
+   By default, when this role installs tox into a new virtual
+   environment, it uses the bundled ``pip`` version. That's almost
+   always what you want. However, there is a set of pythons where
+   the bundled pip is too old to interpret Requires-Python, so end
+   up not being able to install software that would otherwise actually
+   still be installable. The combo of tox and python 3.6 is an example.
+
+   Set this to a version specifier to upgrade ``pip`` in the venv
+   before installing tox.
+
 **Output Variables**
 
 .. zuul:rolevar:: tox_executable
