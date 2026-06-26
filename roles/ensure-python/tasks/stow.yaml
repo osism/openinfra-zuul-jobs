@@ -15,4 +15,4 @@
   loop: "{{ stow_envs.files | map(attribute='path') | list }}"
   loop_control:
     loop_var: zj_stow_env
-  when: python_version in zj_stow_env
+  when: ('python-' + (python_version | string)) in (zj_stow_env | basename)
