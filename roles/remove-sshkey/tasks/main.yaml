@@ -1,5 +1,5 @@
 - name: Remove ssh key
-  command: "shred ~/.ssh/id_rsa"
+  command: "shred -uz ~/.ssh/id_rsa"
 
 - name: Remove host key information from known hosts
   known_hosts:

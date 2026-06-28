@@ -93,7 +93,7 @@
         loop_var: zj_image
   always:
     - name: Remove docker user config
-      command: "shred ~/.docker/config.json"
+      command: "shred -uz ~/.docker/config.json"
     - name: Replace docker user configuration
       copy:
         content: "{{ docker_config | to_nice_json }}"
