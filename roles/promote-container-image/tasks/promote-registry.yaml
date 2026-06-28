@@ -15,6 +15,8 @@
         loop_var: zj_image_tag
       command: >-
         skopeo --insecure-policy copy --all {{ zj_artifact_map[zj_image.repository + ':' + zj_image_tag] }} docker://{{ zj_image.repository }}:{{ zj_image_tag }}
+      environment:
+        XDG_DATA_HOME: "{{ zuul_user_dir }}"
       register: result
       until: result.rc == 0
       retries: 3
