@@ -7,6 +7,8 @@
     skopeo --insecure-policy copy --all
     docker://127.0.0.1:{{ socat_port }}/{{ zj_image.repository | regex_replace('^docker\.io/(.*)', '\1') }}:{{ zj_image_tag }}
     docker://{{ intermediate_registry.host | ipwrap }}:{{ intermediate_registry.port }}/{{ zj_image.repository }}:{{ zuul.build }}_{{ zj_image_tag }}
+  environment:
+    XDG_DATA_HOME: "{{ zuul_user_dir }}"
   retries: 3
   register: result
   until: result is success
