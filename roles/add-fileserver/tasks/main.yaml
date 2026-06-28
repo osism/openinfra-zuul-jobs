@@ -13,7 +13,7 @@
   command: "ssh-add {{ ssh_private_key_tmp.path }}"
 
 - name: Remove SSH private key from disk
-  command: "shred {{ ssh_private_key_tmp.path }}"
+  command: "shred -uz {{ ssh_private_key_tmp.path }}"
 
 - name: Add fileserver to inventory
   add_host:
