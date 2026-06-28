@@ -105,8 +105,9 @@
         loop_var: zj_zuul_artifact
   always:
     - name: Remove docker user config
-      command: "shred ~/.docker/config.json"
+      command: "shred -uz ~/.docker/config.json"
     - name: Replace docker user configuration
+      when: docker_config_stat.stat.exists
       copy:
         content: "{{ docker_config | to_nice_json }}"
         dest: "~/.docker/config.json"
