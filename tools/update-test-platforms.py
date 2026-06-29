@@ -35,11 +35,13 @@ CENTOS_PLATFORMS = [
 DEBIAN_PLATFORMS = [
     'debian-bullseye',
     'debian-bookworm',
+    'debian-trixie-8GB',
 ]
 UBUNTU_PLATFORMS = [
     'ubuntu-focal',
     'ubuntu-jammy',
     'ubuntu-noble',
+    'ubuntu-resolute-8GB',
 ]
 FEDORA_PLATFORMS = [
 ]

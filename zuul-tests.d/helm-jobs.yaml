@@ -48,6 +48,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-helm-lint-debian-trixie-8GB
+    description: Test the helm-lint job on debian-trixie-8GB
+    parent: zuul-jobs-test-helm-lint
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-helm-lint-ubuntu-focal
     description: Test the helm-lint job on ubuntu-focal
     parent: zuul-jobs-test-helm-lint
@@ -77,15 +87,27 @@
         - name: ubuntu-noble
           label: ubuntu-noble
 
+- job:
+    name: zuul-jobs-test-helm-lint-ubuntu-resolute-8GB
+    description: Test the helm-lint job on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-helm-lint
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
 - project:
     check:
       jobs: &id001
         - zuul-jobs-test-helm-lint-centos-9-stream
         - zuul-jobs-test-helm-lint-debian-bookworm
         - zuul-jobs-test-helm-lint-debian-bullseye
+        - zuul-jobs-test-helm-lint-debian-trixie-8GB
         - zuul-jobs-test-helm-lint-ubuntu-focal
         - zuul-jobs-test-helm-lint-ubuntu-jammy
         - zuul-jobs-test-helm-lint-ubuntu-noble
+        - zuul-jobs-test-helm-lint-ubuntu-resolute-8GB
     gate:
       jobs: *id001
     periodic-weekly:

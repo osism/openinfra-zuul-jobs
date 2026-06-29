@@ -76,7 +76,6 @@ _docker_upstream_distro_required_packages:
   - apt-transport-https
   - ca-certificates
   - curl
-  - software-properties-common
 
 _docker_upstream_distro_packages:
   - docker-ce
