@@ -5,6 +5,8 @@
 - name: Create the final image tag
   command: >-
     skopeo --insecure-policy copy --all docker://{{ zj_image.repository }}:{{ promote_tag_prefix }}_{{ zj_image_tag }} docker://{{ zj_image.repository }}:{{ zj_image_tag }}
+  environment:
+    XDG_DATA_HOME: "{{ zuul_user_dir }}"
   register: result
   until: result.rc == 0
   retries: 3
