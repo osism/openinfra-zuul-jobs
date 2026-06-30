@@ -6,11 +6,12 @@
   vars:
     _ensure_podman_packages:
       - podman
-      - crun
-      - passt
       - uidmap
-      - aardvark-dns
-      - nftables
+      - slirp4netns
+      - fuse-overlayfs
+      - containernetworking-plugins
+      # This enables container network dns resolution:
+      - golang-github-containernetworking-plugin-dnsname
     _ensure_podman_rootless_packages:
       - podman
       - crun
