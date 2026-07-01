@@ -388,6 +388,12 @@
           label: debian-bookworm
 
 - job:
+    name: zuul-jobs-test-registry-buildset-registry-podman
+    parent: zuul-jobs-test-registry-buildset-registry
+    vars:
+      container_command: podman
+
+- job:
     name: zuul-jobs-test-registry-buildset-registry-k8s-microk8s
     dependencies: zuul-jobs-test-registry-buildset-registry
     description: |
@@ -877,6 +883,7 @@
         - zuul-jobs-test-registry-docker-container-role-multiarch
         - zuul-jobs-test-registry-podman
         - zuul-jobs-test-registry-buildset-registry
+        - zuul-jobs-test-registry-buildset-registry-podman
         - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
         - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
@@ -932,6 +939,7 @@
         - zuul-jobs-test-registry-docker-container-role-multiarch
         - zuul-jobs-test-registry-podman
         - zuul-jobs-test-registry-buildset-registry
+        - zuul-jobs-test-registry-buildset-registry-podman
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
         - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
         - zuul-jobs-test-ensure-podman-debian-bookworm
