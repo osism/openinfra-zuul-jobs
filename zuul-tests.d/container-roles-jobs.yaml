@@ -273,6 +273,18 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-registry-docker-resolute-8GB
+    parent: zuul-jobs-test-registry-docker
+    nodeset: &registry_nodeset_resolute
+      nodes:
+        - name: intermediate-registry
+          label: ubuntu-resolute-8GB
+        - name: executor
+          label: debian-trixie-8GB
+        - name: builder
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-registry-docker-container-role
     parent: zuul-jobs-test-registry-docker
     description: |
@@ -308,6 +320,11 @@
       container_role: docker
       multiarch: true
     nodeset: *registry_nodeset
+
+- job:
+    name: zuul-jobs-test-registry-docker-multiarch-resolute-8GB
+    parent: zuul-jobs-test-registry-docker-multiarch
+    nodeset: *registry_nodeset_resolute
 
 - job:
     name: zuul-jobs-test-registry-docker-container-role-multiarch
@@ -346,6 +363,11 @@
       container_role: container
       multiarch: false
     nodeset: *registry_nodeset
+
+- job:
+    name: zuul-jobs-test-registry-podman-resolute-8GB
+    parent: zuul-jobs-test-registry-podman
+    nodeset: *registry_nodeset_resolute
 
 - job:
     name: zuul-jobs-test-registry-buildset-registry
@@ -392,6 +414,16 @@
     parent: zuul-jobs-test-registry-buildset-registry
     vars:
       container_command: podman
+
+- job:
+    name: zuul-jobs-test-registry-buildset-registry-podman-resolute-8GB
+    parent: zuul-jobs-test-registry-buildset-registry
+    vars:
+      container_command: podman
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-registry-buildset-registry-podman-socket
@@ -888,12 +920,16 @@
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
         - zuul-jobs-test-registry-docker
+        - zuul-jobs-test-registry-docker-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role
         - zuul-jobs-test-registry-docker-multiarch
+        - zuul-jobs-test-registry-docker-multiarch-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role-multiarch
         - zuul-jobs-test-registry-podman
+        - zuul-jobs-test-registry-podman-resolute-8GB
         - zuul-jobs-test-registry-buildset-registry
         - zuul-jobs-test-registry-buildset-registry-podman
+        - zuul-jobs-test-registry-buildset-registry-podman-resolute-8GB
         - zuul-jobs-test-registry-buildset-registry-podman-socket
         - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
@@ -945,12 +981,16 @@
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
         - zuul-jobs-test-registry-docker
+        - zuul-jobs-test-registry-docker-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role
         - zuul-jobs-test-registry-docker-multiarch
+        - zuul-jobs-test-registry-docker-multiarch-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role-multiarch
         - zuul-jobs-test-registry-podman
+        - zuul-jobs-test-registry-podman-resolute-8GB
         - zuul-jobs-test-registry-buildset-registry
         - zuul-jobs-test-registry-buildset-registry-podman
+        - zuul-jobs-test-registry-buildset-registry-podman-resolute-8GB
         - zuul-jobs-test-registry-buildset-registry-podman-socket
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
         - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
