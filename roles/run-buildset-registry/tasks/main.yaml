@@ -3,7 +3,6 @@
   package:
     name:
       - openssl
-      - socat
     state: present
 
 - name: Ensure registry volume directories exists
@@ -45,17 +44,11 @@
   command: >-
     {{ container_command }} run -d
     --name="{{ (buildset_registry_port == 5000) | ternary('buildset_registry', 'buildset_registry_' + buildset_registry_port|string) }}"
+    --net=host
     --restart=always
-    --publish="1{{ buildset_registry_port }}:5000"
     --volume="{{ buildset_registry_root }}/tls:/tls"
     --volume="{{ buildset_registry_root }}/conf:/conf"
     {{ buildset_registry_image }} zuul-registry -d
-
-# Start a socat tunnel to the buildset registry to work around
-# https://github.com/containers/libpod/issues/4311
-# in case we're using podman.
-- name: Start socat to work around https://github.com/containers/libpod/issues/4311
-  shell: "setsid socat -d -d TCP6-LISTEN:{{ buildset_registry_port }},fork TCP:127.0.0.1:1{{ buildset_registry_port }} 2> {{ buildset_registry_root }}/socat_port &"
 
 - name: Set registry information fact
   set_fact:
