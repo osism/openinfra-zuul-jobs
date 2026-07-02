@@ -394,6 +394,16 @@
       container_command: podman
 
 - job:
+    name: zuul-jobs-test-registry-buildset-registry-podman-socket
+    parent: zuul-jobs-test-registry-buildset-registry
+    description: |
+      Test the buildset registry with podman accessed as a docker
+      API client via the podman socket
+    vars:
+      container_command: podman
+      ensure_podman_socket: true
+
+- job:
     name: zuul-jobs-test-registry-buildset-registry-k8s-microk8s
     dependencies: zuul-jobs-test-registry-buildset-registry
     description: |
@@ -884,6 +894,7 @@
         - zuul-jobs-test-registry-podman
         - zuul-jobs-test-registry-buildset-registry
         - zuul-jobs-test-registry-buildset-registry-podman
+        - zuul-jobs-test-registry-buildset-registry-podman-socket
         - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
         - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
@@ -940,6 +951,7 @@
         - zuul-jobs-test-registry-podman
         - zuul-jobs-test-registry-buildset-registry
         - zuul-jobs-test-registry-buildset-registry-podman
+        - zuul-jobs-test-registry-buildset-registry-podman-socket
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
         - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
         - zuul-jobs-test-ensure-podman-debian-bookworm
