@@ -19,3 +19,4 @@
       - uidmap
       - aardvark-dns
       - nftables
+      - catatonit

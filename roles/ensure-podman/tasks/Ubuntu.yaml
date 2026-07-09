@@ -11,6 +11,7 @@
       - uidmap
       - aardvark-dns
       - nftables
+      - catatonit
     _ensure_podman_rootless_packages:
       - podman
       - crun
@@ -18,3 +19,4 @@
       - uidmap
       - aardvark-dns
       - nftables
+      - catatonit
