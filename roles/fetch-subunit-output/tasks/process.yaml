@@ -45,7 +45,7 @@
     data:
       zuul:
         artifacts:
-          - name: "Unit Test Report"
+          - name: "{{ fetch_subunit_output_artifact_name }}"
             url: "testr_results.html"
             metadata:
               type: unit_test_report

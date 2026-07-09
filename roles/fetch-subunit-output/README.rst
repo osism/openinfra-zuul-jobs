@@ -14,6 +14,13 @@ Collect subunit outputs
    to collect. The content of zuul_work_dir is always checked,
    so it should not be added here.
 
+.. zuul:rolevar:: fetch_subunit_output_artifact_name
+   :default: Unit Test Report
+
+   Name of the artifact entry returned to Zuul via ``zuul_return``.
+   Override this when multiple jobs publish subunit results and you need
+   distinct artifact labels in the build summary.
+
 .. zuul:rolevar:: zuul_use_fetch_output
    :default: false
 
