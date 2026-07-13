@@ -15,6 +15,13 @@ content to appropriate permanent locations.
 
 **Role Variables**
 
+.. zuul:rolevar:: fetch_output_rsync_opts
+
+   A list containing additional options (strings) for the `synchronize`
+   module, passed to the `rsync` tool that the Ansible uses underneath.
+   Example: `fetch_output_rsync_opts: ['--no-motd', '--stats']`.
+   Default: empty list (`[]`).
+
 .. zuul:rolevar:: zuul_output_dir
    :default: {{ ansible_user_dir }}/zuul-output
 
