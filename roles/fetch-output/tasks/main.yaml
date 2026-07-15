@@ -25,7 +25,6 @@
   synchronize:
     dest: "{{ zj_output.dest }}/"
     mode: pull
-    rsync_opts: "{{ fetch_output_rsync_opts }}"
     src: "{{ zuul_output_dir }}/{{ zj_output.src }}/"
     verify_host: true
     owner: false
