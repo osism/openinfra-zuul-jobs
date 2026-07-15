@@ -1,2 +1,1 @@
-fetch_output_rsync_opts: []
 zuul_output_dir: "{{ ansible_user_dir }}/zuul-output"
