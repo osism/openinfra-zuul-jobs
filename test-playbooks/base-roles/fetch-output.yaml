@@ -44,3 +44,33 @@
           - local_artifact_content is succeeded
           - local_doc_content is not changed
           - local_doc_content is succeeded
+
+- name: Test fetch-output role with rsync options
+  hosts: all
+  pre_tasks:
+    - name: Create a test file for rsync log verification
+      copy:
+        # Content is 2 KiB of 'x' characters to trigger human-readable suffixes
+        content: "{{ 'x' * 2048 }}"
+        dest: '{{ zuul_output_dir }}/logs/rsync-opts-test.txt'
+  roles:
+    - role: fetch-output
+      fetch_output_rsync_quiet: true
+      fetch_output_rsync_stats: true
+      fetch_output_rsync_human_readable: true
+      fetch_output_rsync_log_file: true
+  post_tasks:
+    - name: Read the rsync log file
+      delegate_to: localhost
+      slurp:
+        src: "{{ zuul.executor.log_root }}/fetch-output.log"
+      register: rsync_log
+
+    - name: Validate rsync log file contents
+      vars:
+        log_content: "{{ rsync_log.content | b64decode }}"
+      assert:
+        that:
+          - "'rsync-opts-test.txt' in log_content"
+          - "'Number of files' in log_content"
+          - "log_content | regex_search('[0-9.]+[KMG] bytes')"

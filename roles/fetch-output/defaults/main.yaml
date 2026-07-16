@@ -1,1 +1,8 @@
+fetch_output_rsync_bwlimit: ""
+fetch_output_rsync_human_readable: false
+fetch_output_rsync_log_file: false
+fetch_output_rsync_no_motd: false
+fetch_output_rsync_quiet: false
+fetch_output_rsync_stats: false
+fetch_output_rsync_timeout: 0
 zuul_output_dir: "{{ ansible_user_dir }}/zuul-output"
