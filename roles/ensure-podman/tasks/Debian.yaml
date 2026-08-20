@@ -17,3 +17,4 @@
       - aardvark-dns
       - crun
       - runc
+      - nftables

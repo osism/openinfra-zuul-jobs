@@ -20,6 +20,7 @@
       - aardvark-dns
       - crun
       - runc
+      - nftables
 
 - name: Force cgroup manager to cgroupfs for Ubuntu
   set_fact:
