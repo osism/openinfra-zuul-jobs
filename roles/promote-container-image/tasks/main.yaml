@@ -25,6 +25,14 @@
     loop_var: zj_image
   include_tasks: promote-retag.yaml
 
-- name: Promote container image with intermediate registry
-  when: promote_container_image_method|default('tag') == 'intermediate-registry'
+- name: Promote container image with intermediate registry (deprecated)
+  when:
+    - promote_container_image_method|default('tag') == 'intermediate-registry'
+    - not promote_container_image_using_buildset
   include_tasks: promote-from-intermediate-registry.yaml
+
+- name: Promote container image with intermediate registry
+  when:
+    - promote_container_image_method|default('tag') == 'intermediate-registry'
+    - promote_container_image_using_buildset
+  include_tasks: promote-from-intermediate-registry-using-buildset.yaml

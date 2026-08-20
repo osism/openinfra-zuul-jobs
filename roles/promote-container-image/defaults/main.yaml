@@ -1,2 +1,4 @@
 zuul_work_dir: "{{ zuul.project.src_dir }}"
 promote_container_image_query: "change={{ zuul.change }}&patchset={{ zuul.patchset }}&pipeline={{ promote_container_image_pipeline }}&job_name={{ promote_container_image_job }}"
+promote_container_image_same_buildset: false
+promote_container_image_using_buildset: '{{ promote_container_image_same_buildset }}'
