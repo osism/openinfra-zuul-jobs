@@ -184,6 +184,8 @@
     run: test-playbooks/ensure-pip/ensure-pip-localhost.yaml
     nodeset:
       nodes: []
+    vars:
+      ensure_pip_check_wheel: false
 
 - job:
     name: zuul-jobs-test-ensure-pipx

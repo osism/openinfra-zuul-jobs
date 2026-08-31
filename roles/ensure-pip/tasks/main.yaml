@@ -17,11 +17,15 @@
     # is present.
     if [ "$PYTHON2" -eq "1" ] ; then
         command -v pip2 || command -v pip || exit 1
+        {% if ensure_pip_check_wheel %}
         python2 -m wheel --help || exit 1
+        {% endif %}
     fi
     if [ "$PYTHON3" -eq "1" ] ; then
         command -v pip3 || command -v pip || exit 1
+        {% if ensure_pip_check_wheel %}
         python3 -m wheel --help || exit 1
+        {% endif %}
     fi
   args:
     executable: /bin/bash
