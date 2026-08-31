@@ -56,6 +56,15 @@ This role will also install ``wheel`` components sufficient to run
    available on the system, so caution should be used when specifying
    ``python2`` in this list.
 
+.. zuul:rolevar:: ensure_pip_check_wheel
+   :default: True
+
+   In cases where a job needs to check for pip enough to make sure it can
+   install pre-built wheel packages but shouldn't or can't install sdist
+   tarballs by building them into wheels, setting this false will bypass the
+   need to test for presence of the wheel module, which may not be available
+   depending on the environment.
+
 **Output Variables**
 
 .. zuul:rolevar:: ensure_pip_virtualenv_command
