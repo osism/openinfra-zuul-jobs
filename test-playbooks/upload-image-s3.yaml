@@ -88,20 +88,35 @@
         upload_image_s3_format: "{{ test_ext }}"
         upload_image_s3_delete_after: 1
 
-    - name: Download mc
-      get_url:
-        url: https://dl.min.io/client/mc/release/linux-amd64/mc
-        dest: "{{ ansible_user_dir }}/mc"
+    - name: Create mcli download destination
+      file:
+        state: directory
+        path: "{{ ansible_user_dir }}/mcli"
         mode: 0755
 
+    - name: Download mcli
+      get_url:
+        url: https://github.com/pgsty/mc/releases/download/RELEASE.2026-09-13T00-00-00Z/mcli_20260913000000.0.0_linux_amd64.tar.gz
+        dest: "{{ ansible_user_dir }}/mcli/mcli.tar.gz"
+        mode: 0644
+
+    - name: Extract mcli
+      unarchive:
+        src: "{{ ansible_user_dir }}/mcli/mcli.tar.gz"
+        remote_src: yes
+        dest: "{{ ansible_user_dir }}/mcli/"
+        include:
+          - mcli
+        creates: "{{ ansible_user_dir }}/mcli/mcli"
+
     - name: Add localhost minio host
-      command: "{{ ansible_user_dir }}/mc alias set local http://localhost:9000 {{ test_aws_access_key }} {{ test_aws_secret_key }}"
+      command: "{{ ansible_user_dir }}/mcli/mcli alias set local http://localhost:9000 {{ test_aws_access_key }} {{ test_aws_secret_key }}"
 
     - name: List files in minio bucket
-      command: "{{ ansible_user_dir }}/mc find local/zuul"
+      command: "{{ ansible_user_dir }}/mcli/mcli find local/zuul"
 
     - name: Check for testfile in minio bucket
-      command: "{{ ansible_user_dir }}/mc find local/zuul/{{ test_objectname }}.zst"
+      command: "{{ ansible_user_dir }}/mcli/mcli find local/zuul/{{ test_objectname }}.zst"
 
     - name: Add content to tempfile
       copy:
@@ -127,4 +142,4 @@
         upload_image_s3_compress_image: false
 
     - name: Check for testfile in minio bucket
-      command: "{{ ansible_user_dir }}/mc find local/zuul/{{ test_objectname }}"
+      command: "{{ ansible_user_dir }}/mcli/mcli find local/zuul/{{ test_objectname }}"
