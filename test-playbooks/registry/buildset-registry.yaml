@@ -1,6 +1,21 @@
 # This job inherits from a buildset-registry job, so it should already
 # be running locally and have any speculative images loaded into it.
 - hosts: all
+  vars:
+    # Test that podman works when we're using podman, and docker
+    # when we're using docker.
+    test_image_source: >-
+      {{ 'containers-storage:localhost/zuul/testimage:latest'
+         if (container_command == 'podman'
+             and not ensure_podman_socket | default(false) | bool)
+         else 'docker-daemon:zuul/testimage:latest' }}
+    # If we've enabled the podman socket, exercise it.
+    # CONTAINER_HOST is like the DOCKER_HOST zuul-quck-start uses
+    # but for the podman build
+    test_registry_env: "{{ {'CONTAINER_HOST': 'unix:///run/podman/podman.sock'} if ensure_podman_socket | default(false) | bool else {} }}"
+    # skopeo weirdly does not honor CONTAINER_HOST. Why? I dunno man.
+    # So on skopeo we have to do it via cli.
+    test_registry_copy_args: "{{ '--src-daemon-host unix:///run/podman/podman.sock' if ensure_podman_socket | default(false) | bool else '' }}"
   tasks:
     - name: Load real buildset registry connection info
       set_fact:
@@ -20,13 +35,14 @@
         fake_buildset_registry: "{{ (lookup('file', zuul.executor.result_data_file) | from_json)['secret_data']['buildset_registry'] }}"
       no_log: true
     - name: Build a test image
-      command: "docker build . -t zuul/testimage:latest"
+      command: "{{ container_command }} build . -t zuul/testimage:latest"
       args:
         chdir: "{{ zuul.project.src_dir }}/test-playbooks/registry/docker"
+      environment: "{{ test_registry_env }}"
     - name: Push test image into fake buildset registry
-      command: "skopeo copy --dest-tls-verify=false --dest-creds {{ buildset_registry.username }}:{{ buildset_registry.password }} docker-daemon:zuul/testimage:latest docker://localhost:9000/zuul/docker-testimage:latest"
+      command: "skopeo copy {{ test_registry_copy_args }} --dest-tls-verify=false --dest-creds {{ buildset_registry.username }}:{{ buildset_registry.password }} {{ test_image_source }} docker://localhost:9000/zuul/docker-testimage:latest"
     - name: Push test image into fake buildset registry
-      command: "skopeo copy --dest-tls-verify=false --dest-creds {{ buildset_registry.username }}:{{ buildset_registry.password }} docker-daemon:zuul/testimage:latest docker://localhost:9000/quay.io/zuul/quay-testimage:latest"
+      command: "skopeo copy {{ test_registry_copy_args }} --dest-tls-verify=false --dest-creds {{ buildset_registry.username }}:{{ buildset_registry.password }} {{ test_image_source }} docker://localhost:9000/quay.io/zuul/quay-testimage:latest"
     - name: Pause the job
       zuul_return:
         data:

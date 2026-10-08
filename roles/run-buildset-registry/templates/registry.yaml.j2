@@ -1,6 +1,6 @@
 registry:
   address: '::'
-  port: 5000
+  port: {{ buildset_registry_port }}
   public-url: 'https://{{ ansible_host | ipwrap }}:{{ buildset_registry_port }}'
   tls-cert: /tls/cert.pem
   tls-key: /tls/cert.key

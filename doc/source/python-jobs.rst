@@ -28,6 +28,7 @@ Python Jobs
 .. zuul:autojob:: nox-py311
 .. zuul:autojob:: nox-py312
 .. zuul:autojob:: nox-py313
+.. zuul:autojob:: nox-py314
 .. zuul:autojob:: nox-docs
 .. zuul:autojob:: nox-linters
 .. zuul:autojob:: nox-cover

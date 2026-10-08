@@ -44,6 +44,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-docker-debian-trixie-8GB
+    description: Tests ensure-docker role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-docker
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-docker-ubuntu-focal
     description: Tests ensure-docker role on ubuntu-focal
     parent: zuul-jobs-test-ensure-docker
@@ -72,6 +82,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-docker-ubuntu-resolute-8GB
+    description: Tests ensure-docker role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-docker
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-build-docker-or-container-image-base
@@ -253,6 +273,18 @@
           label: ubuntu-jammy
 
 - job:
+    name: zuul-jobs-test-registry-docker-resolute-8GB
+    parent: zuul-jobs-test-registry-docker
+    nodeset: &registry_nodeset_resolute
+      nodes:
+        - name: intermediate-registry
+          label: ubuntu-resolute-8GB
+        - name: executor
+          label: debian-trixie-8GB
+        - name: builder
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-registry-docker-container-role
     parent: zuul-jobs-test-registry-docker
     description: |
@@ -288,6 +320,11 @@
       container_role: docker
       multiarch: true
     nodeset: *registry_nodeset
+
+- job:
+    name: zuul-jobs-test-registry-docker-multiarch-resolute-8GB
+    parent: zuul-jobs-test-registry-docker-multiarch
+    nodeset: *registry_nodeset_resolute
 
 - job:
     name: zuul-jobs-test-registry-docker-container-role-multiarch
@@ -328,6 +365,11 @@
     nodeset: *registry_nodeset
 
 - job:
+    name: zuul-jobs-test-registry-podman-resolute-8GB
+    parent: zuul-jobs-test-registry-podman
+    nodeset: *registry_nodeset_resolute
+
+- job:
     name: zuul-jobs-test-registry-buildset-registry
     parent: opendev-buildset-registry
     description: |
@@ -366,6 +408,32 @@
       nodes:
         - name: debian-bookworm
           label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-registry-buildset-registry-podman
+    parent: zuul-jobs-test-registry-buildset-registry
+    vars:
+      container_command: podman
+
+- job:
+    name: zuul-jobs-test-registry-buildset-registry-podman-resolute-8GB
+    parent: zuul-jobs-test-registry-buildset-registry
+    vars:
+      container_command: podman
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
+    name: zuul-jobs-test-registry-buildset-registry-podman-socket
+    parent: zuul-jobs-test-registry-buildset-registry
+    description: |
+      Test the buildset registry with podman accessed as a docker
+      API client via the podman socket
+    vars:
+      container_command: podman
+      ensure_podman_socket: true
 
 - job:
     name: zuul-jobs-test-registry-buildset-registry-k8s-microk8s
@@ -418,35 +486,6 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
-
-- job:
-    name: zuul-jobs-test-ensure-kubernetes-crio
-    description: |
-      Test the ensure-kubernetes role with crio-o
-
-      This job tests changes to the ensure-kubernetes roles.  It
-      is not meant to be used directly but rather run on changes to
-      roles in the zuul-jobs repo.
-    # Does not work under ubuntu-bionic
-    abstract: true
-    files:
-      - roles/collect-container-logs/.*
-      - roles/collect-kubernetes-logs/.*
-      - roles/ensure-docker/.*
-      - roles/ensure-kubernetes/.*
-      - roles/ensure-package-repositories/.*
-      - test-playbooks/ensure-kubernetes/.*
-    run: test-playbooks/ensure-kubernetes/crio.yaml
-    post-run: test-playbooks/ensure-kubernetes/post.yaml
-
-- job:
-    name: zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
-    description: Test the ensure-kubernetes role with crio-o on ubuntu-focal
-    parent: zuul-jobs-test-ensure-kubernetes-crio
-    nodeset:
-      nodes:
-        - name: ubuntu-focal
-          label: ubuntu-focal
 
 - job:
     name: zuul-jobs-test-ensure-kubernetes-podman
@@ -560,6 +599,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-podman-debian-trixie-8GB
+    description: Test the ensure-podman role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-podman
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-podman-ubuntu-jammy
     description: Test the ensure-podman role on ubuntu-jammy
     parent: zuul-jobs-test-ensure-podman
@@ -578,6 +627,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-podman-ubuntu-resolute-8GB
+    description: Test the ensure-podman role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-podman
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-podman-socket
@@ -621,6 +680,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-podman-socket-debian-trixie-8GB
+    description: Test the ensure-podman role with the socket option on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-podman-socket
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
     description: Test the ensure-podman role with the socket option on ubuntu-jammy
     parent: zuul-jobs-test-ensure-podman-socket
@@ -639,6 +708,75 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-podman-socket-ubuntu-resolute-8GB
+    description: Test the ensure-podman role with the socket option on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-podman-socket
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless
+    description: |
+      Test the rootless ensure-podman
+    abstract: true
+    files:
+      - roles/ensure-podman/.*
+      - roles/ensure-package-repositories/.*
+      - test-playbooks/ensure-podman/.*
+    run: test-playbooks/ensure-podman/main.yaml
+    vars:
+      ensure_podman_validate: true
+      ensure_podman_rootless: true
+    tags:
+      - debuntu-platforms
+      - exclude-debian-bullseye
+      - exclude-ubuntu-focal
+      - exclude-ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-debian-bookworm
+    description: Test the rootless ensure-podman on debian-bookworm
+    parent: zuul-jobs-test-ensure-podman-rootless
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-debian-trixie-8GB
+    description: Test the rootless ensure-podman on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-podman-rootless
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-ubuntu-noble
+    description: Test the rootless ensure-podman on ubuntu-noble
+    parent: zuul-jobs-test-ensure-podman-rootless
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-podman-rootless-ubuntu-resolute-8GB
+    description: Test the rootless ensure-podman on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-podman-rootless
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-skopeo
@@ -677,6 +815,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-skopeo-debian-trixie-8GB
+    description: Test the ensure-skopeo role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-skopeo
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-skopeo-ubuntu-focal
     description: Test the ensure-skopeo role on ubuntu-focal
     parent: zuul-jobs-test-ensure-skopeo
@@ -707,6 +855,16 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-skopeo-ubuntu-resolute-8GB
+    description: Test the ensure-skopeo role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-skopeo
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-ensure-podman-debian-bullseye
     description: Tests ensure-podman role on debian-bullseye
     parent: zuul-jobs-test-ensure-podman
@@ -731,9 +889,9 @@
     nodeset:
       nodes:
         - name: intermediate-registry
-          label: ubuntu-jammy
+          label: ubuntu-noble
         - name: builder
-          label: ubuntu-jammy
+          label: ubuntu-noble
 
 
 # -* AUTOGENERATED *-
@@ -747,9 +905,11 @@
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bookworm
         - zuul-jobs-test-ensure-docker-debian-bullseye
+        - zuul-jobs-test-ensure-docker-debian-trixie-8GB
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
         - zuul-jobs-test-ensure-docker-ubuntu-noble
+        - zuul-jobs-test-ensure-docker-ubuntu-resolute-8GB
         - zuul-jobs-test-build-container-image-docker-release
         - zuul-jobs-test-build-container-image-docker-release-multiarch
         - zuul-jobs-test-build-container-image-docker-release-multiarch-multinode
@@ -760,30 +920,45 @@
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
         - zuul-jobs-test-registry-docker
+        - zuul-jobs-test-registry-docker-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role
         - zuul-jobs-test-registry-docker-multiarch
+        - zuul-jobs-test-registry-docker-multiarch-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role-multiarch
         - zuul-jobs-test-registry-podman
+        - zuul-jobs-test-registry-podman-resolute-8GB
         - zuul-jobs-test-registry-buildset-registry
+        - zuul-jobs-test-registry-buildset-registry-podman
+        - zuul-jobs-test-registry-buildset-registry-podman-resolute-8GB
+        - zuul-jobs-test-registry-buildset-registry-podman-socket
         - zuul-jobs-test-registry-buildset-registry-k8s-microk8s
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
-        - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
         - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
         - zuul-jobs-test-ensure-kubernetes-microk8s-ubuntu-jammy
         - zuul-jobs-test-ensure-kubernetes-microk8s-debian-bookworm
         - zuul-jobs-test-ensure-podman-debian-bookworm
         - zuul-jobs-test-ensure-podman-debian-bullseye
+        - zuul-jobs-test-ensure-podman-debian-trixie-8GB
         - zuul-jobs-test-ensure-podman-ubuntu-jammy
         - zuul-jobs-test-ensure-podman-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-podman-socket-debian-bookworm
         - zuul-jobs-test-ensure-podman-socket-debian-bullseye
+        - zuul-jobs-test-ensure-podman-socket-debian-trixie-8GB
         - zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
         - zuul-jobs-test-ensure-podman-socket-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-socket-ubuntu-resolute-8GB
+        - zuul-jobs-test-ensure-podman-rootless-debian-bookworm
+        - zuul-jobs-test-ensure-podman-rootless-debian-trixie-8GB
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-skopeo-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bullseye
+        - zuul-jobs-test-ensure-skopeo-debian-trixie-8GB
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
         - zuul-jobs-test-ensure-skopeo-ubuntu-noble
+        - zuul-jobs-test-ensure-skopeo-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-podman-debian-bullseye
         - zuul-jobs-test-mirror-container-images
     gate:
@@ -791,9 +966,11 @@
         - zuul-jobs-test-ensure-docker-centos-9-stream
         - zuul-jobs-test-ensure-docker-debian-bookworm
         - zuul-jobs-test-ensure-docker-debian-bullseye
+        - zuul-jobs-test-ensure-docker-debian-trixie-8GB
         - zuul-jobs-test-ensure-docker-ubuntu-focal
         - zuul-jobs-test-ensure-docker-ubuntu-jammy
         - zuul-jobs-test-ensure-docker-ubuntu-noble
+        - zuul-jobs-test-ensure-docker-ubuntu-resolute-8GB
         - zuul-jobs-test-build-container-image-docker-release
         - zuul-jobs-test-build-container-image-docker-release-multiarch
         - zuul-jobs-test-build-container-image-docker-release-multiarch-multinode
@@ -804,27 +981,42 @@
         - zuul-jobs-test-build-docker-image-release
         - zuul-jobs-test-build-docker-image-release-multiarch
         - zuul-jobs-test-registry-docker
+        - zuul-jobs-test-registry-docker-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role
         - zuul-jobs-test-registry-docker-multiarch
+        - zuul-jobs-test-registry-docker-multiarch-resolute-8GB
         - zuul-jobs-test-registry-docker-container-role-multiarch
         - zuul-jobs-test-registry-podman
+        - zuul-jobs-test-registry-podman-resolute-8GB
         - zuul-jobs-test-registry-buildset-registry
+        - zuul-jobs-test-registry-buildset-registry-podman
+        - zuul-jobs-test-registry-buildset-registry-podman-resolute-8GB
+        - zuul-jobs-test-registry-buildset-registry-podman-socket
         - zuul-jobs-test-registry-buildset-registry-k8s-crio
-        - zuul-jobs-test-ensure-kubernetes-crio-ubuntu-focal
         - zuul-jobs-test-ensure-kubernetes-podman-ubuntu-noble
         - zuul-jobs-test-ensure-podman-debian-bookworm
         - zuul-jobs-test-ensure-podman-debian-bullseye
+        - zuul-jobs-test-ensure-podman-debian-trixie-8GB
         - zuul-jobs-test-ensure-podman-ubuntu-jammy
         - zuul-jobs-test-ensure-podman-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-podman-socket-debian-bookworm
         - zuul-jobs-test-ensure-podman-socket-debian-bullseye
+        - zuul-jobs-test-ensure-podman-socket-debian-trixie-8GB
         - zuul-jobs-test-ensure-podman-socket-ubuntu-jammy
         - zuul-jobs-test-ensure-podman-socket-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-socket-ubuntu-resolute-8GB
+        - zuul-jobs-test-ensure-podman-rootless-debian-bookworm
+        - zuul-jobs-test-ensure-podman-rootless-debian-trixie-8GB
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-noble
+        - zuul-jobs-test-ensure-podman-rootless-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-skopeo-debian-bookworm
         - zuul-jobs-test-ensure-skopeo-debian-bullseye
+        - zuul-jobs-test-ensure-skopeo-debian-trixie-8GB
         - zuul-jobs-test-ensure-skopeo-ubuntu-focal
         - zuul-jobs-test-ensure-skopeo-ubuntu-jammy
         - zuul-jobs-test-ensure-skopeo-ubuntu-noble
+        - zuul-jobs-test-ensure-skopeo-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-podman-debian-bullseye
         - zuul-jobs-test-mirror-container-images
     periodic-weekly:

@@ -1,0 +1,14 @@
+- name: Check and install pipx if necessary
+  include_role:
+    name: ensure-python-command
+  vars:
+    ensure_python_command_name: pipx
+    ensure_python_command_version: "{{ ensure_pipx_version }}"
+    ensure_python_command_existing: "{{ ensure_pipx_executable | default('') }}"
+    ensure_python_command_venv_path: "{{ ensure_pipx_venv_path }}"
+    ensure_python_command_global_symlink: "{{ ensure_pipx_global_symlink }}"
+
+- name: Export ensure_pipx_executable path
+  set_fact:
+    ensure_pipx_executable: "{{ ensure_python_command_executable }}"
+    cacheable: true

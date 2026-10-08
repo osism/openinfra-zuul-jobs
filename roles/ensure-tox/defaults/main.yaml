@@ -1,5 +1,6 @@
 tox_executable: tox
 ensure_tox_version: ''
+ensure_tox_pip_version: false
 tox_venv_path: '{{ ansible_user_dir }}/.local/tox'
 tox_prefer_python2: false
 ensure_global_symlinks: false

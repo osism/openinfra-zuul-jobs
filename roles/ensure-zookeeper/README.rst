@@ -9,6 +9,11 @@ Install and start zookeeper using the upsteam release.
 
    The zookeeper version.
 
+.. zuul:rolevar:: zookeeper_base_url
+   :default: https://archive.apache.org/dist/zookeeper
+
+   The base URL to download zookeeper tarballs from.
+
 .. zuul:rolevar:: zookeeper_use_tls
    :default: false
 

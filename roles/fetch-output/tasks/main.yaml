@@ -25,6 +25,16 @@
   synchronize:
     dest: "{{ zj_output.dest }}/"
     mode: pull
+    rsync_opts: >-
+      {{
+        (['--bwlimit=' + (fetch_output_rsync_bwlimit | int | string)] if fetch_output_rsync_bwlimit else [])
+        + (['--human-readable'] if (fetch_output_rsync_human_readable | bool) else [])
+        + (['--log-file=%s/fetch-output.log' % zuul.executor.log_root] if (fetch_output_rsync_log_file | bool) else [])
+        + (['--no-motd'] if (fetch_output_rsync_no_motd | bool) else [])
+        + (['--quiet'] if (fetch_output_rsync_quiet | bool) else [])
+        + (['--stats'] if (fetch_output_rsync_stats | bool) else [])
+      }}
+    rsync_timeout: "{{ fetch_output_rsync_timeout }}"
     src: "{{ zuul_output_dir }}/{{ zj_output.src }}/"
     verify_host: true
     owner: false

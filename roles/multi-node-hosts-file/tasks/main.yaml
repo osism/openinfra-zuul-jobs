@@ -1,4 +1,5 @@
-- name: Set up the list of hosts and addresses
+- name: Set up the list of hosts and addresses using private ip addrs
+  when: use_private_ip_addresses | bool
   set_fact:
     host_addresses: >
       {% set hosts = {} -%}
@@ -6,6 +7,19 @@
       {% if 'nodepool' in vars -%}
       {% set _ = hosts.update({host: vars['nodepool']['private_ipv4']}) -%}
       {% set _ = hosts.update({vars['ansible_hostname']: vars['nodepool']['private_ipv4']}) -%}
+      {% endif -%}
+      {% endfor -%}
+      {{- hosts -}}
+
+- name: Set up the list of hosts and addresses using public ip addrs
+  when: not use_private_ip_addresses | bool
+  set_fact:
+    host_addresses: >
+      {% set hosts = {} -%}
+      {% for host, vars in hostvars.items() -%}
+      {% if 'nodepool' in vars -%}
+      {% set _ = hosts.update({host: vars['nodepool']['public_ipv4']}) -%}
+      {% set _ = hosts.update({vars['ansible_hostname']: vars['nodepool']['public_ipv4']}) -%}
       {% endif -%}
       {% endfor -%}
       {{- hosts -}}

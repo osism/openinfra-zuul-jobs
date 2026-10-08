@@ -1,12 +1,20 @@
 - hosts: all
-  roles:
-    - ensure-docker
-    - role: ensure-skopeo
+  tasks:
+    - name: Ensure docker is installed
+      when: "container_command == 'docker'"
+      include_role:
+        name: ensure-docker
+    - name: Ensure podman is installed
+      when: "container_command == 'podman'"
+      include_role:
+        name: ensure-podman
+    - name: Ensure skopeo is installed
+      include_role:
+        name: ensure-skopeo
       vars:
         # Needs to be new enough skopeo to negotiate docker api versions
         ensure_skopeo_install_from_upstream: true
 
-  tasks:
     # This happens in the pre-playbook of the
     # opendev-buildset-registry job.  Since we're testing these roles
     # in opendev, and we're running a second buildset registry, we

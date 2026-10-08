@@ -39,6 +39,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-nox-debian-trixie-8GB
+    description: Test the ensure-nox role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-nox-ubuntu-focal
     description: Test the ensure-nox role on ubuntu-focal
     parent: zuul-jobs-test-ensure-nox
@@ -67,6 +77,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-nox-ubuntu-resolute-8GB
+    description: Test the ensure-nox role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-nox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-pip
@@ -108,6 +128,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-pip-debian-trixie-8GB
+    description: Test the ensure-pip role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-pip
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-pip-ubuntu-focal
     description: Test the ensure-pip role on ubuntu-focal
     parent: zuul-jobs-test-ensure-pip
@@ -138,12 +168,114 @@
           label: ubuntu-noble
 
 - job:
+    name: zuul-jobs-test-ensure-pip-ubuntu-resolute-8GB
+    description: Test the ensure-pip role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-pip
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
     name: zuul-jobs-test-ensure-pip-localhost
     description: Test the ensure-pip role on the executor
     parent: zuul-jobs-test-ensure-pip
     run: test-playbooks/ensure-pip/ensure-pip-localhost.yaml
     nodeset:
       nodes: []
+    vars:
+      ensure_pip_check_wheel: false
+
+- job:
+    name: zuul-jobs-test-ensure-pipx
+    description: Test the ensure-pipx role
+    files:
+      - roles/ensure-pipx/.*
+      - roles/ensure-python-command/.*
+      - test-playbooks/ensure-pipx.yaml
+    run: test-playbooks/ensure-pipx.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-centos-9-stream
+    description: Test the ensure-pipx role on centos-9-stream
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-debian-bookworm
+    description: Test the ensure-pipx role on debian-bookworm
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-debian-bullseye
+    description: Test the ensure-pipx role on debian-bullseye
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-debian-trixie-8GB
+    description: Test the ensure-pipx role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-focal
+    description: Test the ensure-pipx role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-jammy
+    description: Test the ensure-pipx role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-noble
+    description: Test the ensure-pipx role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-pipx-ubuntu-resolute-8GB
+    description: Test the ensure-pipx role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-pipx
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-poetry
@@ -186,6 +318,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-poetry-debian-trixie-8GB
+    description: Test the ensure-poetry role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-poetry-ubuntu-focal
     description: Test the ensure-poetry role on ubuntu-focal
     parent: zuul-jobs-test-ensure-poetry
@@ -214,6 +356,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-poetry-ubuntu-resolute-8GB
+    description: Test the ensure-poetry role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-poetry
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-pyproject-build
@@ -256,6 +408,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-pyproject-build-debian-trixie-8GB
+    description: Test the ensure-pyproject-build role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-pyproject-build
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-pyproject-build-ubuntu-focal
     description: Test the ensure-pyproject-build role on ubuntu-focal
     parent: zuul-jobs-test-ensure-pyproject-build
@@ -284,6 +446,106 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-pyproject-build-ubuntu-resolute-8GB
+    description: Test the ensure-pyproject-build role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-pyproject-build
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject
+    description: Test the ensure-validate-pyproject role
+    files:
+      - roles/ensure-validate-pyproject/.*
+      - roles/ensure-python-command/.*
+      - test-playbooks/ensure-validate-pyproject.yaml
+    run: test-playbooks/ensure-validate-pyproject.yaml
+    tags: all-platforms
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-centos-9-stream
+    description: Test the ensure-validate-pyproject role on centos-9-stream
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: centos-9-stream
+          label: centos-9-stream
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-debian-bookworm
+    description: Test the ensure-validate-pyproject role on debian-bookworm
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bookworm
+          label: debian-bookworm
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-debian-bullseye
+    description: Test the ensure-validate-pyproject role on debian-bullseye
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-bullseye
+          label: debian-bullseye
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-debian-trixie-8GB
+    description: Test the ensure-validate-pyproject role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-ubuntu-focal
+    description: Test the ensure-validate-pyproject role on ubuntu-focal
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-focal
+          label: ubuntu-focal
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-ubuntu-jammy
+    description: Test the ensure-validate-pyproject role on ubuntu-jammy
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-jammy
+          label: ubuntu-jammy
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-ubuntu-noble
+    description: Test the ensure-validate-pyproject role on ubuntu-noble
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-noble
+          label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-validate-pyproject-ubuntu-resolute-8GB
+    description: Test the ensure-validate-pyproject role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-validate-pyproject
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-twine
@@ -326,6 +588,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-twine-debian-trixie-8GB
+    description: Test the ensure-twine role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-twine-ubuntu-focal
     description: Test the ensure-twine role on ubuntu-focal
     parent: zuul-jobs-test-ensure-twine
@@ -354,6 +626,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-twine-ubuntu-resolute-8GB
+    description: Test the ensure-twine role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-twine
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-sphinx
@@ -404,6 +686,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-tox-debian-trixie-8GB
+    description: Test the ensure-tox role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-tox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-tox-ubuntu-focal
     description: Test the ensure-tox role on ubuntu-focal
     parent: zuul-jobs-test-ensure-tox
@@ -432,6 +724,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-tox-ubuntu-resolute-8GB
+    description: Test the ensure-tox role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-tox
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-ensure-uv
@@ -474,6 +776,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-ensure-uv-debian-trixie-8GB
+    description: Test the ensure-uv role on debian-trixie-8GB
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-ensure-uv-ubuntu-focal
     description: Test the ensure-uv role on ubuntu-focal
     parent: zuul-jobs-test-ensure-uv
@@ -502,6 +814,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-ensure-uv-ubuntu-resolute-8GB
+    description: Test the ensure-uv role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-ensure-uv
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-fetch-sphinx-tarball
@@ -545,6 +867,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-fetch-sphinx-tarball-debian-trixie-8GB
+    description: Test the fetch-sphinx-tarball role on debian-trixie-8GB
+    parent: zuul-jobs-test-fetch-sphinx-tarball
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-fetch-sphinx-tarball-ubuntu-focal
     description: Test the fetch-sphinx-tarball role on ubuntu-focal
     parent: zuul-jobs-test-fetch-sphinx-tarball
@@ -573,6 +905,16 @@
       nodes:
         - name: ubuntu-noble
           label: ubuntu-noble
+
+- job:
+    name: zuul-jobs-test-fetch-sphinx-tarball-ubuntu-resolute-8GB
+    description: Test the fetch-sphinx-tarball role on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-fetch-sphinx-tarball
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
 
 - job:
     name: zuul-jobs-test-tox
@@ -691,53 +1033,85 @@
         - zuul-jobs-test-ensure-nox-centos-9-stream
         - zuul-jobs-test-ensure-nox-debian-bookworm
         - zuul-jobs-test-ensure-nox-debian-bullseye
+        - zuul-jobs-test-ensure-nox-debian-trixie-8GB
         - zuul-jobs-test-ensure-nox-ubuntu-focal
         - zuul-jobs-test-ensure-nox-ubuntu-jammy
         - zuul-jobs-test-ensure-nox-ubuntu-noble
+        - zuul-jobs-test-ensure-nox-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-pip-centos-9-stream
         - zuul-jobs-test-ensure-pip-debian-bookworm
         - zuul-jobs-test-ensure-pip-debian-bullseye
+        - zuul-jobs-test-ensure-pip-debian-trixie-8GB
         - zuul-jobs-test-ensure-pip-ubuntu-focal
         - zuul-jobs-test-ensure-pip-ubuntu-jammy
         - zuul-jobs-test-ensure-pip-ubuntu-noble
+        - zuul-jobs-test-ensure-pip-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-pip-localhost
+        - zuul-jobs-test-ensure-pipx-centos-9-stream
+        - zuul-jobs-test-ensure-pipx-debian-bookworm
+        - zuul-jobs-test-ensure-pipx-debian-bullseye
+        - zuul-jobs-test-ensure-pipx-debian-trixie-8GB
+        - zuul-jobs-test-ensure-pipx-ubuntu-focal
+        - zuul-jobs-test-ensure-pipx-ubuntu-jammy
+        - zuul-jobs-test-ensure-pipx-ubuntu-noble
+        - zuul-jobs-test-ensure-pipx-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-poetry-centos-9-stream
         - zuul-jobs-test-ensure-poetry-debian-bookworm
         - zuul-jobs-test-ensure-poetry-debian-bullseye
+        - zuul-jobs-test-ensure-poetry-debian-trixie-8GB
         - zuul-jobs-test-ensure-poetry-ubuntu-focal
         - zuul-jobs-test-ensure-poetry-ubuntu-jammy
         - zuul-jobs-test-ensure-poetry-ubuntu-noble
+        - zuul-jobs-test-ensure-poetry-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-pyproject-build-centos-9-stream
         - zuul-jobs-test-ensure-pyproject-build-debian-bookworm
         - zuul-jobs-test-ensure-pyproject-build-debian-bullseye
+        - zuul-jobs-test-ensure-pyproject-build-debian-trixie-8GB
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-focal
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-jammy
         - zuul-jobs-test-ensure-pyproject-build-ubuntu-noble
+        - zuul-jobs-test-ensure-pyproject-build-ubuntu-resolute-8GB
+        - zuul-jobs-test-ensure-validate-pyproject-centos-9-stream
+        - zuul-jobs-test-ensure-validate-pyproject-debian-bookworm
+        - zuul-jobs-test-ensure-validate-pyproject-debian-bullseye
+        - zuul-jobs-test-ensure-validate-pyproject-debian-trixie-8GB
+        - zuul-jobs-test-ensure-validate-pyproject-ubuntu-focal
+        - zuul-jobs-test-ensure-validate-pyproject-ubuntu-jammy
+        - zuul-jobs-test-ensure-validate-pyproject-ubuntu-noble
+        - zuul-jobs-test-ensure-validate-pyproject-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-twine-centos-9-stream
         - zuul-jobs-test-ensure-twine-debian-bookworm
         - zuul-jobs-test-ensure-twine-debian-bullseye
+        - zuul-jobs-test-ensure-twine-debian-trixie-8GB
         - zuul-jobs-test-ensure-twine-ubuntu-focal
         - zuul-jobs-test-ensure-twine-ubuntu-jammy
         - zuul-jobs-test-ensure-twine-ubuntu-noble
+        - zuul-jobs-test-ensure-twine-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-sphinx
         - zuul-jobs-test-ensure-tox-centos-9-stream
         - zuul-jobs-test-ensure-tox-debian-bookworm
         - zuul-jobs-test-ensure-tox-debian-bullseye
+        - zuul-jobs-test-ensure-tox-debian-trixie-8GB
         - zuul-jobs-test-ensure-tox-ubuntu-focal
         - zuul-jobs-test-ensure-tox-ubuntu-jammy
         - zuul-jobs-test-ensure-tox-ubuntu-noble
+        - zuul-jobs-test-ensure-tox-ubuntu-resolute-8GB
         - zuul-jobs-test-ensure-uv-centos-9-stream
         - zuul-jobs-test-ensure-uv-debian-bookworm
         - zuul-jobs-test-ensure-uv-debian-bullseye
+        - zuul-jobs-test-ensure-uv-debian-trixie-8GB
         - zuul-jobs-test-ensure-uv-ubuntu-focal
         - zuul-jobs-test-ensure-uv-ubuntu-jammy
         - zuul-jobs-test-ensure-uv-ubuntu-noble
+        - zuul-jobs-test-ensure-uv-ubuntu-resolute-8GB
         - zuul-jobs-test-fetch-sphinx-tarball-centos-9-stream
         - zuul-jobs-test-fetch-sphinx-tarball-debian-bookworm
         - zuul-jobs-test-fetch-sphinx-tarball-debian-bullseye
+        - zuul-jobs-test-fetch-sphinx-tarball-debian-trixie-8GB
         - zuul-jobs-test-fetch-sphinx-tarball-ubuntu-focal
         - zuul-jobs-test-fetch-sphinx-tarball-ubuntu-jammy
         - zuul-jobs-test-fetch-sphinx-tarball-ubuntu-noble
+        - zuul-jobs-test-fetch-sphinx-tarball-ubuntu-resolute-8GB
         - zuul-jobs-test-tox
         - zuul-jobs-test-fetch-tox-output
         - zuul-jobs-test-fetch-tox-output-synchronize

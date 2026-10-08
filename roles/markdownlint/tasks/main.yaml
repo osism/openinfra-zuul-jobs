@@ -1,7 +1,10 @@
 - name: Find all .md files
   find:
+    excludes:
+      - .git
     paths: "{{ zuul_work_dir }}"
     pattern: "*.md"
+    recurse: "{{ recurse }}"
   register: markdown_find
 
 - name: Run markdownlint

@@ -46,6 +46,16 @@
           label: debian-bullseye
 
 - job:
+    name: zuul-jobs-test-golang-go-debian-trixie-8GB
+    description: Test the golang-go job on debian-trixie-8GB
+    parent: zuul-jobs-test-golang-go
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: debian-trixie-8GB
+          label: debian-trixie-8GB
+
+- job:
     name: zuul-jobs-test-golang-go-ubuntu-focal
     description: Test the golang-go job on ubuntu-focal
     parent: zuul-jobs-test-golang-go
@@ -75,15 +85,27 @@
         - name: ubuntu-noble
           label: ubuntu-noble
 
+- job:
+    name: zuul-jobs-test-golang-go-ubuntu-resolute-8GB
+    description: Test the golang-go job on ubuntu-resolute-8GB
+    parent: zuul-jobs-test-golang-go
+    tags: auto-generated
+    nodeset:
+      nodes:
+        - name: ubuntu-resolute-8GB
+          label: ubuntu-resolute-8GB
+
 - project:
     check:
       jobs: &id001
         - zuul-jobs-test-golang-go-centos-9-stream
         - zuul-jobs-test-golang-go-debian-bookworm
         - zuul-jobs-test-golang-go-debian-bullseye
+        - zuul-jobs-test-golang-go-debian-trixie-8GB
         - zuul-jobs-test-golang-go-ubuntu-focal
         - zuul-jobs-test-golang-go-ubuntu-jammy
         - zuul-jobs-test-golang-go-ubuntu-noble
+        - zuul-jobs-test-golang-go-ubuntu-resolute-8GB
     gate:
       jobs: *id001
     periodic-weekly:

@@ -4,3 +4,4 @@ ensure_pip_from_upstream_url: '{{ ansible_python_version is version("3.7", ">=")
 ensure_pip_from_upstream: False
 ensure_pip_from_upstream_interpreters:
   - '{{ ansible_python.executable | regex_replace(".*python", "python") }}'
+ensure_pip_check_wheel: True

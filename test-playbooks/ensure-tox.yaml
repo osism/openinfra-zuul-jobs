@@ -49,3 +49,32 @@
       assert:
         that:
           - tox_executable == ansible_user_dir + '/tox-venv/bin/tox'
+
+- hosts: all
+  name: Test ensure-tox upgrades pip in the venv when requested
+  tasks:
+    - name: Remove the role's venv from earlier plays
+      file:
+        path: "{{ zj_old_venv }}"
+        state: absent
+      loop:
+        - "{{ ansible_user_dir }}/.local/tox"
+        - '{{ ansible_user_dir }}/tox-venv'
+      loop_control:
+        loop_var: zj_old_venv
+    - name: Run ensure-tox with a pip upgrade requested
+      include_role:
+        name: ensure-tox
+      vars:
+        ensure_tox_pip_version: '>=19.0'
+    - name: Verify tox is installed
+      command: "{{ tox_executable }} --version"
+      register: result
+      failed_when: result.rc != 0
+    - name: Collect pip version from the role's venv
+      command: "{{ ansible_user_dir }}/.local/tox/bin/pip --version"
+      register: venv_pip
+    - name: Verify the venv has a Requires-Python-aware pip (>= 19.0)
+      assert:
+        that:
+          - venv_pip.stdout.split()[1] is version('19.0', '>=')

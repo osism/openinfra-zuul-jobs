@@ -1,0 +1,26 @@
+- name: Configure subordinate UID range
+  become: true
+  lineinfile:
+    path: /etc/subuid
+    regexp: "^{{ ansible_user }}:"
+    line: "{{ ansible_user }}:{{ ensure_podman_rootless_subuid_start }}:{{ ensure_podman_rootless_subuid_count }}"
+    create: true
+    mode: "0644"
+
+- name: Configure subordinate GID range
+  become: true
+  lineinfile:
+    path: /etc/subgid
+    regexp: "^{{ ansible_user }}:"
+    line: "{{ ansible_user }}:{{ ensure_podman_rootless_subgid_start }}:{{ ensure_podman_rootless_subgid_count }}"
+    create: true
+    mode: "0644"
+
+- name: Allow unprivileged binding to low ports
+  become: true
+  sysctl:
+    name: net.ipv4.ip_unprivileged_port_start
+    value: "{{ ensure_podman_rootless_unprivileged_port_start }}"
+    sysctl_file: /etc/sysctl.d/99-podman-rootless-unprivileged-ports.conf
+    reload: true
+  when: ensure_podman_rootless_unprivileged_port_start is not none

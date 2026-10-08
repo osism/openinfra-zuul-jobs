@@ -64,6 +64,9 @@ MAX_UPLOAD_THREADS = 24
 
 
 class Credentials(gce_cred.Credentials):
+    def __init__(self, *args, universe_domain="googleapis.com", **kwargs):
+        super().__init__(*args, universe_domain=universe_domain, **kwargs)
+
     def _set_path(self, path):
         """Call this after initialization"""
         self._path = path

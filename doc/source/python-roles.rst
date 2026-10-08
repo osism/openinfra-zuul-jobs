@@ -7,6 +7,7 @@ Python Roles
 .. zuul:autorole:: ensure-if-python
 .. zuul:autorole:: ensure-nox
 .. zuul:autorole:: ensure-pip
+.. zuul:autorole:: ensure-pipx
 .. zuul:autorole:: ensure-python-command
 .. zuul:autorole:: ensure-poetry
 .. zuul:autorole:: ensure-pyproject-build
@@ -15,6 +16,7 @@ Python Roles
 .. zuul:autorole:: ensure-tox
 .. zuul:autorole:: ensure-twine
 .. zuul:autorole:: ensure-uv
+.. zuul:autorole:: ensure-validate-pyproject
 .. zuul:autorole:: ensure-virtualenv
 .. zuul:autorole:: fetch-coverage-output
 .. zuul:autorole:: fetch-python-sdist-output

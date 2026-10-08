@@ -43,7 +43,7 @@
     - name: Mirror the git repository
       command: git push --mirror {{ git_mirror_credentials.user }}@{{ git_mirror_credentials.host }}:{{ git_mirror_repository }}
       args:
-        chdir: "{{ ansible_user_dir }}/{{ zuul.project.src_dir }}"
+        chdir: "{{ zuul_user_dir | default(ansible_user_dir) }}/{{ zuul.project.src_dir }}"
       tags:
         - skip_ansible_lint
       register: result
@@ -54,7 +54,7 @@
   always:
     # Registered variables below are only used for integration testing
     - name: Remove SSH private key from disk
-      command: "shred --remove {{ ssh_private_key_tmp.path }}"
+      command: "shred -uz {{ ssh_private_key_tmp.path }}"
       register: git_mirror_key_removed
 
     - name: Remove SSH configuration in ~/.ssh/config

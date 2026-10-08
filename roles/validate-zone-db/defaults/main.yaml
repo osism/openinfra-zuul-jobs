@@ -1,2 +1,2 @@
-zone_files: '{{ ansible_user_dir }}/{{ zuul.project.src_dir }}'
+zone_files: '{{ zuul_user_dir | default (ansible_user_dir) }}/{{ zuul.project.src_dir }}'
 zone_db_files: []

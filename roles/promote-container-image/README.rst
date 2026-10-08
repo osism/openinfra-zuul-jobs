@@ -32,4 +32,17 @@ Promote one or more previously uploaded container images.
    :default: change={{ zuul.change }}&patchset={{ zuul.patchset }}&pipeline={{ promote_container_image_pipeline }}&job_name={{ promote_container_image_job }}
 
    Only required for the ``intermediate-registry`` method.
-   The query to use to find the build.  Normally the default is used.
+
+   This value is deprecated. Default behavior will move to ``promote_container_image_using_buildset``
+
+.. zuul:rolevar:: promote_container_image_using_buildset
+   :default: false
+
+   Enable the new behavior of looking up artifacts to promote via buioldset
+   query rather than via change query directly.
+
+.. zuul:rolevar:: promote_container_image_same_buildset
+
+   Promote an image from the same buildset. Useful for cases like
+   building, testing and deploying a new container in a periodic
+   pipeline. Implies ``promote_container_image_using_buildset``

@@ -31,6 +31,7 @@
     $run_pip install pbr
     $run_pip wheel --no-deps .
     ls dummy_package*.whl || exit 1
+  when: ensure_pip_check_wheel | default(true)
 
 - name: Test virtualenv
   # NOTE(ianw) 2022-02-03 : not supported on 9-stream, see inline comments
